@@ -28,6 +28,22 @@ namespace Autorouter
             {
                 return String.Format("({0}, {1}) g={2} f={3}", X, Y, gScore, fScore);
             }
+
+            public IEnumerable<Point> GetReversedPath()
+            {
+                Point ret = cameFrom;
+
+                while (ret != null)
+                {
+                    yield return ret;
+                    ret = ret.cameFrom;
+                }
+            }
+
+            public IEnumerable<Point> GetPath()
+            {
+                return GetReversedPath().Reverse();
+            }
         }
         
         Point[,] points;

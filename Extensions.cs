@@ -106,5 +106,35 @@ namespace Autorouter
                 yield return ret;
             }
         }
+
+        public static IEnumerable<Point> GetOrthogonalNeighbors(this Point p)
+        {
+            yield return new Point(p.X + 0, p.Y + 1);
+            yield return new Point(p.X + 1, p.Y + 0);
+            yield return new Point(p.X + 0, p.Y - 1);
+            yield return new Point(p.X - 1, p.Y + 0);
+        }
+
+        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list)
+        {
+            return list.GetPermutations(list.Count());
+        }
+
+        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list, int length)
+        {
+            if (length == 1) return list.Select(t => new T[] { t });
+
+            return GetPermutations(list, length - 1)
+                .SelectMany(t => list.Where(e => !t.Contains(e)),
+                    (t1, t2) => t1.Concat(new T[] { t2 }));
+        }
+
+        public static void Foreach<T>(this IEnumerable<T> list, Action<T> action)
+        {
+            var e = list.GetEnumerator();
+
+            while (e.MoveNext())
+                action(e.Current);
+        }
     }
 }

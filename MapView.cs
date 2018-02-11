@@ -42,10 +42,9 @@ namespace Autorouter
             switch (uxState)
             {
                 case UxStates.StartedDraw:
-                    if (map.tiles[tileX, tileY].net != null && map.tiles[tileX, tileY].net != netBeingRouted)
-                        return;
-
-                    netBeingRouted.Autoroute(drawStart, map.tiles[tileX, tileY], map);
+                    //if (map.tiles[tileX, tileY].net != null && map.tiles[tileX, tileY].net != netBeingRouted)
+                    //    return;
+                    map.AutorouteWithRemoval(drawStart, map.tiles[tileX, tileY], netIdBeingRouted);
 
                     Refresh();
                     break;
@@ -83,23 +82,23 @@ namespace Autorouter
         }
 
         Map.Tile drawStart;
-        Map.Net netBeingRouted;
+        int netIdBeingRouted;
 
         void OnTileClicked(int tileX, int tileY, int mouseX, int mouseY, MouseButtons button)
         {
             switch (uxState)
             {
                 case UxStates.Idle:
-                    if (map.tiles[tileX, tileY].net != null)
+                    if (map.tiles[tileX, tileY].netId != 0)
                     {
-                        map.tiles[tileX, tileY].net.Ripup();
+                        map.RipupNet(map.tiles[tileX, tileY].netId);
                         Refresh();
                     }
                     else
                     {
                         uxState = UxStates.StartedDraw;
                         drawStart = map.tiles[tileX, tileY];
-                        netBeingRouted = new Map.Net();
+                        netIdBeingRouted = map.nextMapId++;
                         Cursor = Cursors.Cross;
                         Refresh();
                     }
@@ -109,8 +108,6 @@ namespace Autorouter
                 default:
                     uxState = UxStates.Idle;
                     Cursor = Cursors.Arrow;
-                    map.Nets.Add(netBeingRouted);
-                    netBeingRouted = null;
                     break;
             }
         }
