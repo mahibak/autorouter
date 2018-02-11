@@ -1,0 +1,51 @@
+1. Make the game
+1.1 Game grid
+1.1.1 Data model
+1.1.2 Visual in-game (view)
+1.1.2.1 Square interaction (click to grid)
+1.2 Conveyor belts
+1.2.1 Path
+1.2.2 Content/rate
+1.2.3 Visual of items moving
+1.3 Input / Output
+1.3.1 Input
+1.3.1.1 Physical object (container)
+1.3.1.2 Feed conveyor belt content
+1.3.1.3 Capacity
+1.3.2 Output
+1.3.2.1 Physical object
+1.3.2.2 Consume conveyor belt content
+1.4 Machine
+1.4.1 Physical object
+1.4.2 Replacing belt content
+1.4.3 Data driven machines (switches)
+1.4.4 Defining pre-made machines
+1.5 Transformation tree
+1.5.1 Data structure
+1.5.2 Map machine+input to output (content type)
+1.6 Economy
+1.6.1 Fluctuating prices
+1.6.2 Output deflation
+1.6.3 Random events
+1.6.3.1 Spikes
+1.6.3.2 Missions
+1.7 Upgrades
+1.7.1 Floor space
+1.7.2 Containers
+1.7.3 Output bays
+1.8 Machine boxing
+1.8.1 Blueprint saving
+1.8.2 Pasting
+1.8.3 Size reduction
+1.8.4 Operation cost change
+1.8.5 Effectiveness calculation
+1.8.6 Sharing via strings
+1.9 User interface
+1.9.1 Placing machines
+1.9.2 Placing conveyor belts
+1.9.3 Moving machines
+1.9.4 Moving containers
+1.9.5 Routing conveyor belts
+1.9.6 Machine picking list
+1.9.7 Transformation informations (how to build / what to build from)
+1.9.8 Productivity calculation
