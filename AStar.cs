@@ -102,11 +102,14 @@ namespace Autorouter
                     if (closedSet.Contains(neighbor))
                         continue;
 
-                    if (!openSet.Contains(neighbor))
-                        openSet.Add(neighbor);
-
                     float tentativeGScore = current.gScore + costEvaluator(current, neighbor);
 
+                    if (float.IsInfinity(tentativeGScore))
+                        continue;
+
+                    if (!openSet.Contains(neighbor))
+                        openSet.Add(neighbor);
+                    
                     if (tentativeGScore >= neighbor.gScore)
                         continue;
                     

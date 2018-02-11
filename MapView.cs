@@ -42,57 +42,10 @@ namespace Autorouter
             switch (uxState)
             {
                 case UxStates.StartedDraw:
-                    if (map.tiles[tileX, tileY].pathId != 0 && map.tiles[tileX, tileY].pathId != lastPathId + 1)
+                    if (map.tiles[tileX, tileY].net != null && map.tiles[tileX, tileY].net != netBeingRouted)
                         return;
 
-
-                        for (int x = 0; x < Map.WIDTH; x++)
-                        for (int y = 0; y < Map.HEIGHT; y++)
-                            if(map.tiles[x, y].pathId == lastPathId + 1)
-                            {
-                                map.tiles[x, y].pathId = 0;
-                            }
-
-
-                    Func<AStar.Point, AStar.Point, float> costEvaluator = delegate(AStar.Point from, AStar.Point to) 
-                    {
-                    if (map.tiles[to.X, to.Y].pathId != 0)
-                        return float.PositiveInfinity;
-                    else 
-                        return 1;
-                    };
-
-                    var ret = new AStar(Map.WIDTH, Map.HEIGHT, costEvaluator).Find(drawStart.X, drawStart.Y, tileX, tileY);
-
-                    List<Point> corners = ret.GetCorners().ToList();
-
-                    for (int i = 0; i < corners.Count - 3; i++)
-                    {
-                        Point newPoint = new Point(corners[i + 0].X, corners[i + 3].Y);
-                        Point newPoint2 = new Point(corners[i + 3].X, corners[i + 0].Y);
-
-                        if (corners[i + 0].GetPointsTo(newPoint).All(x => map.tiles[x.X, x.Y].pathId == 0) && newPoint.GetPointsTo(corners[i + 3]).All(x => map.tiles[x.X, x.Y].pathId == 0))
-                        {
-                            corners.RemoveAt(i + 1);
-                            corners.RemoveAt(i + 1);
-                            corners.Insert(i + 1, newPoint);
-                            i--;
-                        }
-                        else if (corners[i + 0].GetPointsTo(newPoint2).All(x => map.tiles[x.X, x.Y].pathId == 0) && newPoint2.GetPointsTo(corners[i + 3]).All(x => map.tiles[x.X, x.Y].pathId == 0))
-                        {
-                            corners.RemoveAt(i + 1);
-                            corners.RemoveAt(i + 1);
-                            corners.Insert(i, newPoint2);
-                            i--;
-                        }
-                    }
-
-                    var ret2 = corners.PointsFromCorners().ToList();
-
-                    foreach (Point p in ret2)
-                    {
-                        map.tiles[p.X, p.Y].pathId = lastPathId + 1;
-                    } 
+                    netBeingRouted.Autoroute(drawStart, map.tiles[tileX, tileY], map);
 
                     Refresh();
                     break;
@@ -129,23 +82,35 @@ namespace Autorouter
             OnTileClicked(p.X, p.Y, e.X, e.Y, e.Button);
         }
 
-        Point drawStart;
-        int lastPathId = 0;
+        Map.Tile drawStart;
+        Map.Net netBeingRouted;
 
         void OnTileClicked(int tileX, int tileY, int mouseX, int mouseY, MouseButtons button)
         {
             switch (uxState)
             {
                 case UxStates.Idle:
-                    uxState = UxStates.StartedDraw;
-                    drawStart = new Point(tileX, tileY);
-                    Cursor = Cursors.Cross;
+                    if (map.tiles[tileX, tileY].net != null)
+                    {
+                        map.tiles[tileX, tileY].net.Ripup();
+                        Refresh();
+                    }
+                    else
+                    {
+                        uxState = UxStates.StartedDraw;
+                        drawStart = map.tiles[tileX, tileY];
+                        netBeingRouted = new Map.Net();
+                        Cursor = Cursors.Cross;
+                        Refresh();
+                    }
+                    
                     break;
 
                 default:
                     uxState = UxStates.Idle;
                     Cursor = Cursors.Arrow;
-                    lastPathId++;
+                    map.Nets.Add(netBeingRouted);
+                    netBeingRouted = null;
                     break;
             }
         }
