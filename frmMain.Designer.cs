@@ -1,4 +1,4 @@
-﻿namespace Autorouter
+﻿namespace Idlorio
 {
     partial class frmMain
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.mapView1 = new Autorouter.MapView();
+            this.mapView1 = new Idlorio.MapView();
             this.SuspendLayout();
             // 
             // groupBox1

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Autorouter
+namespace Idlorio.Autorouting
 {
     class AStar
     {
@@ -50,7 +50,7 @@ namespace Autorouter
 
         int width;
         int height;
-        Func<Point, Point, float> costEvaluator;
+        Func<System.Drawing.Point, float> costEvaluator;
 
         float heuristicCostEstimate(Point current, Point goal, Point start)
         {
@@ -60,13 +60,11 @@ namespace Autorouter
             return heuristic;
         }
 
-        public AStar(int width, int height, Func<Point, Point, float> costEvaluator)
+        public AStar(int width, int height, Func<System.Drawing.Point, float> costEvaluator)
         {
             this.width = width;
             this.height = height;
             this.costEvaluator = costEvaluator;
-            if (this.costEvaluator == null)
-                this.costEvaluator = (x, y) => distanceBetween(points[x.X, y.Y], points[y.X, y.Y]);
 
             points = new Point[width, height];
             for (int x = 0; x < width; x++)
@@ -88,11 +86,6 @@ namespace Autorouter
 
         public List<System.Drawing.Point> Find(int startX, int startY, int goalX, int goalY)
         {
-            //startX = 0;
-            //startY = 0;
-            //goalX = 15;
-            //goalY = 10;
-
             Point start = points[startX, startY];
             Point goal = points[goalX, goalY];
 
@@ -118,7 +111,7 @@ namespace Autorouter
                     if (closedSet.Contains(neighbor))
                         continue;
 
-                    float tentativeGScore = current.gScore + costEvaluator(current, neighbor);
+                    float tentativeGScore = current.gScore + costEvaluator(new System.Drawing.Point(neighbor.X, neighbor.Y));
 
                     if (float.IsInfinity(tentativeGScore))
                         continue;

@@ -7,8 +7,8 @@
     <ProjectGuid>{70B4DFF7-2B30-4E85-9ABB-9FDD4D39FBA4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autorouter</RootNamespace>
-    <AssemblyName>Autorouter</AssemblyName>
+    <RootNamespace>Idlorio</RootNamespace>
+    <AssemblyName>Idlorio</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -46,7 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AStar.cs" />
+    <Compile Include="Autorouting\AStar.cs" />
+    <Compile Include="Autorouting\Autorouter.cs" />
+    <Compile Include="Autorouting\AutoroutingNet.cs" />
+    <Compile Include="Autorouting\AutoroutingTile.cs" />
+    <Compile Include="Autorouting\PolishedAStar.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
@@ -54,15 +58,19 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Autorouting\AutoroutingMap.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="MapRenderer.cs" />
     <Compile Include="MapView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MapView.Designer.cs">
       <DependentUpon>MapView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Net.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tile.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -77,6 +85,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

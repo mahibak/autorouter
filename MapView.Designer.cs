@@ -1,4 +1,4 @@
-﻿namespace Autorouter
+﻿namespace Idlorio
 {
     partial class MapView
     {

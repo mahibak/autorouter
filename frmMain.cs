@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Autorouter
+namespace Idlorio
 {
     public partial class frmMain : Form
     {
-        Map map = new Map();
+        Map map = new Map(30, 20);
 
         public frmMain()
         {
@@ -22,7 +22,7 @@ namespace Autorouter
         
         private void mapView1_MouseMove(object sender, MouseEventArgs e)
         {
-            Text = map.PixelToTile(e.X, e.Y).ToString();
+            Text = mapView1.mapRenderer.PixelToTile(e.X, e.Y).ToString();
         }
     }
 }
