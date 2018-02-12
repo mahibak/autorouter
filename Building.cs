@@ -19,7 +19,7 @@ namespace Idlorio
             this.Map = map;
             this.Position = position;
 
-            Size = new System.Drawing.Point(Extensions.Random.Next(1, 5), Extensions.Random.Next(1, 5));
+            Size = new System.Drawing.Point(Extensions.Random.Next(1, Math.Min(5, map.Width - position.X)), Extensions.Random.Next(1, Math.Min(5, position.Y + 1)));
 
             List<Tile> ioPossibilites = GetOneOutFromTheEdges().Randomized();
 
