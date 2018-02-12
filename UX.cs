@@ -84,6 +84,19 @@ namespace Idlorio
             }
         }
 
+        public void OnNetHeld(Net net, System.Drawing.Point point)
+        {
+            switch (uxState)
+            {
+                case UxStates.Idle:
+                    Autorouting.Autorouter.Reroute(map, net);
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+
         public void OnFuckallClicked(System.Drawing.Point point)
         {
             switch (uxState)
@@ -152,7 +165,7 @@ namespace Idlorio
         {
             if (map.tiles[point.X, point.Y].Net != null)
             {
-                //OnNetClicked(map.tiles[point.X, point.Y].Net, point);
+                OnNetHeld(map.tiles[point.X, point.Y].Net, point);
             }
             else if (map.tiles[point.X, point.Y].Building != null)
             {

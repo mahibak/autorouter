@@ -9,6 +9,36 @@ namespace Idlorio.Autorouting
 {
     class Autorouter
     {
+        public static bool Reroute(Map originalMap, Net originalNet)
+        {
+            int originalLength = originalNet.Tiles.Count;
+            
+            AutoroutingMap map = new AutoroutingMap(originalMap);
+            AutoroutingNet netToReroute = map.tiles[originalNet.Start.X, originalNet.Start.Y].Net;
+            map.RipupNet(netToReroute);
+            
+            List<Point> newPath = Autoroute(map, netToReroute);
+
+            if (newPath.Count <= originalLength)
+            {
+                originalMap.RemoveNet(originalNet);
+
+                foreach (Point p in newPath)
+                {
+                    originalNet.Tiles.Add(originalMap.tiles[p.X, p.Y]);
+                    originalMap.tiles[p.X, p.Y].Net = originalNet;
+                }
+
+                originalMap.Nets.Add(originalNet);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static bool Autoroute(Map originalMap, Net originalNet)
         {
             var ret = GetAutoroutingSolution(originalMap, originalNet);
