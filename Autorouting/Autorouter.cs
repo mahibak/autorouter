@@ -59,7 +59,7 @@ namespace Idlorio.Autorouting
             return ret;
         }
 
-        public static Dictionary<Net, List<Point>> GetAutoroutingSolution(Map originalMap, Net originalNet)
+        static Dictionary<Net, List<Point>> GetAutoroutingSolution(Map originalMap, Net originalNet)
         {
             originalMap.RemoveNet(originalNet);
             

@@ -17,48 +17,22 @@ namespace Idlorio
             InitializeComponent();
             DoubleBuffered = true;
         }
-
-        enum UxStates
-        {
-            Idle,
-            StartedRouting,
-        }
-        UxStates uxState = UxStates.Idle;
-
+        
         public Map map;
         public MapRenderer mapRenderer;
+        public UX ux;
 
         public void SetMap(Map map)
         {
             this.map = map;
             mapRenderer = new MapRenderer(map);
+            ux = new UX(map);
 
             MouseClick += OnMouseClick;
             MouseMove += MapView_MouseMove;
             Paint += MapView_Paint;
         }
         
-        private void OnTileHovered(int tileX, int tileY)
-        {
-            switch (uxState)
-            {
-                case UxStates.StartedRouting:
-                    map.RemoveNet(netBeingRouted);
-
-                    if (!map.tiles[tileX, tileY].IsNetTip)
-                    {
-                        netBeingRouted.End = map.tiles[tileX, tileY];
-                    }
-
-                    Autorouting.Autorouter.Autoroute(map, netBeingRouted);
-
-                    Refresh();
-                    break;
-                    
-                default:
-                    break;
-            }
-        }
 
         Point lastHoveredTile = new Point(-1, -1);
         private void MapView_MouseMove(object sender, MouseEventArgs e)
@@ -69,8 +43,10 @@ namespace Idlorio
             if (p == lastHoveredTile)
                 return;
            
-            OnTileHovered(p.X, p.Y);
+            ux.OnTileHovered(p.X, p.Y);
             lastHoveredTile = p;
+
+            Refresh();
         }
 
         private void MapView_Paint(object sender, PaintEventArgs e)
@@ -84,49 +60,17 @@ namespace Idlorio
             if (p.X < 0 || p.X >= map.Width || p.Y < 0 || p.Y >= map.Height)
                 return;
 
-            OnTileClicked(p.X, p.Y, e.X, e.Y, e.Button);
-        }
+            ux.OnTileClicked(p.X, p.Y);
 
-        Net netBeingRouted;
-        
-        void OnTileClicked(int tileX, int tileY, int mouseX, int mouseY, MouseButtons button)
-        {
-            switch (uxState)
+            Refresh();
+
+            switch (ux.uxState)
             {
-                case UxStates.Idle:
-                    if (map.tiles[tileX, tileY].Net != null)
-                    {
-                        map.RemoveNet(map.tiles[tileX, tileY].Net);
-                    }
-                    else
-                    {
-                        uxState = UxStates.StartedRouting;
-                        netBeingRouted = new Net();
-                        
-                        netBeingRouted.Start = map.tiles[tileX, tileY];
-                        netBeingRouted.End = netBeingRouted.Start;
-                        
-                        Cursor = Cursors.Cross;
-                    }
-
-                    Refresh();
-                    break;
-
-                case UxStates.StartedRouting:
-                    if (map.tiles[tileX, tileY].Net == netBeingRouted)
-                    {
-                        netBeingRouted = null;
-                    }
-                    else
-                    {
-                        map.RemoveNet(netBeingRouted);
-                    }
-                    uxState = UxStates.Idle;
-                    Cursor = Cursors.Arrow;
+                case UX.UxStates.StartedRouting:
+                    Cursor = Cursors.Cross;
                     break;
 
                 default:
-                    uxState = UxStates.Idle;
                     Cursor = Cursors.Arrow;
                     break;
             }
