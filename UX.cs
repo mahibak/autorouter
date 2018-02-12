@@ -31,7 +31,7 @@ namespace Idlorio
 
         public void Draw(Graphics g)
         {
-            //new Point(10, 10).LineTo(new Point(x, y)).Foreach(x => new MapRenderer(map).DrawTile(map.Tiles[x.X, x.Y], g, Color.Tomato));
+            new Point(10, 10).LineTo(new Point(x, y)).Foreach(x => new MapRenderer(map).DrawTile(map.Tiles[x.X, x.Y], g, Color.Tomato));
         }
 
         public void OnTileHovered(int tileX, int tileY)

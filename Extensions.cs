@@ -144,11 +144,11 @@ namespace Idlorio
                 action(e.Current);
         }
 
-        static IEnumerable<Point> plotLineLow(int x0, int y0, int x1, int y1)
+        static IEnumerable<Point> plotLineLow(int x0, int y0, int x1, int y1, bool continuous)
         {
             int dx = x1 - x0;
             int dy = y1 - y0;
-            int yi = 1;
+            int yi = 1; 
             if (dy < 0)
             {
                 yi = -1;
@@ -163,13 +163,16 @@ namespace Idlorio
                 if (D > 0)
                 {
                     y = y + yi;
+                    if (continuous && x != x1)
+                        yield return new Point(x, y);
+
                     D = D - 2 * dx;
                 }
                 D = D + 2 * dy;
             }
         }
 
-        static IEnumerable<Point> plotLineHigh(int x0, int y0, int x1, int y1)
+        static IEnumerable<Point> plotLineHigh(int x0, int y0, int x1, int y1, bool continuous)
         {
             int dx = x1 - x0;
             int dy = y1 - y0;
@@ -189,27 +192,30 @@ namespace Idlorio
                 if (D > 0)
                 {
                     x = x + xi;
+                    if(continuous && y != y1)
+                        yield return new Point(x, y);
+
                     D = D - 2 * dy;
                 }
                 D = D + 2 * dx;
             }
         }
 
-        public static IEnumerable<Point> LineTo(this Point from, Point to)
+        public static IEnumerable<Point> LineTo(this Point from, Point to, bool continuous = true)
         {
             if (Math.Abs(to.Y - from.Y) < Math.Abs(to.X - from.X))
             {
                 if (from.X > to.X)
-                    return plotLineLow(to.X, to.Y, from.X, from.Y);
+                    return plotLineLow(to.X, to.Y, from.X, from.Y, continuous);
                 else
-                    return plotLineLow(from.X, from.Y, to.X, to.Y);
+                    return plotLineLow(from.X, from.Y, to.X, to.Y, continuous);
             }
             else
             {
                 if (from.Y > to.Y)
-                    return plotLineHigh(to.X, to.Y, from.X, from.Y);
+                    return plotLineHigh(to.X, to.Y, from.X, from.Y, continuous);
                 else
-                    return plotLineHigh(from.X, from.Y, to.X, to.Y);
+                    return plotLineHigh(from.X, from.Y, to.X, to.Y, continuous);
             }
         }
     }
