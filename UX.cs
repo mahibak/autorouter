@@ -52,6 +52,17 @@ namespace Idlorio
             switch (uxState)
             {
                 case UxStates.Idle:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnBuildingHeld(Building building, System.Drawing.Point point)
+        {
+            switch (uxState)
+            {
+                case UxStates.Idle:
                     map.Remove(building);
                     break;
                 default:
@@ -108,16 +119,7 @@ namespace Idlorio
                     if (!b.IsIntersectingThings())
                         map.Add(b);
                     break;
-
-                case UxStates.Routing:
-                    netBeingRouted.End = map.tiles[point.X, point.Y];
-                    if(Autorouting.Autorouter.Autoroute(map, netBeingRouted))
-                    {
-                        netBeingRouted = null;
-                        uxState = UxStates.Idle;
-                    }
-                    break;
-
+                    
                 default:
                     break;
             }
@@ -125,18 +127,7 @@ namespace Idlorio
 
         public void OnFuckallHeld(System.Drawing.Point point)
         {
-            switch (uxState)
-            {
-                case UxStates.Idle:
-                    uxState = UxStates.Routing;
-                    netBeingRouted = new Net();
 
-                    netBeingRouted.Start = map.tiles[point.X, point.Y];
-                    netBeingRouted.End = netBeingRouted.Start;
-                    break;
-                default:
-                    break;
-            }
         }
 
         System.Diagnostics.Stopwatch clickStopwatch = new System.Diagnostics.Stopwatch();
@@ -169,11 +160,37 @@ namespace Idlorio
             }
             else if (map.tiles[point.X, point.Y].Building != null)
             {
-                //OnBuildingClicked(map.tiles[point.X, point.Y].Building, point);
+                OnBuildingHeld(map.tiles[point.X, point.Y].Building, point);
             }
             else
             {
                 OnFuckallHeld(point);
+            }
+        }
+
+        void OnEmptyTileAdjacentToBuildingClicked(Building building, Point point)
+        {
+            switch (uxState)
+            {
+                case UxStates.Idle:
+                    uxState = UxStates.Routing;
+                    netBeingRouted = new Net();
+
+                    netBeingRouted.Start = map.tiles[point.X, point.Y];
+                    netBeingRouted.End = netBeingRouted.Start;
+                    break;
+
+                case UxStates.Routing:
+                    netBeingRouted.End = map.tiles[point.X, point.Y];
+                    if (Autorouting.Autorouter.Autoroute(map, netBeingRouted))
+                    {
+                        netBeingRouted = null;
+                        uxState = UxStates.Idle;
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -182,15 +199,23 @@ namespace Idlorio
             if (map.tiles[point.X, point.Y].Net != null)
             {
                 OnNetClicked(map.tiles[point.X, point.Y].Net, point);
+                return;
             }
-            else if (map.tiles[point.X, point.Y].Building != null)
+
+            if (map.tiles[point.X, point.Y].Building != null)
             {
                 OnBuildingClicked(map.tiles[point.X, point.Y].Building, point);
+                return;
             }
-            else
+
+            Building buildingThatThisTileWouldBeDirectlyAdjacentTo = point.GetOrthogonalNeighbors().Where(x => map.tiles[x.X, x.Y].Building != null).Select(x => map.tiles[x.X, x.Y].Building).FirstOrDefault();
+            if (buildingThatThisTileWouldBeDirectlyAdjacentTo != null)
             {
-                OnFuckallClicked(point);
+                OnEmptyTileAdjacentToBuildingClicked(buildingThatThisTileWouldBeDirectlyAdjacentTo, point);
+                return;
             }
+
+            OnFuckallClicked(point);
         }
     }
 }

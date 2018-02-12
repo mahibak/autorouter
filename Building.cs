@@ -26,6 +26,13 @@ namespace Idlorio
                     yield return map.tiles[Position.X + x, Position.Y - y];
         }
 
+        public IEnumerable<Tile> GetEdges()
+        {
+            for (int x = 0; x < Size.X; x++)
+                for (int y = 0; y < Size.Y; y++)
+                    yield return map.tiles[Position.X + x, Position.Y - y];
+        }
+
         public bool IsIntersectingThings()
         {
             return !GetTiles().All(x => x.Net == null && x.Building == null);
