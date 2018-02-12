@@ -40,7 +40,7 @@ namespace Idlorio
             if (p.X < 0 || p.X >= map.Width || p.Y < 0 || p.Y >= map.Height)
                 return;
 
-            ux.OnTileUp(p.X, p.Y);
+            ux.OnMouseUp(p.X, p.Y);
 
             Refresh();
 
@@ -62,7 +62,7 @@ namespace Idlorio
             if (p.X < 0 || p.X >= map.Width || p.Y < 0 || p.Y >= map.Height)
                 return;
 
-            ux.OnTileDown(p.X, p.Y);
+            ux.OnMouseDown(p.X, p.Y);
         }
 
         Point lastHoveredTile = new Point(-1, -1);

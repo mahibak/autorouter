@@ -12,6 +12,8 @@ namespace Idlorio
         public Tile[,] Tiles;
         public List<Net> Nets = new List<Net>();
         public List<Building> Buildings = new List<Building>();
+        public List<BuildingInput> BuildingInputs = new List<BuildingInput>();
+        public List<BuildingOutput> BuildingOutputs = new List<BuildingOutput>();
 
         public int Width
         {
@@ -43,12 +45,18 @@ namespace Idlorio
         {
             Buildings.Add(building);
             building.GetTiles().Foreach(x => x.Building = building);
+            BuildingInputs.AddRange(building.Inputs);
+            BuildingOutputs.AddRange(building.Outputs);
+            building.Inputs.ForEach(x => Tiles[x.Position.X, x.Position.Y].BuildingInput = x);
+            building.Outputs.ForEach(x => Tiles[x.Position.X, x.Position.Y].BuildingOutput = x);
         }
 
         public void Remove(Building building)
         {
             Buildings.Remove(building);
             building.GetTiles().Foreach(x => x.Building = null);
+            building.Inputs.ForEach(x => { BuildingInputs.Remove(x); Tiles[x.Position.X, x.Position.Y].BuildingInput = null; });
+            building.Outputs.ForEach(x => { BuildingOutputs.Remove(x); Tiles[x.Position.X, x.Position.Y].BuildingOutput = null; });
         }
 
         public void RemoveNet(Net net)

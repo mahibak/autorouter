@@ -13,6 +13,8 @@ namespace Idlorio
         public readonly int Y;
         public Net Net = null;
         public Building Building = null;
+        public BuildingInput BuildingInput = null;
+        public BuildingOutput BuildingOutput = null;
 
         public bool IsNetTip
         {

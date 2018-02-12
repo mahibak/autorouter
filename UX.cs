@@ -71,7 +71,7 @@ namespace Idlorio
             }
         }
 
-        public void OnNetClicked(Net net, System.Drawing.Point point)
+        public void OnNetClicked(Net net, Point point)
         {
             switch (uxState)
             {
@@ -80,14 +80,15 @@ namespace Idlorio
                     break;
 
                 case UxStates.Routing:
-                    if (map.Tiles[point.X, point.Y].IsNetTip)
-                        return; //Ignore, can't route here
-
-                    netBeingRouted.End = map.Tiles[point.X, point.Y];
-                    if (Autorouting.Autorouter.Autoroute(map, netBeingRouted))
+                    if (map.Tiles[point.X, point.Y].BuildingInput != null)
                     {
-                        netBeingRouted = null;
-                        uxState = UxStates.Idle;
+                        map.RemoveNet(net);
+                        OnInputOutputClicked(map.Tiles[point.X, point.Y].BuildingInput, point);
+                    }
+                    else if(map.Tiles[point.X, point.Y].BuildingOutput != null)
+                    {
+                        map.RemoveNet(net);
+                        OnInputOutputClicked(map.Tiles[point.X, point.Y].BuildingOutput, point);
                     }
                     break;
 
@@ -134,14 +135,14 @@ namespace Idlorio
 
         Point tileDownPoint;
 
-        public void OnTileDown(int tileX, int tileY)
+        public void OnMouseDown(int tileX, int tileY)
         {
             clickStopwatch.Reset();
             clickStopwatch.Start();
             tileDownPoint = new Point(tileX, tileY);
         }
 
-        public void OnTileUp(int tileX, int tileY)
+        public void OnMouseUp(int tileX, int tileY)
         {
             if (tileX != tileDownPoint.X || tileY != tileDownPoint.Y)
                 return;
@@ -173,6 +174,9 @@ namespace Idlorio
             switch (uxState)
             {
                 case UxStates.Idle:
+                    if (map.Tiles[point.X, point.Y].Net != null)
+                        map.RemoveNet(map.Tiles[point.X, point.Y].Net);
+
                     uxState = UxStates.Routing;
                     netBeingRouted = new Net();
                     inputOutputBeingRouted = io;
@@ -210,12 +214,6 @@ namespace Idlorio
 
         public void OnTileClicked(Point point)
         {
-            if (map.Tiles[point.X, point.Y].Net != null)
-            {
-                OnNetClicked(map.Tiles[point.X, point.Y].Net, point);
-                return;
-            }
-
             if (map.Tiles[point.X, point.Y].Building != null)
             {
                 OnBuildingClicked(map.Tiles[point.X, point.Y].Building, point);
@@ -234,6 +232,12 @@ namespace Idlorio
                     if (output != null)
                         OnInputOutputClicked(output, point);
                 }
+                return;
+            }
+
+            if (map.Tiles[point.X, point.Y].Net != null)
+            {
+                OnNetClicked(map.Tiles[point.X, point.Y].Net, point);
                 return;
             }
 
