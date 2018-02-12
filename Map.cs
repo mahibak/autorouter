@@ -9,7 +9,7 @@ namespace Idlorio
 {
     public class Map
     {
-        public Tile[,] tiles;
+        public Tile[,] Tiles;
         public List<Net> Nets = new List<Net>();
         public List<Building> Buildings = new List<Building>();
 
@@ -28,13 +28,13 @@ namespace Idlorio
             Width = width;
             Height = height;
 
-            tiles = new Tile[Width, Height];
+            Tiles = new Tile[Width, Height];
 
             for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
                 {
-                    tiles[x, y] = new Tile(x, y);
+                    Tiles[x, y] = new Tile(x, y);
                 }
             }
         }

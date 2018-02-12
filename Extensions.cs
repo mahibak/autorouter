@@ -8,7 +8,7 @@ namespace Idlorio
 {
     static class Extensions
     {
-        public static Random random = new Random();
+        public static Random Random = new Random();
 
         public static IEnumerable<Point> GetCorners(this IEnumerable<Point> points)
         {
@@ -129,6 +129,11 @@ namespace Idlorio
             return GetPermutations(list, length - 1)
                 .SelectMany(t => list.Where(e => !t.Contains(e)),
                     (t1, t2) => t1.Concat(new T[] { t2 }));
+        }
+
+        public static List<T> Randomized<T>(this IEnumerable<T> list)
+        {
+            return list.OrderBy(order => Random.Next()).ToList();
         }
 
         public static void Foreach<T>(this IEnumerable<T> list, Action<T> action)

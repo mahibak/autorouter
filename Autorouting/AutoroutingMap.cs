@@ -61,7 +61,7 @@ namespace Idlorio.Autorouting
                 {
                     tiles[x, y] = new AutoroutingTile(x, y);
 
-                    tiles[x, y].Praticable = map.tiles[x, y].Building == null;
+                    tiles[x, y].Praticable = map.Tiles[x, y].Building == null;
                 }
             }
 

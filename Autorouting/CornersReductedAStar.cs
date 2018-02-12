@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace Idlorio.Autorouting
 {
-    class PolishedAStar
+    class CornersReductedAStar
     {
         public static List<Point> Find(int width, int height, Func<System.Drawing.Point, float> costEvaluator, int startX, int startY, int goalX, int goalY)
         {

@@ -22,12 +22,12 @@ namespace Idlorio
         {
             return new Point(x / TILE_WIDTH, map.Height - y / TILE_WIDTH - 1);
         }
-        
+
         void DrawTile(Tile t, Graphics g, Color color)
         {
             g.FillRectangle(new SolidBrush(color), t.X * TILE_WIDTH, (map.Height - 1 - t.Y) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
         }
-        
+
         public static Color ColorFromHSV(double hue, double saturation, double value)
         {
             hue *= 360;
@@ -57,9 +57,9 @@ namespace Idlorio
 
         void DrawNets(Graphics g)
         {
-            for(int i = 0; i < map.Nets.Count; i++)
+            for (int i = 0; i < map.Nets.Count; i++)
             {
-                foreach(Tile t in map.Nets[i].Tiles)
+                foreach (Tile t in map.Nets[i].Tiles)
                     DrawTile(t, g, ColorFromHSV(new Random(i).NextDouble(), 1, 1));
             }
         }
@@ -85,12 +85,22 @@ namespace Idlorio
             }
         }
 
+        void DrawInputsOutputs(Graphics g)
+        {
+            foreach (Building b in map.Buildings)
+            {
+                b.Inputs.Foreach(t => g.FillEllipse(Brushes.LightBlue, t.Position.X * TILE_WIDTH, (map.Height - 1 - t.Position.Y) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
+                b.Outputs.Foreach(t => g.FillEllipse(Brushes.DodgerBlue, t.Position.X * TILE_WIDTH, (map.Height - 1 - t.Position.Y) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
+            }
+        }
+
         public void Draw(Graphics g)
         {
             g.Clear(Color.White);
             DrawNets(g);
             DrawGrid(g);
             DrawBuildings(g);
+            DrawInputsOutputs(g);
         }
     }
 }

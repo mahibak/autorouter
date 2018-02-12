@@ -25,8 +25,8 @@ namespace Idlorio.Autorouting
 
                 foreach (Point p in newPath)
                 {
-                    originalNet.Tiles.Add(originalMap.tiles[p.X, p.Y]);
-                    originalMap.tiles[p.X, p.Y].Net = originalNet;
+                    originalNet.Tiles.Add(originalMap.Tiles[p.X, p.Y]);
+                    originalMap.Tiles[p.X, p.Y].Net = originalNet;
                 }
 
                 originalMap.Nets.Add(originalNet);
@@ -57,8 +57,8 @@ namespace Idlorio.Autorouting
             {
                 foreach(Point p in netRouting.Value)
                 {
-                    netRouting.Key.Tiles.Add(originalMap.tiles[p.X, p.Y]);
-                    originalMap.tiles[p.X, p.Y].Net = netRouting.Key;
+                    netRouting.Key.Tiles.Add(originalMap.Tiles[p.X, p.Y]);
+                    originalMap.Tiles[p.X, p.Y].Net = netRouting.Key;
                 }
             }
 
@@ -81,12 +81,12 @@ namespace Idlorio.Autorouting
             var autorouteResult = Autoroute(map, net, netIdsInTheWay);
             routingComplete = autorouteResult != null;
 
-            List<Net> ret = netIdsInTheWay.Select(x => originalMap.tiles[x.Start.X, x.Start.Y].Net).ToList();
+            List<Net> ret = netIdsInTheWay.Select(x => originalMap.Tiles[x.Start.X, x.Start.Y].Net).ToList();
 
-            if (originalMap.tiles[netToRoute.Start.X, netToRoute.Start.Y].Net != null && !ret.Contains(originalMap.tiles[netToRoute.Start.X, netToRoute.Start.Y].Net))
-                ret.Add(originalMap.tiles[netToRoute.Start.X, netToRoute.Start.Y].Net);
-            if (originalMap.tiles[netToRoute.End.X, netToRoute.End.Y].Net != null && !ret.Contains(originalMap.tiles[netToRoute.End.X, netToRoute.End.Y].Net))
-                ret.Add(originalMap.tiles[netToRoute.End.X, netToRoute.End.Y].Net);
+            if (originalMap.Tiles[netToRoute.Start.X, netToRoute.Start.Y].Net != null && !ret.Contains(originalMap.Tiles[netToRoute.Start.X, netToRoute.Start.Y].Net))
+                ret.Add(originalMap.Tiles[netToRoute.Start.X, netToRoute.Start.Y].Net);
+            if (originalMap.Tiles[netToRoute.End.X, netToRoute.End.Y].Net != null && !ret.Contains(originalMap.Tiles[netToRoute.End.X, netToRoute.End.Y].Net))
+                ret.Add(originalMap.Tiles[netToRoute.End.X, netToRoute.End.Y].Net);
 
             return ret;
         }
@@ -159,7 +159,7 @@ namespace Idlorio.Autorouting
                     if (bestPermutation[i] == originalNet)
                         ret.Add(originalNet, bestRouting[i]);
                     else
-                        ret.Add(originalMap.tiles[bestPermutation[i].Start.X, bestPermutation[i].Start.Y].Net, bestRouting[i]);
+                        ret.Add(originalMap.Tiles[bestPermutation[i].Start.X, bestPermutation[i].Start.Y].Net, bestRouting[i]);
                 }
                 
                 return ret;
@@ -194,7 +194,7 @@ namespace Idlorio.Autorouting
             net.Start.Net = null;
             net.End.Net = null;
 
-            var aStarResult = PolishedAStar.Find(map.Width, map.Height, costEvaluator, net.Start.X, net.Start.Y, net.End.X, net.End.Y);
+            var aStarResult = CornersReductedAStar.Find(map.Width, map.Height, costEvaluator, net.Start.X, net.Start.Y, net.End.X, net.End.Y);
 
             if(aStarResult != null)
                 foreach (Point p in aStarResult)
