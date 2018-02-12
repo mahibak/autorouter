@@ -33,7 +33,6 @@ namespace Idlorio
             Paint += MapView_Paint;
         }
         
-
         Point lastHoveredTile = new Point(-1, -1);
         private void MapView_MouseMove(object sender, MouseEventArgs e)
         {

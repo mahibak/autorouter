@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Idlorio
 {
@@ -44,23 +45,73 @@ namespace Idlorio
             }
         }
 
-        public void OnTileClicked(int tileX, int tileY)
+        public void OnBuildingClicked(Building building, System.Drawing.Point point)
         {
             switch (uxState)
             {
                 case UxStates.Idle:
-                    if (map.tiles[tileX, tileY].Net != null)
-                    {
-                        map.RemoveNet(map.tiles[tileX, tileY].Net);
-                    }
-                    else
-                    {
-                        uxState = UxStates.StartedRouting;
-                        netBeingRouted = new Net();
+                    map.Remove(building);
+                    break;
+                default:
+                    break;
+            }
+        }
 
-                        netBeingRouted.Start = map.tiles[tileX, tileY];
-                        netBeingRouted.End = netBeingRouted.Start;
-                    }
+        public void OnNetClicked(Net net, System.Drawing.Point point)
+        {
+            switch (uxState)
+            {
+                case UxStates.Idle:
+                    map.RemoveNet(net);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnFuckallClicked(System.Drawing.Point point)
+        {
+            switch (uxState)
+            {
+                case UxStates.Idle:
+                    Building b = new Building(map);
+                    b.Position = new System.Drawing.Point(point.X, point.Y);
+
+                    if (!b.IsIntersectingThings())
+                        map.Add(b);
+                    break;
+                default:
+                    break;
+            }
+
+            //uxState = UxStates.StartedRouting;
+            //netBeingRouted = new Net();
+
+            //netBeingRouted.Start = map.tiles[tileX, tileY];
+            //netBeingRouted.End = netBeingRouted.Start;
+        }
+
+        public void OnTileClicked(int tileX, int tileY)
+        {
+            Point point = new Point(tileX, tileY);
+
+            if (map.tiles[tileX, tileY].Net != null)
+            {
+                OnNetClicked(map.tiles[tileX, tileY].Net, point);
+            }
+            else if (map.tiles[tileX, tileY].Building != null)
+            {
+                OnBuildingClicked(map.tiles[tileX, tileY].Building, point);
+            }
+            else
+            {
+                OnFuckallClicked(point);
+            }
+            /*
+            switch (uxState)
+            {
+                case UxStates.Idle:
+
                     break;
 
                 case UxStates.StartedRouting:
@@ -78,7 +129,7 @@ namespace Idlorio
                 default:
                     uxState = UxStates.Idle;
                     break;
-            }
+            }*/
         }
     }
 }

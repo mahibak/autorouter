@@ -27,8 +27,7 @@ namespace Idlorio
         {
             g.FillRectangle(new SolidBrush(color), t.X * TILE_WIDTH, (map.Height - 1 - t.Y) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
         }
-
-
+        
         public static Color ColorFromHSV(double hue, double saturation, double value)
         {
             hue *= 360;
@@ -65,6 +64,14 @@ namespace Idlorio
             }
         }
 
+        void DrawBuildings(Graphics g)
+        {
+            foreach (Building b in map.Buildings)
+            {
+                b.GetTiles().Foreach(x => DrawTile(x, g, Color.DarkGray));
+            }
+        }
+
         void DrawGrid(Graphics g)
         {
             for (int y = 0; y <= map.Height; y++)
@@ -83,6 +90,7 @@ namespace Idlorio
             g.Clear(Color.White);
             DrawNets(g);
             DrawGrid(g);
+            DrawBuildings(g);
         }
     }
 }

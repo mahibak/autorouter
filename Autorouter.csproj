@@ -51,6 +51,7 @@
     <Compile Include="Autorouting\AutoroutingNet.cs" />
     <Compile Include="Autorouting\AutoroutingTile.cs" />
     <Compile Include="Autorouting\PolishedAStar.cs" />
+    <Compile Include="Building.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>

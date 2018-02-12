@@ -11,7 +11,8 @@ namespace Idlorio
     {
         public Tile[,] tiles;
         public List<Net> Nets = new List<Net>();
-        
+        public List<Building> Buildings = new List<Building>();
+
         public int Width
         {
             get; private set;
@@ -38,6 +39,18 @@ namespace Idlorio
             }
         }
 
+        public void Add(Building building)
+        {
+            Buildings.Add(building);
+            building.GetTiles().Foreach(x => x.Building = building);
+        }
+
+        public void Remove(Building building)
+        {
+            Buildings.Remove(building);
+            building.GetTiles().Foreach(x => x.Building = null);
+        }
+
         public void RemoveNet(Net net)
         {
             while(net.Tiles.Count > 0)
@@ -49,31 +62,5 @@ namespace Idlorio
             if(Nets.Contains(net))
                 Nets.Remove(net);
         }
-
-
-        /*
-         public bool IsInMap(Point p)
-         {
-             return p.X >= 0 && p.X < Width && p.Y >= 0 && p.Y < Height;
-         }
-
-         public Point GetNetEnd(int netId)
-         {
-             for (int y = Height - 1; y >= 0; y--)
-             {
-                 for (int x = Width - 1; x >= 0; x--)
-                 {
-                     if (tiles[x, y].netId == netId && new Point(x, y).GetOrthogonalNeighbors().Where(z => IsInMap(z) && tiles[z.X, z.Y].netId == netId).Count() == 1)
-                         return new Point(x, y);
-                 }
-             }
-
-             return new Point(-1, -1);
-         }
-
-         public Tile GetTile(Point p)
-         {
-             return tiles[p.X, p.Y];
-         }*/
     }
 }
