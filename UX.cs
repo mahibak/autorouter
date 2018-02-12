@@ -27,9 +27,18 @@ namespace Idlorio
 
         Net netBeingRouted;
         BuildingInputOutput inputOutputBeingRouted;
+        int x, y;
+
+        public void Draw(Graphics g)
+        {
+            //new Point(10, 10).LineTo(new Point(x, y)).Foreach(x => new MapRenderer(map).DrawTile(map.Tiles[x.X, x.Y], g, Color.Tomato));
+        }
 
         public void OnTileHovered(int tileX, int tileY)
         {
+            x = tileX;
+            y = tileY;
+
             /*switch (uxState)
             {
                 case UxStates.StartedRouting:
@@ -196,6 +205,9 @@ namespace Idlorio
                         return;
                     if (inputOutputBeingRouted.Building == io.Building)
                         return;
+
+                    if (map.Tiles[point.X, point.Y].Net != null)
+                        map.RemoveNet(map.Tiles[point.X, point.Y].Net);
 
                     netBeingRouted.End = map.Tiles[point.X, point.Y];
                     if (Autorouting.Autorouter.Autoroute(map, netBeingRouted))

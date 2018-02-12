@@ -83,6 +83,7 @@ namespace Idlorio
         private void MapView_Paint(object sender, PaintEventArgs e)
         {
             mapRenderer.Draw(e.Graphics);
+            ux.Draw(e.Graphics);
         }
     }
 }

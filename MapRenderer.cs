@@ -23,7 +23,7 @@ namespace Idlorio
             return new Point(x / TILE_WIDTH, map.Height - y / TILE_WIDTH - 1);
         }
 
-        void DrawTile(Tile t, Graphics g, Color color)
+        public void DrawTile(Tile t, Graphics g, Color color)
         {
             g.FillRectangle(new SolidBrush(color), t.X * TILE_WIDTH, (map.Height - 1 - t.Y) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
         }
