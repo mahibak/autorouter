@@ -11,6 +11,8 @@ namespace Idlorio
     {
         Map map;
 
+        const int LONG_PRESS_DURATION_MS = 250;
+
         public UX(Map map)
         {
             this.map = map;
@@ -19,7 +21,7 @@ namespace Idlorio
         public enum UxStates
         {
             Idle,
-            StartedRouting,
+            Routing,
         }
         public UxStates uxState = UxStates.Idle;
 
@@ -27,7 +29,7 @@ namespace Idlorio
 
         public void OnTileHovered(int tileX, int tileY)
         {
-            switch (uxState)
+            /*switch (uxState)
             {
                 case UxStates.StartedRouting:
                     map.RemoveNet(netBeingRouted);
@@ -42,7 +44,7 @@ namespace Idlorio
 
                 default:
                     break;
-            }
+            }*/
         }
 
         public void OnBuildingClicked(Building building, System.Drawing.Point point)
@@ -64,6 +66,19 @@ namespace Idlorio
                 case UxStates.Idle:
                     map.RemoveNet(net);
                     break;
+
+                case UxStates.Routing:
+                    if (map.tiles[point.X, point.Y].IsNetTip)
+                        return; //Ignore, can't route here
+
+                    netBeingRouted.End = map.tiles[point.X, point.Y];
+                    if (Autorouting.Autorouter.Autoroute(map, netBeingRouted))
+                    {
+                        netBeingRouted = null;
+                        uxState = UxStates.Idle;
+                    }
+                    break;
+
                 default:
                     break;
             }
@@ -80,56 +95,89 @@ namespace Idlorio
                     if (!b.IsIntersectingThings())
                         map.Add(b);
                     break;
+
+                case UxStates.Routing:
+                    netBeingRouted.End = map.tiles[point.X, point.Y];
+                    if(Autorouting.Autorouter.Autoroute(map, netBeingRouted))
+                    {
+                        netBeingRouted = null;
+                        uxState = UxStates.Idle;
+                    }
+                    break;
+
                 default:
                     break;
             }
-
-            //uxState = UxStates.StartedRouting;
-            //netBeingRouted = new Net();
-
-            //netBeingRouted.Start = map.tiles[tileX, tileY];
-            //netBeingRouted.End = netBeingRouted.Start;
         }
 
-        public void OnTileClicked(int tileX, int tileY)
+        public void OnFuckallHeld(System.Drawing.Point point)
         {
-            Point point = new Point(tileX, tileY);
+            switch (uxState)
+            {
+                case UxStates.Idle:
+                    uxState = UxStates.Routing;
+                    netBeingRouted = new Net();
 
-            if (map.tiles[tileX, tileY].Net != null)
-            {
-                OnNetClicked(map.tiles[tileX, tileY].Net, point);
+                    netBeingRouted.Start = map.tiles[point.X, point.Y];
+                    netBeingRouted.End = netBeingRouted.Start;
+                    break;
+                default:
+                    break;
             }
-            else if (map.tiles[tileX, tileY].Building != null)
+        }
+
+        System.Diagnostics.Stopwatch clickStopwatch = new System.Diagnostics.Stopwatch();
+
+        Point tileDownPoint;
+
+        public void OnTileDown(int tileX, int tileY)
+        {
+            clickStopwatch.Reset();
+            clickStopwatch.Start();
+            tileDownPoint = new Point(tileX, tileY);
+        }
+
+        public void OnTileUp(int tileX, int tileY)
+        {
+            if (tileX != tileDownPoint.X || tileY != tileDownPoint.Y)
+                return;
+
+            if (clickStopwatch.ElapsedMilliseconds < LONG_PRESS_DURATION_MS)
+                OnTileClicked(tileDownPoint);
+            else
+                OnHeld(tileDownPoint);
+        }
+
+        public void OnHeld(Point point)
+        {
+            if (map.tiles[point.X, point.Y].Net != null)
             {
-                OnBuildingClicked(map.tiles[tileX, tileY].Building, point);
+                //OnNetClicked(map.tiles[point.X, point.Y].Net, point);
+            }
+            else if (map.tiles[point.X, point.Y].Building != null)
+            {
+                //OnBuildingClicked(map.tiles[point.X, point.Y].Building, point);
+            }
+            else
+            {
+                OnFuckallHeld(point);
+            }
+        }
+
+        public void OnTileClicked(Point point)
+        {
+            if (map.tiles[point.X, point.Y].Net != null)
+            {
+                OnNetClicked(map.tiles[point.X, point.Y].Net, point);
+            }
+            else if (map.tiles[point.X, point.Y].Building != null)
+            {
+                OnBuildingClicked(map.tiles[point.X, point.Y].Building, point);
             }
             else
             {
                 OnFuckallClicked(point);
             }
-            /*
-            switch (uxState)
-            {
-                case UxStates.Idle:
-
-                    break;
-
-                case UxStates.StartedRouting:
-                    if (map.tiles[tileX, tileY].Net == netBeingRouted)
-                    {
-                        netBeingRouted = null;
-                    }
-                    else
-                    {
-                        map.RemoveNet(netBeingRouted);
-                    }
-                    uxState = UxStates.Idle;
-                    break;
-
-                default:
-                    uxState = UxStates.Idle;
-                    break;
-            }*/
         }
     }
 }

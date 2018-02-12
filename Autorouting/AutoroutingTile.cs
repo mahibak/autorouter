@@ -12,6 +12,7 @@ namespace Idlorio.Autorouting
         public readonly int X;
         public readonly int Y;
         public AutoroutingNet Net;
+        public bool Praticable = true;
 
         public AutoroutingTile(int x, int y)
         {

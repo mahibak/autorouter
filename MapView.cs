@@ -27,12 +27,44 @@ namespace Idlorio
             this.map = map;
             mapRenderer = new MapRenderer(map);
             ux = new UX(map);
-
-            MouseClick += OnMouseClick;
+            
             MouseMove += MapView_MouseMove;
             Paint += MapView_Paint;
+            MouseDown += MapView_MouseDown;
+            MouseUp += MapView_MouseUp;
         }
-        
+
+        private void MapView_MouseUp(object sender, MouseEventArgs e)
+        {
+            Point p = mapRenderer.PixelToTile(e.X, e.Y);
+            if (p.X < 0 || p.X >= map.Width || p.Y < 0 || p.Y >= map.Height)
+                return;
+
+            ux.OnTileUp(p.X, p.Y);
+
+            Refresh();
+
+            switch (ux.uxState)
+            {
+                case UX.UxStates.Routing:
+                    Cursor = Cursors.Cross;
+                    break;
+
+                default:
+                    Cursor = Cursors.Arrow;
+                    break;
+            }
+        }
+
+        private void MapView_MouseDown(object sender, MouseEventArgs e)
+        {
+            Point p = mapRenderer.PixelToTile(e.X, e.Y);
+            if (p.X < 0 || p.X >= map.Width || p.Y < 0 || p.Y >= map.Height)
+                return;
+
+            ux.OnTileDown(p.X, p.Y);
+        }
+
         Point lastHoveredTile = new Point(-1, -1);
         private void MapView_MouseMove(object sender, MouseEventArgs e)
         {
@@ -51,28 +83,6 @@ namespace Idlorio
         private void MapView_Paint(object sender, PaintEventArgs e)
         {
             mapRenderer.Draw(e.Graphics);
-        }
-
-        private void OnMouseClick(object sender, MouseEventArgs e)
-        {
-            Point p = mapRenderer.PixelToTile(e.X, e.Y);
-            if (p.X < 0 || p.X >= map.Width || p.Y < 0 || p.Y >= map.Height)
-                return;
-
-            ux.OnTileClicked(p.X, p.Y);
-
-            Refresh();
-
-            switch (ux.uxState)
-            {
-                case UX.UxStates.StartedRouting:
-                    Cursor = Cursors.Cross;
-                    break;
-
-                default:
-                    Cursor = Cursors.Arrow;
-                    break;
-            }
         }
     }
 }

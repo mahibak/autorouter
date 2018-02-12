@@ -60,6 +60,8 @@ namespace Idlorio.Autorouting
                 for (int x = 0; x < Width; x++)
                 {
                     tiles[x, y] = new AutoroutingTile(x, y);
+
+                    tiles[x, y].Praticable = map.tiles[x, y].Building == null;
                 }
             }
 
@@ -89,6 +91,8 @@ namespace Idlorio.Autorouting
                 for (int x = 0; x < Width; x++)
                 {
                     tiles[x, y] = new AutoroutingTile(x, y);
+
+                    tiles[x, y].Praticable = map.tiles[x, y].Praticable;
                 }
             }
 

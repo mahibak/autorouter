@@ -9,12 +9,12 @@ namespace Idlorio.Autorouting
 {
     class Autorouter
     {
-        public static void Autoroute(Map originalMap, Net originalNet)
+        public static bool Autoroute(Map originalMap, Net originalNet)
         {
             var ret = GetAutoroutingSolution(originalMap, originalNet);
 
             if (ret == null)
-                return;
+                return false;
 
             foreach (Net net in ret.Keys)
             {
@@ -34,6 +34,8 @@ namespace Idlorio.Autorouting
 
             if (!originalMap.Nets.Contains(originalNet))
                 originalMap.Nets.Add(originalNet);
+
+            return true;
         }
 
         static List<Net> GetNetsInTheWay(Map originalMap, Net netToRoute, out bool routingComplete)
@@ -149,8 +151,9 @@ namespace Idlorio.Autorouting
 
                     return float.PositiveInfinity;
                 }
-                else
-                    return 1;
+                else if(!map.tiles[to.X, to.Y].Praticable)
+                    return float.PositiveInfinity;
+                return 1;
             };
 
             if (net.Start.Net != null && net.Start.Net != net)
