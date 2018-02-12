@@ -208,7 +208,7 @@ namespace Idlorio
                 return;
             }
 
-            Building buildingThatThisTileWouldBeDirectlyAdjacentTo = point.GetOrthogonalNeighbors().Where(x => map.tiles[x.X, x.Y].Building != null).Select(x => map.tiles[x.X, x.Y].Building).FirstOrDefault();
+            Building buildingThatThisTileWouldBeDirectlyAdjacentTo = point.GetOrthogonalNeighbors().Where(x => map.IsInMap(x)).Where(x => map.tiles[x.X, x.Y].Building != null).Select(x => map.tiles[x.X, x.Y].Building).FirstOrDefault();
             if (buildingThatThisTileWouldBeDirectlyAdjacentTo != null)
             {
                 OnEmptyTileAdjacentToBuildingClicked(buildingThatThisTileWouldBeDirectlyAdjacentTo, point);

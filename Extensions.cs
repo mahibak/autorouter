@@ -8,6 +8,8 @@ namespace Idlorio
 {
     static class Extensions
     {
+        public static Random random = new Random();
+
         public static IEnumerable<Point> GetCorners(this IEnumerable<Point> points)
         {
             var enumerator = points.GetEnumerator();

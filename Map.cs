@@ -62,5 +62,10 @@ namespace Idlorio
             if(Nets.Contains(net))
                 Nets.Remove(net);
         }
+
+        public bool IsInMap(Point p)
+        {
+            return p.X >= 0 && p.X < Width && p.Y >= 0 && p.Y < Height;
+        }
     }
 }

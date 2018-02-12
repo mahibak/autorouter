@@ -13,7 +13,7 @@ namespace Idlorio
         public Building(Map map)
         {
             this.map = map;
-            Size = new System.Drawing.Point(2, 2);
+            Size = new System.Drawing.Point(Extensions.random.Next(1, 5), Extensions.random.Next(1, 5));
         }
 
         public System.Drawing.Point Size;
@@ -35,6 +35,9 @@ namespace Idlorio
 
         public bool IsIntersectingThings()
         {
+            if (Position.X + Size.X >= map.Width || Position.Y - Size.Y < 0)
+                return true;
+
             return !GetTiles().All(x => x.Net == null && x.Building == null);
         }
     }
