@@ -60,7 +60,7 @@ namespace Idlorio
             for (int i = 0; i < map.Nets.Count; i++)
             {
                 foreach (Tile t in map.Nets[i].Tiles)
-                    DrawTile(t, g, ColorFromHSV(new Random(i).NextDouble(), 1, 1));
+                    DrawTile(t, g, ColorFromHSV(new System.Random(i).NextDouble(), 1, 1));
             }
         }
 
@@ -89,8 +89,8 @@ namespace Idlorio
         {
             foreach (Building b in map.Buildings)
             {
-                b.Inputs.Foreach(t => g.FillEllipse(Brushes.LightBlue, t.Position.X * TILE_WIDTH, (map.Height - 1 - t.Position.Y) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
-                b.Outputs.Foreach(t => g.FillEllipse(Brushes.DodgerBlue, t.Position.X * TILE_WIDTH, (map.Height - 1 - t.Position.Y) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
+                b.Inputs.Foreach(t => g.FillEllipse(Brushes.LightBlue, (t.Position.X + new Point(t.Direction).X * 0.5f) * TILE_WIDTH, (map.Height - 1 - t.Position.Y - new Point(t.Direction).Y * 0.5f) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
+                b.Outputs.Foreach(t => g.FillEllipse(Brushes.DodgerBlue, (t.Position.X + new Point(t.Direction).X * 0.5f) * TILE_WIDTH, (map.Height - 1 - t.Position.Y - new Point(t.Direction).Y * 0.5f) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
             }
         }
 

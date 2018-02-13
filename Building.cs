@@ -9,29 +9,87 @@ namespace Idlorio
 {
     public class Building
     {
-        Map Map;
+        public Map Map;
 
         public List<BuildingInput> Inputs = new List<BuildingInput>();
         public List<BuildingOutput> Outputs = new List<BuildingOutput>();
+
+        void SetRandomDirection(BuildingInputOutput BuildingInputOutput)
+        {
+            List<Tile> corners = GetCorners().ToList();
+
+            if (corners.Contains(BuildingInputOutput.Tile))
+            {
+                switch (corners.Count)
+                {
+                    case 1:
+                        BuildingInputOutput.Direction = new Direction[] { Direction.Up, Direction.Right, Direction.Down, Direction.Left }.Random();
+                        break;
+
+                    case 2:
+                        if (Size.Y == 1)
+                        {
+                            if (BuildingInputOutput.Tile == corners[0])
+                                BuildingInputOutput.Direction = new Direction[] { Direction.Up, Direction.Down, Direction.Left }.Random();
+                            else
+                                BuildingInputOutput.Direction = new Direction[] { Direction.Up, Direction.Down, Direction.Right }.Random();
+                        }
+                        else
+                        {
+                            if (BuildingInputOutput.Tile == corners[0])
+                                BuildingInputOutput.Direction = new Direction[] { Direction.Up, Direction.Right, Direction.Left }.Random();
+                            else
+                                BuildingInputOutput.Direction = new Direction[] { Direction.Left, Direction.Down, Direction.Right }.Random();
+                        }
+                        break;
+
+                    case 4:
+                        if (corners[0] == BuildingInputOutput.Tile)
+                            BuildingInputOutput.Direction = new Direction[] { Direction.Left, Direction.Up }.Random();
+                        else if (corners[1] == BuildingInputOutput.Tile)
+                            BuildingInputOutput.Direction = new Direction[] { Direction.Up, Direction.Right }.Random();
+                        else if (corners[2] == BuildingInputOutput.Tile)
+                            BuildingInputOutput.Direction = new Direction[] { Direction.Down, Direction.Right }.Random();
+                        else if (corners[3] == BuildingInputOutput.Tile)
+                            BuildingInputOutput.Direction = new Direction[] { Direction.Down, Direction.Left }.Random();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if (Size.X == 1)
+                BuildingInputOutput.Direction = new Direction[] { Direction.Left, Direction.Right }.Random();
+            else if (Size.Y == 1)
+                BuildingInputOutput.Direction = new Direction[] { Direction.Up, Direction.Down }.Random();
+            else if (BuildingInputOutput.Position.X == Position.X)
+                BuildingInputOutput.Direction = Direction.Left;
+            else if (BuildingInputOutput.Position.X == Position.X + Size.X - 1)
+                BuildingInputOutput.Direction = Direction.Right;
+            else if (BuildingInputOutput.Position.Y == Position.Y)
+                BuildingInputOutput.Direction = Direction.Up;
+            else if (BuildingInputOutput.Position.Y == Position.Y - (Size.Y - 1))
+                BuildingInputOutput.Direction = Direction.Down;
+        }
 
         public Building(Map map, Point position)
         {
             this.Map = map;
             this.Position = position;
 
-            Size = new System.Drawing.Point(Extensions.Random.Next(1, Math.Min(5, map.Width - position.X)), Extensions.Random.Next(1, Math.Min(5, position.Y + 1)));
+            Size = new Point(Random.Next(1, Math.Min(5, map.Width - position.X)), Random.Next(1, Math.Min(5, position.Y + 1)));
 
-            List<Tile> ioPossibilites = GetOneOutFromTheEdges().Randomized();
+            List<Tile> ioPossibilites = GetEdges().Randomized();
 
-            int iosToPlace = Math.Max(2, Extensions.Random.Next(0, (int)Math.Ceiling(ioPossibilites.Count / 1.5)));
-            int inputsToPlace = Extensions.Random.Next(1, iosToPlace - 1);
+            int iosToPlace = Math.Min(Size.X * Size.Y, Math.Max(2, Random.Next(0, (int)Math.Ceiling(ioPossibilites.Count / 1.5))));
+            int inputsToPlace = Random.Next(iosToPlace > 1 ? 1 : 0, iosToPlace > 1 ? iosToPlace - 1 : 2);
             int outputsToPlace = iosToPlace - inputsToPlace;
 
             for (int i = 0; i < inputsToPlace; i++)
             {
                 Tile t = ioPossibilites.First();
                 ioPossibilites.RemoveAt(0);
-                BuildingInput input = new BuildingInput(this, new System.Drawing.Point(t.X, t.Y));
+                BuildingInput input = new BuildingInput(this, new Point(t.X, t.Y));
+                SetRandomDirection(input);
                 Inputs.Add(input);
             }
 
@@ -39,7 +97,8 @@ namespace Idlorio
             {
                 Tile t = ioPossibilites.First();
                 ioPossibilites.RemoveAt(0);
-                BuildingOutput output = new BuildingOutput(this, new System.Drawing.Point(t.X, t.Y));
+                BuildingOutput output = new BuildingOutput(this, new Point(t.X, t.Y));
+                SetRandomDirection(output);
                 Outputs.Add(output);
             }
         }
@@ -55,6 +114,26 @@ namespace Idlorio
                     yield return Map.Tiles[Position.X + x, Position.Y - y];
         }
 
+        public IEnumerable<Tile> GetCorners()
+        {
+            //Top left
+            yield return Map.Tiles[Position.X, Position.Y];
+
+            //Top right
+            if(Size.X > 1)
+                yield return Map.Tiles[Position.X + Size.X - 1, Position.Y];
+
+            if(Size.Y > 1)
+            {
+                //Bottom right
+                yield return Map.Tiles[Position.X + Size.X - 1, Position.Y - (Size.Y - 1)];
+
+                //Bottom left
+                if(Size.X > 1)
+                    yield return Map.Tiles[Position.X, Position.Y - (Size.Y - 1)];
+            }
+        }
+
         public IEnumerable<Tile> GetEdges() //Clockwise from top left
         {
             //Top
@@ -68,7 +147,7 @@ namespace Idlorio
             //Bottom
             if (Size.Y > 1)
                 for (int x = Size.X - 2; x >= 0; x--)
-                    yield return Map.Tiles[Position.X + x, Position.Y - Size.Y - 1];
+                    yield return Map.Tiles[Position.X + x, Position.Y - Size.Y + 1];
 
             //Left
             if (Size.X > 1)

@@ -53,6 +53,7 @@
     <Compile Include="Autorouting\CornersReductedAStar.cs" />
     <Compile Include="Building.cs" />
     <Compile Include="BuildingInputOutput.cs" />
+    <Compile Include="Direction.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
@@ -72,8 +73,10 @@
       <DependentUpon>MapView.cs</DependentUpon>
     </Compile>
     <Compile Include="Net.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rand.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="UX.cs" />
     <EmbeddedResource Include="frmMain.resx">

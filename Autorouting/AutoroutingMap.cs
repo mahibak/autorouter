@@ -61,7 +61,10 @@ namespace Idlorio.Autorouting
                 {
                     tiles[x, y] = new AutoroutingTile(x, y);
 
-                    tiles[x, y].Praticable = map.Tiles[x, y].Building == null;
+                    if (map.Tiles[x, y].Building != null)
+                        tiles[x, y].Cost = float.PositiveInfinity;
+                    else
+                        tiles[x, y].Cost = 1;
                 }
             }
 
@@ -92,7 +95,7 @@ namespace Idlorio.Autorouting
                 {
                     tiles[x, y] = new AutoroutingTile(x, y);
 
-                    tiles[x, y].Praticable = map.tiles[x, y].Praticable;
+                    tiles[x, y].Cost = map.tiles[x, y].Cost;
                 }
             }
 

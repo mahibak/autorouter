@@ -27,7 +27,6 @@ namespace Idlorio
 
         Net netBeingRouted;
         BuildingInputOutput inputOutputBeingRouted;
-        int x, y;
 
         public void Draw(Graphics g)
         {
@@ -38,7 +37,7 @@ namespace Idlorio
         {
         }
 
-        public void OnBuildingClicked(Building building, System.Drawing.Point point)
+        public void OnBuildingClicked(Building building, Point point)
         {
             switch (uxState)
             {
@@ -49,7 +48,7 @@ namespace Idlorio
             }
         }
 
-        public void OnBuildingHeld(Building building, System.Drawing.Point point)
+        public void OnBuildingHeld(Building building, Point point)
         {
             switch (uxState)
             {
@@ -87,7 +86,7 @@ namespace Idlorio
             }
         }
 
-        public void OnNetHeld(Net net, System.Drawing.Point point)
+        public void OnNetHeld(Net net, Point point)
         {
             switch (uxState)
             {
@@ -100,7 +99,7 @@ namespace Idlorio
             }
         }
 
-        public void OnFuckallClicked(System.Drawing.Point point)
+        public void OnFuckallClicked(Point point)
         {
             switch (uxState)
             {
@@ -116,7 +115,7 @@ namespace Idlorio
             }
         }
 
-        public void OnFuckallHeld(System.Drawing.Point point)
+        public void OnFuckallHeld(Point point)
         {
 
         }
@@ -218,14 +217,19 @@ namespace Idlorio
             {
                 BuildingInput input = buildingThatThisTileWouldBeDirectlyAdjacentTo.Inputs.Where(x => x.Position == point).FirstOrDefault();
                 if (input != null)
+                {
                     OnInputOutputClicked(input, point);
+                    return;
+                }
                 else
                 {
                     BuildingOutput output = buildingThatThisTileWouldBeDirectlyAdjacentTo.Outputs.Where(x => x.Position == point).FirstOrDefault();
                     if (output != null)
+                    {
                         OnInputOutputClicked(output, point);
+                        return;
+                    }
                 }
-                return;
             }
 
             if (map.Tiles[point.X, point.Y].Net != null)

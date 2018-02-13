@@ -112,10 +112,10 @@ namespace Idlorio.Autorouting
 
             Parallel.ForEach<IEnumerable<Net>>(netsToPermute.GetPermutations(), permutation =>
             {
-                /*if (stopwatch.ElapsedMilliseconds >= 50 && (bestCost < Int32.MaxValue || autorouteSuccess))
+                if (stopwatch.ElapsedMilliseconds >= 50 && (bestCost < Int32.MaxValue || autorouteSuccess))
                     return;
                 else if (stopwatch.ElapsedMilliseconds >= 500)
-                    return;*/
+                    return;
 
                 AutoroutingMap possibleMap = new AutoroutingMap(originalMap);
                 List<AutoroutingNet> possibleNets = new List<AutoroutingNet>();
@@ -181,9 +181,8 @@ namespace Idlorio.Autorouting
 
                     return float.PositiveInfinity;
                 }
-                else if(!map.tiles[to.X, to.Y].Praticable)
-                    return float.PositiveInfinity;
-                return 1;
+                else
+                    return map.tiles[to.X, to.Y].Cost;
             };
 
             if (net.Start.Net != null && net.Start.Net != net)

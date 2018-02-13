@@ -11,6 +11,23 @@ namespace Idlorio
     {
         public Building Building;
         public Point Position;
+        public Direction Direction;
+
+        public Map Map
+        {
+            get
+            {
+                return Building?.Map;
+            }
+        }
+
+        public Tile Tile
+        {
+            get
+            {
+                return Map?.Tiles[Position.X, Position.Y];
+            }
+        }
 
         public BuildingInputOutput(Building Building, Point Position, bool IsInput)
         {

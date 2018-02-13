@@ -50,7 +50,7 @@ namespace Idlorio.Autorouting
 
         int width;
         int height;
-        Func<System.Drawing.Point, float> costEvaluator;
+        Func<Idlorio.Point, float> costEvaluator;
 
         float heuristicCostEstimate(Point current, Point goal, Point start)
         {
@@ -60,7 +60,7 @@ namespace Idlorio.Autorouting
             return heuristic;
         }
 
-        public AStar(int width, int height, Func<System.Drawing.Point, float> costEvaluator)
+        public AStar(int width, int height, Func<Idlorio.Point, float> costEvaluator)
         {
             this.width = width;
             this.height = height;
@@ -84,7 +84,7 @@ namespace Idlorio.Autorouting
                 yield return points[p.X - 1, p.Y];
         }
 
-        public List<System.Drawing.Point> Find(int startX, int startY, int goalX, int goalY)
+        public List<Idlorio.Point> Find(int startX, int startY, int goalX, int goalY)
         {
             Point start = points[startX, startY];
             Point goal = points[goalX, goalY];
@@ -111,7 +111,7 @@ namespace Idlorio.Autorouting
                     if (closedSet.Contains(neighbor))
                         continue;
 
-                    float tentativeGScore = current.gScore + costEvaluator(new System.Drawing.Point(neighbor.X, neighbor.Y));
+                    float tentativeGScore = current.gScore + costEvaluator(new Idlorio.Point(neighbor.X, neighbor.Y));
 
                     if (float.IsInfinity(tentativeGScore))
                         continue;
@@ -140,14 +140,14 @@ namespace Idlorio.Autorouting
             return (float)Math.Sqrt(distX * distX + distY * distY);
         }
 
-        private List<System.Drawing.Point> reconstructPath(Point current)
+        private List<Idlorio.Point> reconstructPath(Point current)
         {
-            List<System.Drawing.Point> totalPath = new List<System.Drawing.Point>();
-            totalPath.Add(new System.Drawing.Point(current.X, current.Y));
+            List<Idlorio.Point> totalPath = new List<Idlorio.Point>();
+            totalPath.Add(new Idlorio.Point(current.X, current.Y));
 
             while(current.cameFrom != null)
             {
-                totalPath.Insert(0, new System.Drawing.Point(current.cameFrom.X, current.cameFrom.Y));
+                totalPath.Insert(0, new Idlorio.Point(current.cameFrom.X, current.cameFrom.Y));
                 current = current.cameFrom;
             }
 

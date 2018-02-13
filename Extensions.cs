@@ -8,8 +8,6 @@ namespace Idlorio
 {
     static class Extensions
     {
-        public static Random Random = new Random();
-
         public static IEnumerable<Point> GetCorners(this IEnumerable<Point> points)
         {
             var enumerator = points.GetEnumerator();
@@ -95,18 +93,23 @@ namespace Idlorio
         public static IEnumerable<Point> GetPointsTo(this Point p, Point to)
         {
             int dx = Math.Sign(to.X - p.X);
-            int dy = Math.Sign(to.Y - p.Y); 
+            int dy = Math.Sign(to.Y - p.Y);
 
             Point ret = p;
 
             yield return ret;
 
-            while(ret != to)
+            while (ret != to)
             {
                 ret.X += dx;
                 ret.Y += dy;
                 yield return ret;
             }
+        }
+
+        public static T Random<T>(this T[] array)
+        {
+            return array[0];
         }
 
         public static IEnumerable<Point> GetOrthogonalNeighbors(this Point p)
@@ -133,7 +136,7 @@ namespace Idlorio
 
         public static List<T> Randomized<T>(this IEnumerable<T> list)
         {
-            return list.OrderBy(order => Random.Next()).ToList();
+            return list.OrderBy(order => Idlorio.Random.Next()).ToList();
         }
 
         public static void Foreach<T>(this IEnumerable<T> list, Action<T> action)

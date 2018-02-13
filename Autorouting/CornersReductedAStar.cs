@@ -9,7 +9,7 @@ namespace Idlorio.Autorouting
 {
     class CornersReductedAStar
     {
-        public static List<Point> Find(int width, int height, Func<System.Drawing.Point, float> costEvaluator, int startX, int startY, int goalX, int goalY)
+        public static List<Point> Find(int width, int height, Func<Idlorio.Point, float> costEvaluator, int startX, int startY, int goalX, int goalY)
         {
             var aStarResult = new AStar(width, height, costEvaluator).Find(startX, startY, goalX, goalY);
 
