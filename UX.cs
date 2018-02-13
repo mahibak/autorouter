@@ -73,20 +73,7 @@ namespace Idlorio
             switch (uxState)
             {
                 case UxStates.Idle:
-                    map.Remove(net);
-                    break;
-
-                case UxStates.Routing:
-                    if (map.Tiles[point.X, point.Y].BuildingInput != null)
-                    {
-                        map.Remove(net);
-                        OnInputOutputClicked(map.Tiles[point.X, point.Y].BuildingInput, point);
-                    }
-                    else if(map.Tiles[point.X, point.Y].BuildingOutput != null)
-                    {
-                        map.Remove(net);
-                        OnInputOutputClicked(map.Tiles[point.X, point.Y].BuildingOutput, point);
-                    }
+                    Autorouting.Autorouter.Reroute(map, net);
                     break;
 
                 default:
@@ -99,7 +86,7 @@ namespace Idlorio
             switch (uxState)
             {
                 case UxStates.Idle:
-                    Autorouting.Autorouter.Reroute(map, net);
+                    map.Remove(net);
                     break;
                     
                 default:
