@@ -24,13 +24,21 @@ namespace Idlorio
             Routing,
         }
         public UxStates uxState = UxStates.Idle;
-
-        Net netBeingRouted;
+        
         BuildingInputOutput inputOutputBeingRouted;
 
         public void Draw(Graphics g)
         {
-
+            switch (uxState)
+            {
+                case UxStates.Idle:
+                    break;
+                case UxStates.Routing:
+                    new MapRenderer(map).DrawTile(inputOutputBeingRouted.Tile, g, Color.Orange);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void OnTileHovered(int tileX, int tileY)
@@ -65,18 +73,18 @@ namespace Idlorio
             switch (uxState)
             {
                 case UxStates.Idle:
-                    map.RemoveNet(net);
+                    map.Remove(net);
                     break;
 
                 case UxStates.Routing:
                     if (map.Tiles[point.X, point.Y].BuildingInput != null)
                     {
-                        map.RemoveNet(net);
+                        map.Remove(net);
                         OnInputOutputClicked(map.Tiles[point.X, point.Y].BuildingInput, point);
                     }
                     else if(map.Tiles[point.X, point.Y].BuildingOutput != null)
                     {
-                        map.RemoveNet(net);
+                        map.Remove(net);
                         OnInputOutputClicked(map.Tiles[point.X, point.Y].BuildingOutput, point);
                     }
                     break;
@@ -163,20 +171,13 @@ namespace Idlorio
             switch (uxState)
             {
                 case UxStates.Idle:
-                    if (map.Tiles[point.X, point.Y].Net != null)
-                        map.RemoveNet(map.Tiles[point.X, point.Y].Net);
-
                     uxState = UxStates.Routing;
-                    netBeingRouted = new Net();
                     inputOutputBeingRouted = io;
-                    netBeingRouted.Start = map.Tiles[point.X, point.Y];
-                    netBeingRouted.End = netBeingRouted.Start;
                     break;
 
                 case UxStates.Routing:
                     if (inputOutputBeingRouted == io)
                     {
-                        netBeingRouted = null;
                         inputOutputBeingRouted = null;
                         uxState = UxStates.Idle;
                         return;
@@ -186,12 +187,19 @@ namespace Idlorio
                     if (inputOutputBeingRouted.Building == io.Building)
                         return;
 
-                    if (map.Tiles[point.X, point.Y].Net != null)
-                        map.RemoveNet(map.Tiles[point.X, point.Y].Net);
+                    if (inputOutputBeingRouted.Net != null)
+                        map.Remove(inputOutputBeingRouted.Net);
 
-                    netBeingRouted.End = map.Tiles[point.X, point.Y];
+                    if (io.Net != null)
+                        map.Remove(io.Net);
+
+
+                    Net netBeingRouted = new Net();
+                    netBeingRouted.Start = inputOutputBeingRouted.FirstTileOut;
+                    netBeingRouted.End = io.FirstTileOut;
                     if (Autorouting.Autorouter.Autoroute(map, netBeingRouted))
                     {
+                        map.Add(netBeingRouted, inputOutputBeingRouted, io);
                         netBeingRouted = null;
                         inputOutputBeingRouted = null;
                         uxState = UxStates.Idle;
@@ -203,35 +211,27 @@ namespace Idlorio
             }
         }
         
-
         public void OnTileClicked(Point point)
         {
+            BuildingInput BuildingInputClicked = map.BuildingInputs.Where(x => x.Position == point).FirstOrDefault();
+            if (BuildingInputClicked != null)
+            {
+                OnInputOutputClicked(BuildingInputClicked, point);
+                return;
+            }
+            BuildingOutput BuildingOutputClicked = map.BuildingOutputs.Where(x => x.Position == point).FirstOrDefault();
+            if (BuildingOutputClicked != null)
+            {
+                OnInputOutputClicked(BuildingOutputClicked, point);
+                return;
+            }
+            
             if (map.Tiles[point.X, point.Y].Building != null)
             {
                 OnBuildingClicked(map.Tiles[point.X, point.Y].Building, point);
                 return;
             }
-
-            Building buildingThatThisTileWouldBeDirectlyAdjacentTo = point.GetOrthogonalNeighbors().Where(x => map.IsInMap(x)).Where(x => map.Tiles[x.X, x.Y].Building != null).Select(x => map.Tiles[x.X, x.Y].Building).FirstOrDefault();
-            if (buildingThatThisTileWouldBeDirectlyAdjacentTo != null)
-            {
-                BuildingInput input = buildingThatThisTileWouldBeDirectlyAdjacentTo.Inputs.Where(x => x.Position == point).FirstOrDefault();
-                if (input != null)
-                {
-                    OnInputOutputClicked(input, point);
-                    return;
-                }
-                else
-                {
-                    BuildingOutput output = buildingThatThisTileWouldBeDirectlyAdjacentTo.Outputs.Where(x => x.Position == point).FirstOrDefault();
-                    if (output != null)
-                    {
-                        OnInputOutputClicked(output, point);
-                        return;
-                    }
-                }
-            }
-
+            
             if (map.Tiles[point.X, point.Y].Net != null)
             {
                 OnNetClicked(map.Tiles[point.X, point.Y].Net, point);

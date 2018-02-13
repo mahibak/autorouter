@@ -21,7 +21,7 @@ namespace Idlorio.Autorouting
 
             if (newPath.Count <= originalLength)
             {
-                originalMap.RemoveNet(originalNet);
+                originalMap.Remove(originalNet);
 
                 foreach (Point p in newPath)
                 {
@@ -62,9 +62,6 @@ namespace Idlorio.Autorouting
                 }
             }
 
-            if (!originalMap.Nets.Contains(originalNet))
-                originalMap.Nets.Add(originalNet);
-
             return true;
         }
 
@@ -93,7 +90,7 @@ namespace Idlorio.Autorouting
 
         static Dictionary<Net, List<Point>> GetAutoroutingSolution(Map originalMap, Net originalNet)
         {
-            originalMap.RemoveNet(originalNet);
+            originalMap.Remove(originalNet);
             
             
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
@@ -101,7 +98,10 @@ namespace Idlorio.Autorouting
 
             bool autorouteSuccess = false;
             List<Net> netIdsInTheWay = GetNetsInTheWay(originalMap, originalNet, out autorouteSuccess);
-            
+            if(netIdsInTheWay.Contains(null))
+            {
+
+            }
             int bestCost = Int32.MaxValue;
             Net[] bestPermutation = null;
             List<List<Point>> bestRouting = null;

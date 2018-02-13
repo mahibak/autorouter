@@ -29,5 +29,10 @@ namespace Idlorio
             this.X = x;
             this.Y = y;
         }
+
+        public override string ToString()
+        {
+            return new Point(X, Y).ToString() + (Building != null ? " Building" : "") + (Net != null ? " Net" : "") + (BuildingInput != null ? " Input" : "") + (BuildingOutput != null ? " Output" : "");
+        }
     }
 }

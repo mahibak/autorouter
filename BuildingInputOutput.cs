@@ -12,6 +12,16 @@ namespace Idlorio
         public Building Building;
         public Point Position;
         public Direction Direction;
+        public Net Net;
+
+        public Tile FirstTileOut
+        {
+            get
+            {
+                Point point = (Position + Direction);
+                return Map?.Tiles[point.X, point.Y];
+            }
+        }
 
         public Map Map
         {

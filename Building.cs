@@ -151,7 +151,7 @@ namespace Idlorio
 
             //Left
             if (Size.X > 1)
-                for (int y = Size.Y - 2; y >= 0; y--)
+                for (int y = Size.Y - 2; y > 0; y--)
                     yield return Map.Tiles[Position.X, Position.Y - y];
         }
 

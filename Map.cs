@@ -59,21 +59,51 @@ namespace Idlorio
             building.Outputs.ForEach(x => { BuildingOutputs.Remove(x); Tiles[x.Position.X, x.Position.Y].BuildingOutput = null; });
         }
 
-        public void RemoveNet(Net net)
+        public bool IsInMap(Point p)
         {
-            while(net.Tiles.Count > 0)
+            return p.X >= 0 && p.X < Width && p.Y >= 0 && p.Y < Height;
+        }
+
+        public void Add(Net net, BuildingInputOutput io1, BuildingInputOutput io2)
+        {
+            if (io1.IsInput)
+                Add(net, (BuildingInput)io1, (BuildingOutput)io2);
+            else
+                Add(net, (BuildingInput)io2, (BuildingOutput)io1);
+        }
+
+        public void Add(Net net, BuildingInput input, BuildingOutput output)
+        {
+            foreach (Tile t in net.Tiles)
+                t.Net = net;
+
+            net.Input = input;
+            net.Output = output;
+
+            input.Net = net;
+            output.Net = net;
+
+            Nets.Add(net);
+        }
+
+        public void Remove(Net net)
+        {
+            while (net.Tiles.Count > 0)
             {
                 net.Tiles[0].Net = null;
                 net.Tiles.RemoveAt(0);
             }
 
-            if(Nets.Contains(net))
+            if (Nets.Contains(net))
                 Nets.Remove(net);
-        }
 
-        public bool IsInMap(Point p)
-        {
-            return p.X >= 0 && p.X < Width && p.Y >= 0 && p.Y < Height;
+            if(net.Input != null)
+                net.Input.Net = null;
+            if (net.Output != null)
+                net.Output.Net = null;
+
+            net.Input = null;
+            net.Output = null;
         }
     }
 }
