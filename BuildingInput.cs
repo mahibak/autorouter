@@ -13,5 +13,18 @@ namespace Idlorio
         {
 
         }
+
+        BuildingOutput BuildingOutput
+        {
+            get
+            {
+                if (Net != null)
+                    return Net.BuildingOutput;
+                else if (FirstTileOut.BuildingOutput != null)
+                    return FirstTileOut.BuildingOutput;
+                else
+                    return null;
+            }
+        }
     }
 }

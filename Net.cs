@@ -11,7 +11,7 @@ namespace Idlorio
         public List<Tile> Tiles = new List<Tile>();
         public Tile Start = null;
         public Tile End = null;
-        public BuildingInput Input = null;
-        public BuildingOutput Output = null;
+        public BuildingInput BuildingInput = null;
+        public BuildingOutput BuildingOutput = null;
     }
 }
