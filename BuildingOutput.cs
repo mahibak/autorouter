@@ -13,7 +13,7 @@ namespace Idlorio
         {
         }
 
-        BuildingInput BuildingInput
+        public BuildingInput BuildingInput
         {
             get
             {

@@ -53,6 +53,7 @@
     <Compile Include="Autorouting\CornersReductedAStar.cs" />
     <Compile Include="Building.cs" />
     <Compile Include="BuildingInputOutput.cs" />
+    <Compile Include="Compute.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="frmMain.cs">

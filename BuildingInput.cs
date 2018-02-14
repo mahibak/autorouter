@@ -14,7 +14,7 @@ namespace Idlorio
 
         }
 
-        BuildingOutput BuildingOutput
+        public BuildingOutput BuildingOutput
         {
             get
             {

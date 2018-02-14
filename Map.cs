@@ -39,6 +39,19 @@ namespace Idlorio
                     Tiles[x, y] = new Tile(x, y);
                 }
             }
+
+            for (int x = 0; x < Width; x += 4)
+            {
+                Building b = new Building(this, new Point(x, 0), new Idlorio.Point(1, 1));
+                b.AddInput(b.Position, Direction.Up);
+                b.MaximumItemsPerSecond = Double.PositiveInfinity;
+                Add(b);
+
+                b = new Building(this, new Point(x, height - 1), new Idlorio.Point(1, 1));
+                b.AddOutput(b.Position, Direction.Down);
+                b.MaximumItemsPerSecond = Double.PositiveInfinity;
+                Add(b);
+            }
         }
 
         public void Add(Building building)
