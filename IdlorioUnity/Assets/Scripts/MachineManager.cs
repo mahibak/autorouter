@@ -32,7 +32,6 @@ public class MachineManager
             _instance.m_machines.Add(machine);
         }
 
-        //ProductionSpeedComputation.UpdateProductionSpeed(_instance.m_machines);
     }
 
     public static void UnregisterMachine(Machine machine)
@@ -58,6 +57,8 @@ public class MachineManager
 
             destination._inputSlots[destSlot]._otherMachine = source;
             destination._inputSlots[destSlot]._otherConnector = source._outputSlots[sourceSlot];
+
+            ProductionSpeedComputation.UpdateProductionSpeed(_instance.m_machines);
         }
     }
 

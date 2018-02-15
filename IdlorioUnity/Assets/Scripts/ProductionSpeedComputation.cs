@@ -35,16 +35,31 @@ public class ProductionSpeedComputation
 
             if (b._outputSlots.Length == 0)
             {
-                b._desiredItemsPerSecond = System.Single.PositiveInfinity;
-                continue;
+                b._desiredItemsPerSecond = b._itemsPerSecond;
             }
-            List<Machine> childrenMachine = b._outputSlots.Select(output => output._otherMachine).Where(machine => machine != null).ToList();
-            if (childrenMachine.Count == 0)
-                b._desiredItemsPerSecond = 0;
             else
             {
-                b._desiredItemsPerSecond = childrenMachine.Sum(childMachine => childMachine._desiredItemsPerSecond);
-                if (System.Single.IsInfinity(b._desiredItemsPerSecond))
+                b._desiredItemsPerSecond = 0;
+
+                bool atLeastOneRequiredOutput = false;
+                foreach (MachineConnector output in b._outputSlots)
+                {
+                    if (output._otherMachine == null)
+                    {
+                        if (output._requiredForMachineOperation)
+                        {
+                            b._desiredItemsPerSecond = 0;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        b._desiredItemsPerSecond += Mathf.Min(output._otherMachine._desiredItemsPerSecond, output._otherMachine._maximumItemsPerSecond);
+                        atLeastOneRequiredOutput = true;
+                    }
+                }
+
+                if (!atLeastOneRequiredOutput)
                     b._desiredItemsPerSecond = b._maximumItemsPerSecond;
             }
         }
@@ -76,16 +91,24 @@ public class ProductionSpeedComputation
 
         foreach (Machine b in machinesInReversedProcessingOrder)
         {
-            float maximumProductionSpeed = b._desiredItemsPerSecond;
+            float maximumProductionSpeed = Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecond);
 
-            foreach (Machine parentMachine in b._inputSlots.Select(input => input._otherMachine))
+            foreach(MachineConnector input in b._inputSlots)
             {
-                if (parentMachine != null && parentMachine._desiredItemsPerSecond != 0)
-                    maximumProductionSpeed = System.Math.Min(maximumProductionSpeed, b._desiredItemsPerSecond * System.Math.Min(1, parentMachine._maximumItemsPerSecond / parentMachine._desiredItemsPerSecond));
+                if(input._otherMachine == null)
+                {
+                    if (input._requiredForMachineOperation)
+                    {
+                        maximumProductionSpeed = 0;
+                        break;
+                    }
+                }
                 else
-                    maximumProductionSpeed = 0; //An input is missing
+                {
+                    maximumProductionSpeed = System.Math.Min(maximumProductionSpeed, Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecond) * System.Math.Min(1, input._otherMachine._maximumItemsPerSecond / input._otherMachine._desiredItemsPerSecond));
+                }
             }
-
+            
             b._itemsPerSecond = maximumProductionSpeed;
         }
     }

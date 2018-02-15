@@ -18,6 +18,7 @@ public class MachineConnector
     public int _localX = 0;
     public int _localY = 0;
     public Direction _localDir = Direction.Up;
+    public bool _requiredForMachineOperation = false;
 
     public Vector3 GetWorldEdgeOffset()
     {

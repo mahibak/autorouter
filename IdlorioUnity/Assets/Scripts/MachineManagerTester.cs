@@ -9,11 +9,14 @@ public class MachineManagerTester : MonoBehaviour
     private void OnEnable ()
     {
         Machine m1 = new Machine();
+        m1._maximumItemsPerSecond = 10;
         Machine m2 = new Machine();
         m2._sizeX = 2;
         m2._sizeY = 3;
+        m2._maximumItemsPerSecond = 3;
         m2.InitializeTestSlots();
         Machine m3 = new Machine();
+        m3._maximumItemsPerSecond = 5;
         AddMachine(m1);
         AddMachine(m2);
         AddMachine(m3);

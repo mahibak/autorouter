@@ -51,8 +51,11 @@ public class Machine
             if (m != null)
             {
                 GDK.DrawFilledAABB(_position + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.red);
-                GDK.DrawText("In\r\nWants " + _desiredItemsPerSecond, _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
-                GDK.DrawText(string.Format("Out\rOutputs {0:.0}", Mathf.Min(_itemsPerSecond, _itemsPerSecond / m._otherMachine._itemsPerSecond)), m._otherMachine._position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
+                if (m._otherMachine != null)
+                {
+                    //GDK.DrawText(string.Format("Wants {0}", _desiredItemsPerSecond), _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
+                    //GDK.DrawText(string.Format("Outs {0}", _itemsPerSecond), m._otherMachine._position + Vector3.up * 0.5f + m._otherConnector.GetWorldEdgeOffset(), Color.green);
+                }
             }
         }
 
@@ -61,7 +64,6 @@ public class Machine
             if (m != null)
             {
                 GDK.DrawFilledAABB(_position + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.green);
-                GDK.DrawText("Out", _position + m.GetWorldEdgeOffset(), Color.green);
 
                 if (m._otherMachine != null)
                 {
