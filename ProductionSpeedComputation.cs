@@ -12,7 +12,7 @@ namespace Idlorio
         {
             List<Building> buildingsInReversedProcessingOrder = new List<Building>();
 
-            buildingsInReversedProcessingOrder.AddRange(buildings.Where(building => building.Inputs.All(input => input.BuildingOutput == null)));
+            buildingsInReversedProcessingOrder.AddRange(buildings);
 
             for (int i = 0; i < buildingsInReversedProcessingOrder.Count; i++)
             {
@@ -21,11 +21,7 @@ namespace Idlorio
                 foreach (Building childBuilding in buildingBeingProcessed.Outputs.Select(x => x.BuildingInput?.Building).Where(childBuilding => childBuilding != null))
                 {
                     //Our desired output per second depends on all of these child's demand, make sure that their desired output per second is computed before us
-                    if (!buildingsInReversedProcessingOrder.Contains(childBuilding))
-                    {
-                        buildingsInReversedProcessingOrder.Add(childBuilding);
-                    }
-                    else if (buildingsInReversedProcessingOrder.IndexOf(childBuilding) < i)
+                    if (buildingsInReversedProcessingOrder.IndexOf(childBuilding) < i)
                     {
                         buildingsInReversedProcessingOrder.Remove(childBuilding);
                         buildingsInReversedProcessingOrder.Add(childBuilding);
@@ -61,7 +57,7 @@ namespace Idlorio
         {
             List<Building> buildingsInReversedProcessingOrder = new List<Building>();
 
-            buildingsInReversedProcessingOrder.AddRange(buildings.Where(building => building.Outputs.All(output => output.BuildingInput == null)));
+            buildingsInReversedProcessingOrder.AddRange(buildings);
 
             for (int i = 0; i < buildingsInReversedProcessingOrder.Count; i++)
             {
@@ -70,11 +66,7 @@ namespace Idlorio
                 foreach (Building parentBuilding in buildingBeingProcessed.Inputs.Select(x => x.BuildingOutput?.Building).Where(parentBuilding => parentBuilding != null))
                 {
                     //Our desired output per second depends on all of the parent's possible rate, make sure that their output per second is computed before us
-                    if (!buildingsInReversedProcessingOrder.Contains(parentBuilding))
-                    {
-                        buildingsInReversedProcessingOrder.Add(parentBuilding);
-                    }
-                    else if (buildingsInReversedProcessingOrder.IndexOf(parentBuilding) < i)
+                    if (buildingsInReversedProcessingOrder.IndexOf(parentBuilding) < i)
                     {
                         buildingsInReversedProcessingOrder.Remove(parentBuilding);
                         buildingsInReversedProcessingOrder.Add(parentBuilding);
