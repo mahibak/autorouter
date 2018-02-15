@@ -11,7 +11,7 @@ namespace Idlorio
     {
         public Tile[,] Tiles;
         public List<Net> Nets = new List<Net>();
-        public List<Building> Buildings = new List<Building>();
+        public List<Machine> Buildings = new List<Machine>();
         public List<BuildingInput> BuildingInputs = new List<BuildingInput>();
         public List<BuildingOutput> BuildingOutputs = new List<BuildingOutput>();
 
@@ -42,34 +42,34 @@ namespace Idlorio
 
             for (int x = 0; x < Width; x += 4)
             {
-                Building b = new Building(this, new Point(x, 0), new Idlorio.Point(1, 1));
+                Machine b = new Machine(this, new Point(x, 0), new Idlorio.Point(1, 1));
                 b.AddInput(b.Position, Direction.Up);
-                b.MaximumItemsPerSecond = Double.PositiveInfinity;
+                b._maximumItemsPerSecond = Double.PositiveInfinity;
                 Add(b);
 
-                b = new Building(this, new Point(x, height - 1), new Idlorio.Point(1, 1));
+                b = new Machine(this, new Point(x, height - 1), new Idlorio.Point(1, 1));
                 b.AddOutput(b.Position, Direction.Down);
-                b.MaximumItemsPerSecond = Double.PositiveInfinity;
+                b._maximumItemsPerSecond = Double.PositiveInfinity;
                 Add(b);
             }
         }
 
-        public void Add(Building building)
+        public void Add(Machine building)
         {
             Buildings.Add(building);
             building.GetTiles().Foreach(x => x.Building = building);
-            BuildingInputs.AddRange(building.Inputs);
-            BuildingOutputs.AddRange(building.Outputs);
-            building.Inputs.ForEach(x => Tiles[x.Position.X, x.Position.Y].BuildingInput = x);
-            building.Outputs.ForEach(x => Tiles[x.Position.X, x.Position.Y].BuildingOutput = x);
+            BuildingInputs.AddRange(building._inputSlots);
+            BuildingOutputs.AddRange(building._outputSlots);
+            building._inputSlots.ForEach(x => Tiles[x.Position.X, x.Position.Y].BuildingInput = x);
+            building._outputSlots.ForEach(x => Tiles[x.Position.X, x.Position.Y].BuildingOutput = x);
         }
 
-        public void Remove(Building building)
+        public void Remove(Machine building)
         {
             Buildings.Remove(building);
             building.GetTiles().Foreach(x => x.Building = null);
 
-            foreach(BuildingInput input in building.Inputs)
+            foreach(BuildingInput input in building._inputSlots)
             {
                 BuildingInputs.Remove(input);
                 Tiles[input.Position.X, input.Position.Y].BuildingInput = null;
@@ -78,7 +78,7 @@ namespace Idlorio
                     Remove(input.Net);
             }
             
-            foreach (BuildingOutput output in building.Outputs)
+            foreach (BuildingOutput output in building._outputSlots)
             {
                 BuildingOutputs.Remove(output);
                 Tiles[output.Position.X, output.Position.Y].BuildingOutput = null;

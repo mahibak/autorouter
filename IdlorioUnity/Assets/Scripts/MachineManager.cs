@@ -31,6 +31,8 @@ public class MachineManager
         {
             _instance.m_machines.Add(machine);
         }
+
+        //ProductionSpeedComputation.UpdateProductionSpeed(_instance.m_machines);
     }
 
     public static void UnregisterMachine(Machine machine)

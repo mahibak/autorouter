@@ -9,7 +9,7 @@ namespace Idlorio
 {
     public class BuildingInput : BuildingInputOutput
     {
-        public BuildingInput(Building Building, Point Position) : base(Building, Position, true)
+        public BuildingInput(Machine Building, Point Position) : base(Building, Position, true)
         {
 
         }

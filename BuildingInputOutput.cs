@@ -9,7 +9,7 @@ namespace Idlorio
 {
     public class BuildingInputOutput
     {
-        public Building Building;
+        public Machine Building;
         public Point Position;
         public Direction Direction;
         public Net Net;
@@ -39,7 +39,7 @@ namespace Idlorio
             }
         }
 
-        public BuildingInputOutput(Building Building, Point Position, bool IsInput)
+        public BuildingInputOutput(Machine Building, Point Position, bool IsInput)
         {
             this.Building = Building;
             this.Position = Position;

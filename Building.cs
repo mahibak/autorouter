@@ -7,16 +7,16 @@ using System.Drawing;
 
 namespace Idlorio
 {
-    public class Building
+    public class Machine
     {
         public Map Map;
 
-        public List<BuildingInput> Inputs = new List<BuildingInput>();
-        public List<BuildingOutput> Outputs = new List<BuildingOutput>();
+        public List<BuildingInput> _inputSlots = new List<BuildingInput>();
+        public List<BuildingOutput> _outputSlots = new List<BuildingOutput>();
 
-        public double MaximumItemsPerSecond = 0;
-        public double DesiredItemsPerSecond = 0;
-        public double ItemsPerSecond = 0;
+        public double _maximumItemsPerSecond = 0;
+        public double _desiredItemsPerSecond = 0;
+        public double _itemsPerSecond = 0;
 
         void SetRandomDirection(BuildingInputOutput BuildingInputOutput)
         {
@@ -75,7 +75,7 @@ namespace Idlorio
                 BuildingInputOutput.Direction = Direction.Down;
         }
 
-        public Building(Map map, Point position) : this(map, position, new Point(Random.Next(1, Math.Min(5, map.Width - position.X)), Random.Next(1, Math.Min(5, position.Y + 1))))
+        public Machine(Map map, Point position) : this(map, position, new Point(Random.Next(1, Math.Min(5, map.Width - position.X)), Random.Next(1, Math.Min(5, position.Y + 1))))
         {
         }
 
@@ -83,14 +83,14 @@ namespace Idlorio
         {
             BuildingInput buildingInput = new BuildingInput(this, position);
             buildingInput.Direction = direction;
-            Inputs.Add(buildingInput);
+            _inputSlots.Add(buildingInput);
         }
 
         public void AddOutput(Point position, Direction direction)
         {
             BuildingOutput buildingOutput = new BuildingOutput(this, position);
             buildingOutput.Direction = direction;
-            Outputs.Add(buildingOutput);
+            _outputSlots.Add(buildingOutput);
         }
 
         public void AddRandomInputsOutputs()
@@ -107,7 +107,7 @@ namespace Idlorio
                 ioPossibilites.RemoveAt(0);
                 BuildingInput input = new BuildingInput(this, new Point(t.X, t.Y));
                 SetRandomDirection(input);
-                Inputs.Add(input);
+                _inputSlots.Add(input);
             }
 
             for (int i = 0; i < outputsToPlace; i++)
@@ -116,11 +116,11 @@ namespace Idlorio
                 ioPossibilites.RemoveAt(0);
                 BuildingOutput output = new BuildingOutput(this, new Point(t.X, t.Y));
                 SetRandomDirection(output);
-                Outputs.Add(output);
+                _outputSlots.Add(output);
             }
         }
 
-        public Building(Map map, Point position, Point size)
+        public Machine(Map map, Point position, Point size)
         {
             this.Map = map;
             this.Position = position;

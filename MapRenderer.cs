@@ -66,7 +66,7 @@ namespace Idlorio
 
         void DrawBuildings(Graphics g)
         {
-            foreach (Building b in map.Buildings)
+            foreach (Machine b in map.Buildings)
             {
                 b.GetTiles().Foreach(x => DrawTile(x, g, Color.DarkGray));
             }
@@ -87,10 +87,10 @@ namespace Idlorio
 
         void DrawInputsOutputs(Graphics g)
         {
-            foreach (Building b in map.Buildings)
+            foreach (Machine b in map.Buildings)
             {
-                b.Inputs.Foreach(t => g.FillEllipse(Brushes.LightBlue, (t.Position.X + new Point(t.Direction).X * 0.5f) * TILE_WIDTH, (map.Height - 1 - t.Position.Y - new Point(t.Direction).Y * 0.5f) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
-                b.Outputs.Foreach(t => g.FillEllipse(Brushes.DodgerBlue, (t.Position.X + new Point(t.Direction).X * 0.5f) * TILE_WIDTH, (map.Height - 1 - t.Position.Y - new Point(t.Direction).Y * 0.5f) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
+                b._inputSlots.Foreach(t => g.FillEllipse(Brushes.LightBlue, (t.Position.X + new Point(t.Direction).X * 0.5f) * TILE_WIDTH, (map.Height - 1 - t.Position.Y - new Point(t.Direction).Y * 0.5f) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
+                b._outputSlots.Foreach(t => g.FillEllipse(Brushes.DodgerBlue, (t.Position.X + new Point(t.Direction).X * 0.5f) * TILE_WIDTH, (map.Height - 1 - t.Position.Y - new Point(t.Direction).Y * 0.5f) * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH));
             }
         }
 

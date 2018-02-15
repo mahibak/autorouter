@@ -7,20 +7,20 @@ using System.Drawing;
 
 namespace Idlorio
 {
-    public class BuildingOutput : BuildingInputOutput
+    public class MachineOutput : MachineInputOutput
     {
-        public BuildingOutput(Building Building, Point Position) : base(Building, Position, false)
+        public MachineOutput(Machine Machine, Point Position) : base(Machine, Position, false)
         {
         }
 
-        public BuildingInput BuildingInput
+        public MachineInput MachineInput
         {
             get
             {
                 if (Net != null)
-                    return Net.BuildingInput;
-                else if (FirstTileOut.BuildingInput != null)
-                    return FirstTileOut.BuildingInput;
+                    return Net.MachineInput;
+                else if (FirstTileOut.MachineInput != null)
+                    return FirstTileOut.MachineInput;
                 else
                     return null;
             }

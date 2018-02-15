@@ -12,7 +12,7 @@ namespace Idlorio
         public readonly int X;
         public readonly int Y;
         public Net Net = null;
-        public Building Building = null;
+        public Machine Building = null;
         public BuildingInput BuildingInput = null;
         public BuildingOutput BuildingOutput = null;
 

@@ -11,6 +11,10 @@ public class Machine
     public MachineConnector[] _inputSlots;
     public MachineConnector[] _outputSlots;
 
+    public float _maximumItemsPerSecond = 0;
+    public float _desiredItemsPerSecond = 0;
+    public float _itemsPerSecond = 0;
+
     public Machine()
     {
         InitializeTestSlots();
@@ -47,6 +51,8 @@ public class Machine
             if (m != null)
             {
                 GDK.DrawFilledAABB(_position + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.red);
+                GDK.DrawText("In\r\nWants " + _desiredItemsPerSecond, _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
+                GDK.DrawText(string.Format("Out\rOutputs {0:.0}", Mathf.Min(_itemsPerSecond, _itemsPerSecond / m._otherMachine._itemsPerSecond)), m._otherMachine._position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
             }
         }
 
@@ -55,6 +61,7 @@ public class Machine
             if (m != null)
             {
                 GDK.DrawFilledAABB(_position + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.green);
+                GDK.DrawText("Out", _position + m.GetWorldEdgeOffset(), Color.green);
 
                 if (m._otherMachine != null)
                 {

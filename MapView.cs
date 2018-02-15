@@ -50,7 +50,7 @@ namespace Idlorio
                 return;
             }
 
-            selectedBuilding.MaximumItemsPerSecond = newValue;
+            selectedBuilding._maximumItemsPerSecond = newValue;
             ((TextBox)sender).BackColor = DefaultBackColor;
         }
 
@@ -86,7 +86,7 @@ namespace Idlorio
         }
 
         Point lastHoveredTile = new Point(-1, -1);
-        Building selectedBuilding = null;
+        Machine selectedBuilding = null;
 
         private void MapView_MouseMove(object sender, MouseEventArgs e)
         {
@@ -103,9 +103,9 @@ namespace Idlorio
             {
                 selectedBuilding = map.Tiles[p.X, p.Y].Building;
                 StringBuilder sb = new StringBuilder();
-                txtMax.Text = selectedBuilding.MaximumItemsPerSecond.ToString();
-                txtDesired.Text = selectedBuilding.DesiredItemsPerSecond.ToString();
-                txtActual.Text = selectedBuilding.ItemsPerSecond.ToString();
+                txtMax.Text = selectedBuilding._maximumItemsPerSecond.ToString();
+                txtDesired.Text = selectedBuilding._desiredItemsPerSecond.ToString();
+                txtActual.Text = selectedBuilding._itemsPerSecond.ToString();
             }
 
             Refresh();
