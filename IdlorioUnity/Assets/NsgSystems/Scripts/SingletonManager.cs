@@ -23,16 +23,26 @@ public class SingletonManager : MonoBehaviour
         GDK.CreateInstance();
         MachineManager.CreateInstance();
     }
-    
+
+    private void OnEnable()
+    {
+        Camera.onPreCull += DrawObjects;
+    }
+
+    private void OnDisable()
+    {
+        Camera.onPreCull -= DrawObjects;
+    }
+
     private void Update()
     {
         GDK.GetInstance().Update();
         MachineManager.GetInstance().Update();
     }
 
-    private void OnRenderObject()
+    private void DrawObjects(Camera camera)
     {
-        GDK.GetInstance().OnRenderObject();
+        GDK.GetInstance().DrawObjects();
     }
 
     private void OnGUI()

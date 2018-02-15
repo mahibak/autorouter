@@ -45,7 +45,7 @@ public class GDK
         _pendingTextRequests.Clear();
     }
 
-    public void OnRenderObject()
+    public void DrawObjects()
     {
         foreach(GDKShape shape in _pendingShapeRequests)
         {
