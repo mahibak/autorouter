@@ -39,6 +39,19 @@ namespace Idlorio
                     Tiles[x, y] = new Tile(x, y);
                 }
             }
+
+            for (int x = 0; x < Width; x += 4)
+            {
+                Building b = new Building(this, new Point(x, 0), new Idlorio.Point(1, 1));
+                b.AddInput(b.Position, Direction.Up);
+                b.MaximumItemsPerSecond = Double.PositiveInfinity;
+                Add(b);
+
+                b = new Building(this, new Point(x, height - 1), new Idlorio.Point(1, 1));
+                b.AddOutput(b.Position, Direction.Down);
+                b.MaximumItemsPerSecond = Double.PositiveInfinity;
+                Add(b);
+            }
         }
 
         public void Add(Building building)
@@ -55,8 +68,24 @@ namespace Idlorio
         {
             Buildings.Remove(building);
             building.GetTiles().Foreach(x => x.Building = null);
-            building.Inputs.ForEach(x => { BuildingInputs.Remove(x); Tiles[x.Position.X, x.Position.Y].BuildingInput = null; });
-            building.Outputs.ForEach(x => { BuildingOutputs.Remove(x); Tiles[x.Position.X, x.Position.Y].BuildingOutput = null; });
+
+            foreach(BuildingInput input in building.Inputs)
+            {
+                BuildingInputs.Remove(input);
+                Tiles[input.Position.X, input.Position.Y].BuildingInput = null;
+
+                if (input.Net != null)
+                    Remove(input.Net);
+            }
+            
+            foreach (BuildingOutput output in building.Outputs)
+            {
+                BuildingOutputs.Remove(output);
+                Tiles[output.Position.X, output.Position.Y].BuildingOutput = null;
+
+                if (output.Net != null)
+                    Remove(output.Net);
+            }
         }
 
         public bool IsInMap(Point p)
@@ -77,8 +106,8 @@ namespace Idlorio
             foreach (Tile t in net.Tiles)
                 t.Net = net;
 
-            net.Input = input;
-            net.Output = output;
+            net.BuildingInput = input;
+            net.BuildingOutput = output;
 
             input.Net = net;
             output.Net = net;
@@ -97,13 +126,13 @@ namespace Idlorio
             if (Nets.Contains(net))
                 Nets.Remove(net);
 
-            if(net.Input != null)
-                net.Input.Net = null;
-            if (net.Output != null)
-                net.Output.Net = null;
+            if(net.BuildingInput != null)
+                net.BuildingInput.Net = null;
+            if (net.BuildingOutput != null)
+                net.BuildingOutput.Net = null;
 
-            net.Input = null;
-            net.Output = null;
+            net.BuildingInput = null;
+            net.BuildingOutput = null;
         }
     }
 }

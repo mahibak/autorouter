@@ -100,7 +100,7 @@ namespace Idlorio
             {
                 case UxStates.Idle:
                     Building b = new Building(map, new Point(point.X, point.Y));
-
+                    b.AddRandomInputsOutputs();
                     if (!b.IsIntersectingThings())
                         map.Add(b);
                     break;

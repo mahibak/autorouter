@@ -21,15 +21,17 @@ namespace Idlorio.Autorouting
 
             if (newPath.Count <= originalLength)
             {
-                originalMap.Remove(originalNet);
+                Net newNet = new Net();
+                newNet.BuildingOutput = originalNet.BuildingOutput;
+                newNet.BuildingInput = originalNet.BuildingInput;
 
                 foreach (Point p in newPath)
                 {
-                    originalNet.Tiles.Add(originalMap.Tiles[p.X, p.Y]);
-                    originalMap.Tiles[p.X, p.Y].Net = originalNet;
+                    newNet.Tiles.Add(originalMap.Tiles[p.X, p.Y]);
                 }
 
-                originalMap.Nets.Add(originalNet);
+                originalMap.Remove(originalNet);
+                originalMap.Add(newNet, newNet.BuildingInput, newNet.BuildingOutput);
 
                 return true;
             }

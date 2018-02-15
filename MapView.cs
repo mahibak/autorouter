@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace Idlorio
 {
@@ -15,7 +16,8 @@ namespace Idlorio
         public MapView()
         {
             InitializeComponent();
-            DoubleBuffered = true;
+
+            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, panel1, new object[] { true });
         }
         
         public Map map;
@@ -27,11 +29,29 @@ namespace Idlorio
             this.map = map;
             mapRenderer = new MapRenderer(map);
             ux = new UX(map);
-            
-            MouseMove += MapView_MouseMove;
-            Paint += MapView_Paint;
-            MouseDown += MapView_MouseDown;
-            MouseUp += MapView_MouseUp;
+
+            panel1.MouseMove += MapView_MouseMove;
+            panel1.MouseDown += MapView_MouseDown;
+            panel1.MouseUp += MapView_MouseUp;
+            panel1.Paint += MapView_Paint;
+
+            txtMax.TextChanged += TxtMax_TextChanged;
+        }
+
+        private void TxtMax_TextChanged(object sender, EventArgs e)
+        {
+            if (selectedBuilding == null)
+                return;
+
+            double newValue = 0;
+            if (!Double.TryParse(((TextBox)sender).Text, out newValue))
+            {
+                ((TextBox)sender).BackColor = Color.Tomato;
+                return;
+            }
+
+            selectedBuilding.MaximumItemsPerSecond = newValue;
+            ((TextBox)sender).BackColor = DefaultBackColor;
         }
 
         private void MapView_MouseUp(object sender, MouseEventArgs e)
@@ -66,6 +86,8 @@ namespace Idlorio
         }
 
         Point lastHoveredTile = new Point(-1, -1);
+        Building selectedBuilding = null;
+
         private void MapView_MouseMove(object sender, MouseEventArgs e)
         {
             Point p = mapRenderer.PixelToTile(e.X, e.Y);
@@ -77,6 +99,15 @@ namespace Idlorio
             ux.OnTileHovered(p.X, p.Y);
             lastHoveredTile = p;
 
+            if(map.Tiles[p.X, p.Y].Building != null)
+            {
+                selectedBuilding = map.Tiles[p.X, p.Y].Building;
+                StringBuilder sb = new StringBuilder();
+                txtMax.Text = selectedBuilding.MaximumItemsPerSecond.ToString();
+                txtDesired.Text = selectedBuilding.DesiredItemsPerSecond.ToString();
+                txtActual.Text = selectedBuilding.ItemsPerSecond.ToString();
+            }
+
             Refresh();
         }
 
@@ -84,6 +115,11 @@ namespace Idlorio
         {
             mapRenderer.Draw(e.Graphics);
             ux.Draw(e.Graphics);
+        }
+
+        private void btnCompute_Click(object sender, EventArgs e)
+        {
+            ProductionSpeedComputation.UpdateProductionSpeed(map.Buildings);
         }
     }
 }

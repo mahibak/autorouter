@@ -14,6 +14,10 @@ namespace Idlorio
         public List<BuildingInput> Inputs = new List<BuildingInput>();
         public List<BuildingOutput> Outputs = new List<BuildingOutput>();
 
+        public double MaximumItemsPerSecond = 0;
+        public double DesiredItemsPerSecond = 0;
+        public double ItemsPerSecond = 0;
+
         void SetRandomDirection(BuildingInputOutput BuildingInputOutput)
         {
             List<Tile> corners = GetCorners().ToList();
@@ -71,13 +75,26 @@ namespace Idlorio
                 BuildingInputOutput.Direction = Direction.Down;
         }
 
-        public Building(Map map, Point position)
+        public Building(Map map, Point position) : this(map, position, new Point(Random.Next(1, Math.Min(5, map.Width - position.X)), Random.Next(1, Math.Min(5, position.Y + 1))))
         {
-            this.Map = map;
-            this.Position = position;
+        }
 
-            Size = new Point(Random.Next(1, Math.Min(5, map.Width - position.X)), Random.Next(1, Math.Min(5, position.Y + 1)));
+        public void AddInput(Point position, Direction direction)
+        {
+            BuildingInput buildingInput = new BuildingInput(this, position);
+            buildingInput.Direction = direction;
+            Inputs.Add(buildingInput);
+        }
 
+        public void AddOutput(Point position, Direction direction)
+        {
+            BuildingOutput buildingOutput = new BuildingOutput(this, position);
+            buildingOutput.Direction = direction;
+            Outputs.Add(buildingOutput);
+        }
+
+        public void AddRandomInputsOutputs()
+        {
             List<Tile> ioPossibilites = GetEdges().Randomized();
 
             int iosToPlace = Math.Min(Size.X * Size.Y, Math.Max(2, Random.Next(0, (int)Math.Ceiling(ioPossibilites.Count / 1.5))));
@@ -102,8 +119,14 @@ namespace Idlorio
                 Outputs.Add(output);
             }
         }
-        
 
+        public Building(Map map, Point position, Point size)
+        {
+            this.Map = map;
+            this.Position = position;
+            this.Size = size;
+        }
+        
         public Point Size;
         public Point Position; //Top left corner
 
