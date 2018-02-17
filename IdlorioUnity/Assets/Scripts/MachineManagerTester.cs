@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MachineManagerTester : MonoBehaviour
 {
-    private Vector3 _nextPosition = new Vector3(5, 0, 5);
+    private Point _nextPosition = new Point(5, 5);
 
     Machine CreateMachine(int ins, int outs)
     {
@@ -17,8 +17,8 @@ public class MachineManagerTester : MonoBehaviour
         {
             m._inputSlots[i] = new MachineConnector();
             m._inputSlots[i]._localDir = Direction.Left;
-            m._inputSlots[i]._localX = 0;
-            m._inputSlots[i]._localY = i;
+            m._inputSlots[i]._local.X = 0;
+            m._inputSlots[i]._local.Y = i;
         }
 
         m._outputSlots = new MachineConnector[outs];
@@ -26,8 +26,8 @@ public class MachineManagerTester : MonoBehaviour
         {
             m._outputSlots[i] = new MachineConnector();
             m._outputSlots[i]._localDir = Direction.Right;
-            m._outputSlots[i]._localX = 0;
-            m._outputSlots[i]._localY = i;
+            m._outputSlots[i]._local.X = 0;
+            m._outputSlots[i]._local.Y = i;
         }
         MachineManager.CreateInstance();
         MachineManager.RegisterMachine(m);
@@ -38,19 +38,19 @@ public class MachineManagerTester : MonoBehaviour
     {
         Machine m1 = CreateMachine(0, 2);
         m1._maximumItemsPerSecondProduction = 10;
-        m1._position = new Vector3(0, 0, 4);
+        m1._position = new Point(0, 4);
 
         Machine m2 = CreateMachine(1, 1);
         m2._maximumItemsPerSecondProduction = 2;
-        m2._position = new Vector3(8, 0, 0);
+        m2._position = new Point(8, 0);
 
         Machine m3 = CreateMachine(1, 2);
         m3._maximumItemsPerSecondProduction = 7;
-        m3._position = new Vector3(8, 0, 8);
+        m3._position = new Point(8, 8);
 
         Machine m4 = CreateMachine(2, 0);
         m4._maximumItemsPerSecondProduction = 2;
-        m4._position = new Vector3(16, 0, 0);
+        m4._position = new Point(16, 0);
         m4._storageCapacity = System.Single.PositiveInfinity;
         m4._storageMode = Machine.StorageModes.In;
 
@@ -60,11 +60,11 @@ public class MachineManagerTester : MonoBehaviour
         m5._storageCapacity = System.Single.PositiveInfinity;
         m5._itemsInStorage = 5;
         m5._storageMode = Machine.StorageModes.Out;
-        m5._position = new Vector3(16, 0, 12);
+        m5._position = new Point(16, 12);
 
         Machine m6 = CreateMachine(1, 0);
         m6._maximumItemsPerSecondProduction = 6;
-        m6._position = new Vector3(24, 0, 12);
+        m6._position = new Point(24, 12);
         m6._storageCapacity = System.Single.PositiveInfinity;
         m6._storageMode = Machine.StorageModes.In;
 
@@ -79,13 +79,13 @@ public class MachineManagerTester : MonoBehaviour
     private void AddMachine(Machine machine)
     {
         machine._position = _nextPosition;
-        _nextPosition[0] += 8;
+        _nextPosition.X += 8;
         MachineManager.RegisterMachine(machine);
     }
 
     private void BeginNextRow()
     {
-        _nextPosition[0] = 5;
-        _nextPosition[2] += 5;
+        _nextPosition.X = 5;
+        _nextPosition.Y += 5;
     }
 }

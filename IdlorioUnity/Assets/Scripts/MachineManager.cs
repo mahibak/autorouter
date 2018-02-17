@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class MachineManager
 {
+    public List<Conveyor> _conveyors = new List<Conveyor>();
+
     private static MachineManager _instance;
     public static void CreateInstance()
     {
@@ -32,7 +34,6 @@ public class MachineManager
         {
             _instance.m_machines.Add(machine);
         }
-
     }
 
     public static void UnregisterMachine(Machine machine)
@@ -62,6 +63,23 @@ public class MachineManager
             destination._inputSlots[destSlot]._otherMachine = source;
             destination._inputSlots[destSlot]._otherConnector = source._outputSlots[sourceSlot];
 
+
+            Map map = new Map();
+            map._conveyors = _instance._conveyors;
+            map.Machines = _instance.m_machines;
+            map.BuildingInputs = _instance.m_machines.SelectMany(x => x._inputSlots).ToList();
+            map.BuildingOutputs = _instance.m_machines.SelectMany(x => x._outputSlots).ToList();
+            map.Machines = _instance.m_machines;
+            map.Height = 20;
+            map.Width = 40;
+
+            Conveyor c = new Conveyor();
+            c.Start = source._outputSlots[sourceSlot]._local + source._position + source._outputSlots[sourceSlot]._localDir;
+            c.End = destination._inputSlots[destSlot]._local + destination._position + destination._inputSlots[destSlot]._localDir;
+
+            Autorouter.Autoroute(map, c);
+            _instance._conveyors.Add(c);
+            
             ProductionSpeedComputation.UpdateProductionSpeed(_instance.m_machines);
             _instance.recalculationNeededTime = _instance.timeSeconds + _instance.m_machines.Min(x => x.GetSecondsBeforeRecalculationNeeded());
         }
@@ -103,6 +121,11 @@ public class MachineManager
         foreach (Machine m in m_machines)
         {
             m.DrawDebug();
+        }
+
+        foreach(Conveyor c in _conveyors)
+        {
+            c.DrawDebug();
         }
     }
 

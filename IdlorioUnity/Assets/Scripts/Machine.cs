@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Machine
 {
-    public Vector3 _position; // Position of bottom left tile. TODO : Replace with int Point instead of float Vector.
+    public Point _position;
     public int _sizeX = 1;
     public int _sizeY = 1;
 
@@ -59,8 +59,8 @@ public class Machine
         {
             MachineConnector conn = new MachineConnector();
             conn._localDir = Direction.Right;
-            conn._localX = _sizeX - 1;
-            conn._localY = _sizeY - 1;
+            conn._local.X = _sizeX - 1;
+            conn._local.Y = _sizeY - 1;
             _outputSlots[i] = conn;
         }
     }
@@ -77,18 +77,18 @@ public class Machine
 
     public void DrawDebug()
     {
-        GDK.DrawFilledAABB(_position + new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), Color.gray);
-
-        GDK.DrawText(string.Format("{0},{1}", _itemsPerSecondFromProduction, _itemsPerSecondToStorage), _position, Color.black);
+        GDK.DrawFilledAABB(_position.ToVector3() + new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), Color.gray);
+        
+        GDK.DrawText(string.Format("{0},{1}", _itemsPerSecondFromProduction, _itemsPerSecondToStorage), _position.ToVector3(), Color.black);
 
         foreach (MachineConnector m in _inputSlots)
         {
             if (m != null)
             {
-                GDK.DrawFilledAABB(_position + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.red);
+                GDK.DrawFilledAABB(_position.ToVector3() + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.red);
                 if (m._otherMachine != null)
                 {
-                    GDK.DrawText(string.Format("{0}/{1}", m._itemsPerSecond, m._desiredItemsPerSecond), _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
+                    GDK.DrawText(string.Format("{0}/{1}", m._itemsPerSecond, m._desiredItemsPerSecond), _position.ToVector3() + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
                     //GDK.DrawText(string.Format("Wants {0}", _desiredItemsPerSecond), _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
                     //GDK.DrawText(string.Format("Outs {0}", _itemsPerSecond), m._otherMachine._position + Vector3.up * 0.5f + m._otherConnector.GetWorldEdgeOffset(), Color.green);
                 }
@@ -99,11 +99,11 @@ public class Machine
         {
             if (m != null)
             {
-                GDK.DrawFilledAABB(_position + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.green);
+                GDK.DrawFilledAABB(_position.ToVector3() + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.green);
 
                 if (m._otherMachine != null)
                 {
-                    GDK.DrawLine(_position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), m._otherMachine._position + Vector3.up * 0.5f + m._otherConnector.GetWorldEdgeOffset(), Color.black);
+                    GDK.DrawLine(_position.ToVector3() + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), m._otherMachine._position.ToVector3() + Vector3.up * 0.5f + m._otherConnector.GetWorldEdgeOffset(), Color.black);
                 }
             }
         }
