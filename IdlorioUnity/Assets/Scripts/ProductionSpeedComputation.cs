@@ -5,35 +5,15 @@ using UnityEngine;
 
 public class ProductionSpeedComputation
 {
-    public static void UpdateDesiredProductionSpeed(List<Machine> machines)
+    public static void UpdateDesiredItemsPerSecond(List<Machine> machines)
     {
-        List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
-
-        machinesInReversedProcessingOrder.AddRange(machines);
-
-        for (int i = 0; i < machinesInReversedProcessingOrder.Count; i++)
-        {
-            Machine machinesBeingProcessed = machinesInReversedProcessingOrder[i];
-
-            foreach (Machine childMachine in machinesBeingProcessed._outputSlots.Select(output => output._otherMachine).Where(childMachine => childMachine != null))
-            {
-                //Our desired output per second depends on all of these child's demand, make sure that their desired output per second is computed before us
-                if (machinesInReversedProcessingOrder.IndexOf(childMachine) < i)
-                {
-                    machinesInReversedProcessingOrder.Remove(childMachine);
-                    machinesInReversedProcessingOrder.Add(childMachine);
-                    i--;
-                }
-            }
-        }
-
-        machinesInReversedProcessingOrder.Reverse();
-
-        foreach (Machine b in machinesInReversedProcessingOrder)
+        List<Machine> orderedMachineList = GetOrderedMachineListForComputingDesiredProductionSpeed(machines);
+        
+        foreach (Machine b in orderedMachineList)
         {
             b._desiredItemsPerSecond = 0;
             bool allRequiredOutputsConnected = true;
-                        
+
             foreach (MachineConnector output in b._outputSlots)
             {
                 if (output._otherConnector == null)
@@ -95,7 +75,7 @@ public class ProductionSpeedComputation
         }
     }
 
-    public static void UpdatePossibleProductionSpeed(List<Machine> machines)
+    private static List<Machine> GetOrderedMachineListForComputingDesiredProductionSpeed(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
 
@@ -103,15 +83,15 @@ public class ProductionSpeedComputation
 
         for (int i = 0; i < machinesInReversedProcessingOrder.Count; i++)
         {
-            Machine machineBeingProcessed = machinesInReversedProcessingOrder[i];
+            Machine machinesBeingProcessed = machinesInReversedProcessingOrder[i];
 
-            foreach (Machine parentMachine in machineBeingProcessed._inputSlots.Select(x => x._otherMachine).Where(parentMachine => parentMachine != null))
+            foreach (Machine childMachine in machinesBeingProcessed._outputSlots.Select(output => output._otherMachine).Where(childMachine => childMachine != null))
             {
-                //Our desired output per second depends on all of the parent's possible rate, make sure that their output per second is computed before us
-                if (machinesInReversedProcessingOrder.IndexOf(parentMachine) < i)
+                //Our desired output per second depends on all of these child's demand, make sure that their desired output per second is computed before us
+                if (machinesInReversedProcessingOrder.IndexOf(childMachine) < i)
                 {
-                    machinesInReversedProcessingOrder.Remove(parentMachine);
-                    machinesInReversedProcessingOrder.Add(parentMachine);
+                    machinesInReversedProcessingOrder.Remove(childMachine);
+                    machinesInReversedProcessingOrder.Add(childMachine);
                     i--;
                 }
             }
@@ -119,13 +99,20 @@ public class ProductionSpeedComputation
 
         machinesInReversedProcessingOrder.Reverse();
 
+        return machinesInReversedProcessingOrder;
+    }
+
+    public static void UpdatePossibleProductionSpeed(List<Machine> machines)
+    {
+        List<Machine> machinesInReversedProcessingOrder = GetOrderedMachineListForComputingProductionSpeed(machines);
+
         foreach (Machine b in machinesInReversedProcessingOrder)
         {
             b._inputSatisfactionRatio = 1;
-            
-            foreach(MachineConnector input in b._inputSlots)
+
+            foreach (MachineConnector input in b._inputSlots)
             {
-                if(input._otherMachine == null)
+                if (input._otherMachine == null)
                 {
                     //Input is disconnected
                     input._itemsPerSecond = 0;
@@ -140,6 +127,7 @@ public class ProductionSpeedComputation
                 }
                 else
                 {
+                    //Input is connected
                     input._itemsPerSecond = input._otherConnector._itemsPerSecond;
                     input._satisfaction = input._otherConnector._satisfaction;
 
@@ -169,11 +157,11 @@ public class ProductionSpeedComputation
 
             b._itemsPerSecondToOutputs = b._itemsPerSecondFromProduction - b._itemsPerSecondToStorage;
 
-            if(desiredItemsPerSecondToOutputs == 0)
+            if (desiredItemsPerSecondToOutputs == 0)
                 b._outputSatisfaction = 0;
             else
                 b._outputSatisfaction = b._itemsPerSecondToOutputs / desiredItemsPerSecondToOutputs;
-            
+
             foreach (MachineConnector output in b._outputSlots)
             {
                 output._satisfaction = b._outputSatisfaction;
@@ -182,9 +170,36 @@ public class ProductionSpeedComputation
         }
     }
 
+    private static List<Machine> GetOrderedMachineListForComputingProductionSpeed(List<Machine> machines)
+    {
+        List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
+
+        machinesInReversedProcessingOrder.AddRange(machines);
+
+        for (int i = 0; i < machinesInReversedProcessingOrder.Count; i++)
+        {
+            Machine machineBeingProcessed = machinesInReversedProcessingOrder[i];
+
+            foreach (Machine parentMachine in machineBeingProcessed._inputSlots.Select(x => x._otherMachine).Where(parentMachine => parentMachine != null))
+            {
+                //Our desired output per second depends on all of the parent's possible rate, make sure that their output per second is computed before us
+                if (machinesInReversedProcessingOrder.IndexOf(parentMachine) < i)
+                {
+                    machinesInReversedProcessingOrder.Remove(parentMachine);
+                    machinesInReversedProcessingOrder.Add(parentMachine);
+                    i--;
+                }
+            }
+        }
+
+        machinesInReversedProcessingOrder.Reverse();
+
+        return machinesInReversedProcessingOrder;
+    }
+
     public static void UpdateProductionSpeed(List<Machine> machines)
     {
-        UpdateDesiredProductionSpeed(machines);
+        UpdateDesiredItemsPerSecond(machines);
         UpdatePossibleProductionSpeed(machines);
     }
 }
