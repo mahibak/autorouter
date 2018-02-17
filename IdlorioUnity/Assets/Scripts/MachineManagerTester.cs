@@ -38,31 +38,36 @@ public class MachineManagerTester : MonoBehaviour
     {
         Machine m1 = CreateMachine(0, 2);
         m1._maximumItemsPerSecondProduction = 10;
-        m1._position = new Vector3(0, 0, 1);
+        m1._position = new Vector3(0, 0, 4);
 
         Machine m2 = CreateMachine(1, 1);
         m2._maximumItemsPerSecondProduction = 2;
-        m2._position = new Vector3(2, 0, 0);
+        m2._position = new Vector3(8, 0, 0);
 
         Machine m3 = CreateMachine(1, 2);
         m3._maximumItemsPerSecondProduction = 7;
-        m3._position = new Vector3(2, 0, 2);
+        m3._position = new Vector3(8, 0, 8);
 
         Machine m4 = CreateMachine(2, 0);
         m4._maximumItemsPerSecondProduction = 2;
-        m4._position = new Vector3(4, 0, 0);
+        m4._position = new Vector3(16, 0, 0);
+        m4._storageCapacity = System.Single.PositiveInfinity;
+        m4._storageMode = Machine.StorageModes.In;
 
         Machine m5 = CreateMachine(1, 1);
         m5._maximumItemsPerSecondProduction = 5;
         m5._maximumItemsPerSecondFromStorage = System.Single.PositiveInfinity;
         m5._storageCapacity = System.Single.PositiveInfinity;
-        m5._itemsInStorage = 1000;
-        m5._position = new Vector3(4, 0, 3);
+        m5._itemsInStorage = System.Single.PositiveInfinity;
+        m5._storageMode = Machine.StorageModes.Out;
+        m5._position = new Vector3(16, 0, 12);
 
         Machine m6 = CreateMachine(1, 0);
         m6._maximumItemsPerSecondProduction = 6;
-        m6._position = new Vector3(6, 0, 3);
-        
+        m6._position = new Vector3(24, 0, 12);
+        m6._storageCapacity = System.Single.PositiveInfinity;
+        m6._storageMode = Machine.StorageModes.In;
+
         MachineManager.ConnectMachines(m1, 0, m2, 0);
         MachineManager.ConnectMachines(m1, 1, m3, 0);
         MachineManager.ConnectMachines(m2, 0, m4, 0);

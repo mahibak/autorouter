@@ -69,6 +69,8 @@ public class Machine
     {
         GDK.DrawFilledAABB(_position + new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), Color.gray);
 
+        GDK.DrawText(string.Format("{0},{1}", _itemsPerSecondFromProduction, _itemsPerSecondToStorage), _position, Color.black);
+
         foreach (MachineConnector m in _inputSlots)
         {
             if (m != null)
@@ -76,6 +78,7 @@ public class Machine
                 GDK.DrawFilledAABB(_position + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.red);
                 if (m._otherMachine != null)
                 {
+                    GDK.DrawText(string.Format("{0}/{1}", m._itemsPerSecond, m._desiredItemsPerSecond), _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
                     //GDK.DrawText(string.Format("Wants {0}", _desiredItemsPerSecond), _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
                     //GDK.DrawText(string.Format("Outs {0}", _itemsPerSecond), m._otherMachine._position + Vector3.up * 0.5f + m._otherConnector.GetWorldEdgeOffset(), Color.green);
                 }
