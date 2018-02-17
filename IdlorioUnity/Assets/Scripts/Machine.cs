@@ -65,6 +65,16 @@ public class Machine
         }
     }
 
+    public float GetSecondsBeforeRecalculationNeeded()
+    {
+        if (_itemsPerSecondToStorage > 0)
+            return (_storageCapacity - _itemsInStorage) / _itemsPerSecondToStorage;
+        else if (_itemsPerSecondToStorage < 0)
+            return _itemsInStorage / -_itemsPerSecondToStorage;
+        else
+            return System.Single.PositiveInfinity;
+    }
+
     public void DrawDebug()
     {
         GDK.DrawFilledAABB(_position + new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), Color.gray);

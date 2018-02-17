@@ -58,7 +58,7 @@ public class MachineManagerTester : MonoBehaviour
         m5._maximumItemsPerSecondProduction = 5;
         m5._maximumItemsPerSecondFromStorage = System.Single.PositiveInfinity;
         m5._storageCapacity = System.Single.PositiveInfinity;
-        m5._itemsInStorage = System.Single.PositiveInfinity;
+        m5._itemsInStorage = 5;
         m5._storageMode = Machine.StorageModes.Out;
         m5._position = new Vector3(16, 0, 12);
 
