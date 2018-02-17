@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ProductionSpeedComputation
 {
-    static void UpdateDesiredProductionSpeed(List<Machine> machines)
+    public static void UpdateDesiredProductionSpeed(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
 
@@ -31,41 +31,71 @@ public class ProductionSpeedComputation
 
         foreach (Machine b in machinesInReversedProcessingOrder)
         {
-            //Each machine's desired production speed can be computed here, and all dependencies are resolved in order.
-
-            if (b._outputSlots.Length == 0)
+            b._desiredItemsPerSecond = 0;
+            bool allRequiredOutputsConnected = true;
+                        
+            foreach (MachineConnector output in b._outputSlots)
             {
-                b._desiredItemsPerSecond = b._itemsPerSecond;
+                if (output._otherConnector == null)
+                {
+                    b._desiredItemsPerSecond = 0;
+
+                    //Unconnected output
+                    if (output._requiredForMachineOperation)
+                    {
+                        allRequiredOutputsConnected = false;
+                        break;
+                    }
+                }
+                else
+                {
+                    //Connected output
+                    output._desiredItemsPerSecond = output._otherConnector._desiredItemsPerSecond;
+
+                    b._desiredItemsPerSecond += output._desiredItemsPerSecond;
+                }
+            }
+
+            if (allRequiredOutputsConnected)
+            {
+                if ((b._storageMode & Machine.StorageModes.In) != 0)
+                {
+                    //Storage input mode
+                    if (b._desiredItemsPerSecond < b._maximumItemsPerSecondProduction)
+                    {
+                        //We may be able to produce more than what's needed, try to store some
+                        if (b._desiredItemsPerSecond + (b._storageCapacity - b._itemsInStorage) > b._maximumItemsPerSecondProduction)
+                        {
+                            //Production limited
+                            b._desiredItemsPerSecondToStorage = b._maximumItemsPerSecondProduction - b._desiredItemsPerSecond;
+                        }
+                        else
+                        {
+                            //Storage limited
+                            b._desiredItemsPerSecondToStorage = b._storageCapacity - b._itemsInStorage;
+                        }
+
+                        b._desiredItemsPerSecond += b._desiredItemsPerSecondToStorage;
+                    }
+                }
+                else
+                {
+                    //Can't store anything
+                    b._desiredItemsPerSecondToStorage = 0;
+                }
             }
             else
             {
-                b._desiredItemsPerSecond = 0;
-
-                bool atLeastOneRequiredOutput = false;
-                foreach (MachineConnector output in b._outputSlots)
-                {
-                    if (output._otherMachine == null)
-                    {
-                        if (output._requiredForMachineOperation)
-                        {
-                            b._desiredItemsPerSecond = 0;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        b._desiredItemsPerSecond += Mathf.Min(output._otherMachine._desiredItemsPerSecond, output._otherMachine._maximumItemsPerSecond);
-                        atLeastOneRequiredOutput = true;
-                    }
-                }
-
-                if (!atLeastOneRequiredOutput)
-                    b._desiredItemsPerSecond = b._maximumItemsPerSecond;
+                //Some required outputs are disconnected
+                b._desiredItemsPerSecondToStorage = 0;
             }
+
+            foreach (MachineConnector input in b._inputSlots)
+                input._desiredItemsPerSecond = Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecondProduction);
         }
     }
 
-    static void UpdatePossibleProductionSpeed(List<Machine> machines)
+    public static void UpdatePossibleProductionSpeed(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
 
@@ -91,25 +121,60 @@ public class ProductionSpeedComputation
 
         foreach (Machine b in machinesInReversedProcessingOrder)
         {
-            float maximumProductionSpeed = Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecond);
-
+            b._inputSatisfactionRatio = 1;
+            
             foreach(MachineConnector input in b._inputSlots)
             {
                 if(input._otherMachine == null)
                 {
+                    //Input is disconnected
+                    input._itemsPerSecond = 0;
+
                     if (input._requiredForMachineOperation)
                     {
-                        maximumProductionSpeed = 0;
+                        //Required input is disconnected
+                        b._inputSatisfactionRatio = 0;
+                        input._itemsPerSecond = 0;
                         break;
                     }
                 }
                 else
                 {
-                    maximumProductionSpeed = System.Math.Min(maximumProductionSpeed, Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecond) * System.Math.Min(1, input._otherMachine._maximumItemsPerSecond / input._otherMachine._desiredItemsPerSecond));
+                    input._itemsPerSecond = input._otherConnector._itemsPerSecond;
+                    input._satisfaction = input._otherConnector._satisfaction;
+
+                    b._inputSatisfactionRatio = Mathf.Min(b._inputSatisfactionRatio, input._satisfaction);
                 }
             }
+
+            b._itemsPerSecondFromProduction = b._inputSatisfactionRatio * Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecondProduction);
+
+            float desiredItemsPerSecondToOutputs = b._desiredItemsPerSecond - b._desiredItemsPerSecondToStorage;
+
+            if (b._itemsPerSecondFromProduction < desiredItemsPerSecondToOutputs)
+            {
+                //Production output doesn't match demand, try to output from storage too
+                float desireOutputFromStorage = b._desiredItemsPerSecond - b._itemsPerSecondFromProduction;
+
+                if ((b._storageMode & Machine.StorageModes.Out) == 0)
+                    desireOutputFromStorage = 0;
+
+                b._itemsPerSecondToStorage = -Mathf.Min(desireOutputFromStorage, b._itemsInStorage, b._maximumItemsPerSecondFromStorage, b._maximumItemsPerSecondOutput - b._itemsPerSecondFromProduction);
+            }
+            else
+            {
+                //Production output matches demand, send whatever we can to storage
+                b._itemsPerSecondToStorage = Mathf.Max(0, b._itemsPerSecondFromProduction - desiredItemsPerSecondToOutputs);
+            }
+
+            b._itemsPerSecondToOutputs = b._itemsPerSecondFromProduction - b._itemsPerSecondToStorage;
+            b._outputSatisfaction = b._itemsPerSecondToOutputs / desiredItemsPerSecondToOutputs;
             
-            b._itemsPerSecond = maximumProductionSpeed;
+            foreach (MachineConnector output in b._outputSlots)
+            {
+                output._satisfaction = b._outputSatisfaction;
+                output._itemsPerSecond = output._desiredItemsPerSecond * output._satisfaction;
+            }
         }
     }
 

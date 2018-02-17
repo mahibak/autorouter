@@ -69,4 +69,10 @@ public class MachineManager
             m.DrawDebug();
         }
     }
+
+    public static void Reset()
+    {
+        CreateInstance();
+        _instance.m_machines.Clear();
+    }
 }

@@ -36,3 +36,5 @@ IdlorioUnity/sysinfo.txt
 IdlorioUnity/*.apk
 IdlorioUnity/*.unitypackage
 IdlorioUnity/\.vs/IdlorioUnity/v15/Server/sqlite3/
+IdlorioUnityTests/bin/
+IdlorioUnityTests/obj/

@@ -11,10 +11,31 @@ public class Machine
     public MachineConnector[] _inputSlots;
     public MachineConnector[] _outputSlots;
 
-    public float _maximumItemsPerSecond = 0;
-    public float _desiredItemsPerSecond = 0;
-    public float _itemsPerSecond = 0;
+    //Specs
+    public float _maximumItemsPerSecondFromStorage = 0;
+    public float _maximumItemsPerSecondProduction = 0;
+    public float _maximumItemsPerSecondOutput = System.Single.PositiveInfinity;
+    public float _storageCapacity = 0;
 
+    //Computation results
+    public float _desiredItemsPerSecond = 0;
+    public float _itemsPerSecondFromProduction = 0;
+    public float _itemsPerSecondToOutputs = 0;
+    public float _inputSatisfactionRatio = 0;
+    public float _itemsInStorage = 0;
+    public float _desiredItemsPerSecondToStorage = 0; //Can be negative if items are removed from storage
+    public float _itemsPerSecondToStorage = 0;
+    public float _outputSatisfaction = 0;
+    
+
+    [System.Flags]
+    public enum StorageModes
+    {
+        In = 0x1,
+        Out = 0x02,
+    }
+    public StorageModes _storageMode = 0;
+    
     public Machine()
     {
         InitializeTestSlots();

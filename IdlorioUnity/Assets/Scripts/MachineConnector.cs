@@ -20,6 +20,10 @@ public class MachineConnector
     public Direction _localDir = Direction.Up;
     public bool _requiredForMachineOperation = false;
 
+    public float _desiredItemsPerSecond;
+    public float _itemsPerSecond;
+    public float _satisfaction;
+
     public Vector3 GetWorldEdgeOffset()
     {
         Vector3 offset = new Vector3(_localX + 0.5f, 0, _localY + 0.5f);
