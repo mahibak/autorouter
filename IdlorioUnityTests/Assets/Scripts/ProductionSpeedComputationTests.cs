@@ -362,5 +362,57 @@ namespace Tests
             Assert.AreEqual(m3._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m3._itemsPerSecondToStorage, 3);
         }
+
+        [TestMethod()]
+        public void UpdateDesiredProductionSpeedTestUnconnectedOutput()
+        {
+            Reset();
+            List<Machine> machines = new List<Machine>();
+
+            Machine m1 = CreateMachine(0, 1);
+            m1._maximumItemsPerSecondProduction = 3;
+
+            Machine m2 = CreateMachine(1, 1);
+            m2._maximumItemsPerSecondProduction = 5;
+            m2._storageCapacity = 1000;
+            m2._outputSlots[0]._requiredForMachineOperation = true;
+            m2._storageMode = Machine.StorageModes.In;
+
+            MachineManager.ConnectMachines(m1, 0, m2, 0);
+
+            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            Assert.AreEqual(m1._itemsPerSecondToOutputs, 0);
+            Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
+
+            Assert.AreEqual(m2._itemsPerSecondFromProduction, 0);
+            Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
+            Assert.AreEqual(m2._itemsPerSecondToStorage, 0);
+        }
+
+        [TestMethod()]
+        public void UpdateDesiredProductionSpeedTestUnconnectedInput()
+        {
+            Reset();
+            List<Machine> machines = new List<Machine>();
+
+            Machine m1 = CreateMachine(1, 1);
+            m1._maximumItemsPerSecondProduction = 3;
+            m1._inputSlots[0]._requiredForMachineOperation = true;
+
+            Machine m2 = CreateMachine(1, 0);
+            m2._maximumItemsPerSecondProduction = 5;
+            m2._storageCapacity = 1000;
+            m2._storageMode = Machine.StorageModes.In;
+
+            MachineManager.ConnectMachines(m1, 0, m2, 0);
+
+            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            Assert.AreEqual(m1._itemsPerSecondToOutputs, 0);
+            Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
+
+            Assert.AreEqual(m2._itemsPerSecondFromProduction, 0);
+            Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
+            Assert.AreEqual(m2._itemsPerSecondToStorage, 0);
+        }
     }
 }

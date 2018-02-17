@@ -168,7 +168,11 @@ public class ProductionSpeedComputation
             }
 
             b._itemsPerSecondToOutputs = b._itemsPerSecondFromProduction - b._itemsPerSecondToStorage;
-            b._outputSatisfaction = b._itemsPerSecondToOutputs / desiredItemsPerSecondToOutputs;
+
+            if(desiredItemsPerSecondToOutputs == 0)
+                b._outputSatisfaction = 0;
+            else
+                b._outputSatisfaction = b._itemsPerSecondToOutputs / desiredItemsPerSecondToOutputs;
             
             foreach (MachineConnector output in b._outputSlots)
             {
