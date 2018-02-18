@@ -60,14 +60,14 @@ public class Machine
         for (int i = 0; i < _inputSlots.Length; ++i)
         {
             MachineConnector conn = new MachineConnector();
-            conn._localDir = ConnectorDir.Left;
+            conn._localDir = Direction.Left;
             _inputSlots[i] = conn;
         }
 
         for (int i = 0; i < _outputSlots.Length; ++i)
         {
             MachineConnector conn = new MachineConnector();
-            conn._localDir = ConnectorDir.Right;
+            conn._localDir = Direction.Right;
             conn._local.X = _sizeX - 1;
             conn._local.Y = _sizeY - 1;
             _outputSlots[i] = conn;

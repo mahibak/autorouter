@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 public enum Direction
 {
-    Up,
-    Right,
-    Left,
-    Down,
+    Up = 0,
+    Right = 1,
+    Down = 2,
+    Left = 3,
 }

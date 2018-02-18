@@ -49,7 +49,9 @@ public class GDK
     {
         foreach(GDKShape shape in _pendingShapeRequests)
         {
-            DrawMesh(shape.GetMesh(), shape.GetColor(), shape.GetUseDepthBuffer());
+            Mesh mesh = shape.GetMesh();
+            DrawMesh(mesh, shape.GetColor(), shape.GetUseDepthBuffer());
+            GameObject.Destroy(mesh);
 
             //for (int i = 0; i < vertices.Length; i++)
             //{

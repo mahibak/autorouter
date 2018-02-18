@@ -2,14 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ConnectorDir
-{
-    Up = 0,
-    Right = 1,
-    Down = 2,
-    Left = 3,
-}
-
 public class MachineConnector
 {
     // TODO : This probably doesn't need to be all public
@@ -17,7 +9,7 @@ public class MachineConnector
     public Machine _otherMachine;
     public MachineConnector _otherConnector;
     public Point _local = new Point(0, 0);
-    public ConnectorDir _localDir = ConnectorDir.Up;
+    public Direction _localDir = Direction.Up;
     public bool _requiredForMachineOperation = false;
 
     public float _desiredItemsPerSecond;
@@ -46,16 +38,16 @@ public class MachineConnector
 
         switch (GetWorldDir())
         {
-            case ConnectorDir.Up:
+            case Direction.Up:
                 offset[2] += 0.5f;
                 break;
-            case ConnectorDir.Down:
+            case Direction.Down:
                 offset[2] -= 0.5f;
                 break;
-            case ConnectorDir.Left:
+            case Direction.Left:
                 offset[0] -= 0.5f;
                 break;
-            case ConnectorDir.Right:
+            case Direction.Right:
                 offset[0] += 0.5f;
                 break;
         }
@@ -63,8 +55,8 @@ public class MachineConnector
         return offset;
     }
 
-    public ConnectorDir GetWorldDir()
+    public Direction GetWorldDir()
     {
-        return (ConnectorDir)(((int)_localDir + (_thisMachine != null ? (int)_thisMachine._rotation : 0)) % 4);
+        return (Direction)(((int)_localDir + (_thisMachine != null ? (int)_thisMachine._rotation : 0)) % 4);
     }
 }
