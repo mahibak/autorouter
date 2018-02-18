@@ -7,27 +7,15 @@ public class ProductionSpeedComputation
 {
     public static void UpdateDesiredItemsPerSecond(List<Machine> machines)
     {
-        List<Machine> orderedMachineList = GetOrderedMachineListForComputingDesiredProductionSpeed(machines);
+        List<Machine> orderedMachineList = GetOrderedMachineListBottomFirst(machines);
         
         foreach (Machine b in orderedMachineList)
         {
             b._desiredItemsPerSecond = 0;
-            bool allRequiredOutputsConnected = true;
 
             foreach (MachineConnector output in b._outputSlots)
             {
-                if (output._otherConnector == null)
-                {
-                    b._desiredItemsPerSecond = 0;
-
-                    //Unconnected output
-                    if (output._requiredForMachineOperation)
-                    {
-                        allRequiredOutputsConnected = false;
-                        break;
-                    }
-                }
-                else
+                if (output._otherConnector != null)
                 {
                     //Connected output
                     output._desiredItemsPerSecond = output._otherConnector._desiredItemsPerSecond;
@@ -35,47 +23,44 @@ public class ProductionSpeedComputation
                     b._desiredItemsPerSecond += output._desiredItemsPerSecond;
                 }
             }
-
-            if (allRequiredOutputsConnected)
+            
+            if ((b._storageMode & Machine.StorageModes.In) != 0)
             {
-                if ((b._storageMode & Machine.StorageModes.In) != 0)
+                //Storage input mode
+                if (b._desiredItemsPerSecond < b._maximumItemsPerSecondProduction)
                 {
-                    //Storage input mode
-                    if (b._desiredItemsPerSecond < b._maximumItemsPerSecondProduction)
+                    //We may be able to produce more than what's needed, try to store some
+                    if (b._desiredItemsPerSecond + (b._storageCapacity - b._itemsInStorage) > b._maximumItemsPerSecondProduction)
                     {
-                        //We may be able to produce more than what's needed, try to store some
-                        if (b._desiredItemsPerSecond + (b._storageCapacity - b._itemsInStorage) > b._maximumItemsPerSecondProduction)
-                        {
-                            //Production limited
-                            b._desiredItemsPerSecondToStorage = b._maximumItemsPerSecondProduction - b._desiredItemsPerSecond;
-                        }
-                        else
-                        {
-                            //Storage limited
-                            b._desiredItemsPerSecondToStorage = b._storageCapacity - b._itemsInStorage;
-                        }
-
-                        b._desiredItemsPerSecond += b._desiredItemsPerSecondToStorage;
+                        //Production limited
+                        b._desiredItemsPerSecondToStorage = b._maximumItemsPerSecondProduction - b._desiredItemsPerSecond;
                     }
-                }
-                else
-                {
-                    //Can't store anything
-                    b._desiredItemsPerSecondToStorage = 0;
+                    else
+                    {
+                        //Storage limited
+                        b._desiredItemsPerSecondToStorage = b._storageCapacity - b._itemsInStorage;
+                    }
+
+                    b._desiredItemsPerSecond += b._desiredItemsPerSecondToStorage;
                 }
             }
             else
             {
-                //Some required outputs are disconnected
+                //Can't store anything
                 b._desiredItemsPerSecondToStorage = 0;
             }
-
+            
             foreach (MachineConnector input in b._inputSlots)
-                input._desiredItemsPerSecond = Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecondProduction);
+            {
+                if (b._productionEnabled)
+                    input._desiredItemsPerSecond = Mathf.Min(b._desiredItemsPerSecond, b._maximumItemsPerSecondProduction);
+                else
+                    input._desiredItemsPerSecond = 0;
+            }
         }
     }
 
-    private static List<Machine> GetOrderedMachineListForComputingDesiredProductionSpeed(List<Machine> machines)
+    private static List<Machine> GetOrderedMachineListBottomFirst(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
 
@@ -104,30 +89,16 @@ public class ProductionSpeedComputation
 
     public static void UpdatePossibleProductionSpeed(List<Machine> machines)
     {
-        List<Machine> machinesInReversedProcessingOrder = GetOrderedMachineListForComputingProductionSpeed(machines);
+        List<Machine> machinesInReversedProcessingOrder = GetOrderedMachineListTopDown(machines);
 
         foreach (Machine b in machinesInReversedProcessingOrder)
         {
             b._inputSatisfactionRatio = 1;
 
-            foreach (MachineConnector input in b._inputSlots)
+            if (b._inputsUsedForRecipe != null)
             {
-                if (input._otherMachine == null)
+                foreach (MachineConnector input in b._inputsUsedForRecipe)
                 {
-                    //Input is disconnected
-                    input._itemsPerSecond = 0;
-
-                    if (input._requiredForMachineOperation)
-                    {
-                        //Required input is disconnected
-                        b._inputSatisfactionRatio = 0;
-                        input._itemsPerSecond = 0;
-                        break;
-                    }
-                }
-                else
-                {
-                    //Input is connected
                     input._itemsPerSecond = input._otherConnector._itemsPerSecond;
                     input._satisfaction = input._otherConnector._satisfaction;
 
@@ -170,7 +141,7 @@ public class ProductionSpeedComputation
         }
     }
 
-    private static List<Machine> GetOrderedMachineListForComputingProductionSpeed(List<Machine> machines)
+    private static List<Machine> GetOrderedMachineListTopDown(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
 
@@ -197,8 +168,97 @@ public class ProductionSpeedComputation
         return machinesInReversedProcessingOrder;
     }
 
-    public static void UpdateProductionSpeed(List<Machine> machines)
+    private static void UpdateRecipes(List<Machine> machines)
     {
+        machines = GetOrderedMachineListTopDown(machines);
+
+        foreach(Machine m in machines)
+        {
+            List<System.Tuple<Recipe, MachineConnector[]>> possibleRecipes = new List<System.Tuple<Recipe, MachineConnector[]>>();
+                
+            //Try to find a new recipe
+            foreach (Recipe r in Recipe.Recipies)
+            {
+                if (m._itemsInStorage > 0)
+                {
+                    //Todo...
+                }
+                MachineConnector[] inputSetup = m.GetInputSetupForRecipe(r);
+                if (inputSetup != null)
+                    possibleRecipes.Add(new System.Tuple<Recipe, MachineConnector[]>(r, inputSetup));
+            }
+                
+            if (possibleRecipes.Count == 0)
+            {
+                MachineConnector firstConnectedInput = m.GetConnectedInputsThatGiveItems().FirstOrDefault();
+
+                if (firstConnectedInput == null)
+                {
+                    m._recipe = null;
+                }
+                else
+                {
+                    Recipe r = new Recipe();
+                    r._outputs.Add(m.ApplyTransformation(firstConnectedInput._item));
+                    m._recipe = r;
+                }
+            }
+            else
+            {
+                m._recipe = possibleRecipes[0].Item1;
+                m._inputsUsedForRecipe = possibleRecipes[0].Item2;
+            }
+            
+            if(m._recipe == null)
+            {
+                if(m._itemsInStorage > 0)
+                {
+                    foreach(MachineConnector c in m._outputSlots)
+                    {
+                        c._item = m._itemInStorage;
+                        if(c._otherConnector != null)
+                            c._otherConnector._item = m._itemInStorage;
+                    }
+                }
+                else
+                {
+                    m._recipe = null;
+                    m._itemInStorage = null;
+
+                    foreach (MachineConnector c in m._outputSlots)
+                    {
+                        c._item = null;
+                        if (c._otherConnector != null)
+                            c._otherConnector._item = null;
+                    }
+                }
+
+                m._productionEnabled = false;
+            }
+            else
+            {
+                foreach (MachineConnector c in m._outputSlots)
+                {
+                    c._item = null;
+                    if (c._otherConnector != null)
+                        c._otherConnector._item = null;
+                }
+
+                for (int i = 0; i < m._outputSlots.Length; i++)
+                {
+                    m._outputSlots[i]._item = m._recipe._outputs[i % m._recipe._outputs.Count];
+                    if (m._outputSlots[i]._otherConnector != null)
+                        m._outputSlots[i]._otherConnector._item = m._outputSlots[i]._item;
+                }
+
+                m._productionEnabled = true;
+            }
+        }
+    }
+
+    public static void UpdateMachineLinks(List<Machine> machines)
+    {
+        //UpdateRecipes(machines);
         UpdateDesiredItemsPerSecond(machines);
         UpdatePossibleProductionSpeed(machines);
     }

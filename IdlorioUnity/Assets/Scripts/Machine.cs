@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum MachineRot
@@ -37,7 +38,32 @@ public class Machine
     public float _desiredItemsPerSecondToStorage = 0; //Can be negative if items are removed from storage
     public float _itemsPerSecondToStorage = 0;
     public float _outputSatisfaction = 0;
-    
+
+    public Properties _addedProperty = Properties.None;
+    public Item _itemInStorage = null;
+    public Recipe _recipe = null;
+    public MachineConnector[] _inputsUsedForRecipe = null;
+    public bool _productionEnabled = true;
+
+    public Item ApplyTransformation(Item i)
+    {
+        Item ret = i.GetCopy();
+
+        if (_addedProperty == Properties.None)
+            return ret;
+
+        if (ret._properties.ContainsKey(_addedProperty))
+        {
+            ret._properties[_addedProperty]++;
+            ret._properties[_addedProperty]++;
+        }
+        else
+        {
+            ret._properties.Add(_addedProperty, 1);
+        }
+
+        return ret;
+    }
 
     [System.Flags]
     public enum StorageModes
@@ -102,17 +128,16 @@ public class Machine
 
         GDK.DrawFilledAABB(_position.ToVector3() + new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), Color.gray);
         
-        GDK.DrawText(string.Format("{0},{1}", _itemsPerSecondFromProduction, _itemsPerSecondToStorage), _position.ToVector3(), Color.black);
+        GDK.DrawText(string.Format("{0},{1},{2}", _itemsPerSecondFromProduction, _itemsPerSecondToStorage, _recipe), _position.ToVector3(), Color.black);
 
         foreach (MachineConnector m in _inputSlots)
         {
             if (m != null)
             {
                 GDK.DrawFilledAABB(_position.ToVector3() + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.red);
-                if (m._otherMachine != null)
-                {
-                    GDK.DrawText(string.Format("{0}/{1}", m._itemsPerSecond, m._desiredItemsPerSecond), _position.ToVector3() + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
-                }
+                GDK.DrawText(string.Format("{0}/{1} {2}", m._itemsPerSecond, m._desiredItemsPerSecond, m._item), _position.ToVector3() + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
+
+  
             }
         }
 
@@ -121,6 +146,7 @@ public class Machine
             if (m != null)
             {
                 GDK.DrawFilledAABB(_position.ToVector3() + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.green);
+                GDK.DrawText(string.Format("{0}", m._item), _position.ToVector3() + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
 
                 if (m._otherMachine != null)
                 {
@@ -128,5 +154,56 @@ public class Machine
                 }
             }
         }
+    }
+
+    public IEnumerable<MachineConnector> GetConnectedInputs()
+    {
+        foreach (MachineConnector m in _inputSlots)
+            if (m._otherConnector != null)
+                yield return m;
+    }
+
+    public IEnumerable<MachineConnector> GetConnectedInputsThatGiveItems()
+    {
+        foreach (MachineConnector m in _inputSlots)
+            if (m._otherConnector != null && m._item != null)
+                yield return m;
+    }
+
+    public IEnumerable<MachineConnector> GetConnectedOutputs()
+    {
+        foreach (MachineConnector m in _outputSlots)
+            if (m._otherConnector != null)
+                yield return m;
+    }
+
+    public MachineConnector[] GetInputSetupForRecipe(Recipe r)
+    {
+        List<MachineConnector> connectedInputs = GetConnectedInputsThatGiveItems().ToList();
+
+        if (connectedInputs.Count > _inputSlots.Length)
+            return null;
+
+        if (r._outputs.Count > _outputSlots.Length && (_storageMode & Machine.StorageModes.In) == 0)
+            return null;
+
+        foreach (MachineConnector[] inputPermutation in connectedInputs.GetPermutations().Select(x => x.ToArray()))
+        {
+            bool goodRecipe = true;
+
+            for (int i = 0; i < inputPermutation.Length; i++)
+            {
+                if (!ApplyTransformation(inputPermutation[i]._item).Satisfies(r._inputs[i]))
+                {
+                    goodRecipe = false;
+                    break;
+                }
+            }
+
+            if (goodRecipe)
+                return inputPermutation;
+        }
+
+        return null;
     }
 }

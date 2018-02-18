@@ -125,7 +125,11 @@ static class Extensions
 
     public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list, int length)
     {
-        if (length == 1) return list.Select(t => new T[] { t });
+        if (length == 0)
+            return Enumerable.Empty<IEnumerable<T>>();
+
+        if (length == 1)
+            return list.Select(t => new T[] { t });
 
         return GetPermutations(list, length - 1)
             .SelectMany(t => list.Where(e => !t.Contains(e)),
