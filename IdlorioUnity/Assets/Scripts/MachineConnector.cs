@@ -16,26 +16,30 @@ public class MachineConnector
     public Machine _thisMachine;
     public Machine _otherMachine;
     public MachineConnector _otherConnector;
-    public int _localX = 0;
-    public int _localY = 0;
+    public Point _local = new Point(0, 0);
     public ConnectorDir _localDir = ConnectorDir.Up;
+    public bool _requiredForMachineOperation = false;
+
+    public float _desiredItemsPerSecond;
+    public float _itemsPerSecond;
+    public float _satisfaction;
 
     public Vector3 GetWorldEdgeOffset()
     {
-        Vector3 offset = new Vector3(_localX + 0.5f, 0, _localY + 0.5f);
+        Vector3 offset = new Vector3(_local.X + 0.5f, 0, _local.Y + 0.5f);
 
         if (_thisMachine != null)
         {
             switch (_thisMachine._rotation)
             {
                 case MachineRot.CW90:
-                    offset = new Vector3(_localY + 0.5f, 0, _thisMachine._sizeX - _localX - 0.5f);
+                    offset = new Vector3(_local.Y + 0.5f, 0, _thisMachine._sizeX - _local.X - 0.5f);
                     break;
                 case MachineRot.CW180:
-                    offset = new Vector3(_thisMachine._sizeX - _localX - 0.5f, 0, _thisMachine._sizeY - _localY - 0.5f);
+                    offset = new Vector3(_thisMachine._sizeX - _local.X - 0.5f, 0, _thisMachine._sizeY - _local.Y - 0.5f);
                     break;
                 case MachineRot.CW270:
-                    offset = new Vector3(_thisMachine._sizeY - _localY - 0.5f, 0, _localX + 0.5f);
+                    offset = new Vector3(_thisMachine._sizeY - _local.Y - 0.5f, 0, _local.X + 0.5f);
                     break;
             }
         }

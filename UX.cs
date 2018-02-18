@@ -45,7 +45,7 @@ namespace Idlorio
         {
         }
 
-        public void OnBuildingClicked(Building building, Point point)
+        public void OnBuildingClicked(Machine building, Point point)
         {
             switch (uxState)
             {
@@ -56,7 +56,7 @@ namespace Idlorio
             }
         }
 
-        public void OnBuildingHeld(Building building, Point point)
+        public void OnBuildingHeld(Machine building, Point point)
         {
             switch (uxState)
             {
@@ -99,7 +99,7 @@ namespace Idlorio
             switch (uxState)
             {
                 case UxStates.Idle:
-                    Building b = new Building(map, new Point(point.X, point.Y));
+                    Machine b = new Machine(map, new Point(point.X, point.Y));
                     b.AddRandomInputsOutputs();
                     if (!b.IsIntersectingThings())
                         map.Add(b);
