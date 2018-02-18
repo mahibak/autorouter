@@ -18,7 +18,18 @@ public class ConveyorSegment
             }
             else
             {
+                Vector3 entry = _start.ToVector3() - new Point(_startCurveDirection).ToVector3() * 0.5f;
+                Vector3 centerOfRotation = entry + new Point(_linearDirection).ToVector3() * 0.5f;
 
+                float angleToDo = Vector3.SignedAngle(new Point(_startCurveDirection).ToVector3(), new Point(_linearDirection).ToVector3(), new Vector3(0, 1, 0)); ;
+
+                Matrix4x4 mat = Matrix4x4.Rotate(Quaternion.Euler(0, angleToDo * (time / StartLength), 0));
+
+                Vector3 displacement = mat.MultiplyVector(entry - centerOfRotation);
+
+                Vector3 positionToDraw = centerOfRotation + displacement;
+
+                GDK.DrawFilledAABB(positionToDraw + new Vector3(0.5f, 1.0f, 0.5f), new Vector3(0.25f, 0.25f, 0.25f), Color.yellow);
             }
         }
         else if (time < Length - EndLength)
@@ -33,7 +44,18 @@ public class ConveyorSegment
             }
             else
             {
+                Vector3 entry = _end.ToVector3() - new Point(_linearDirection).ToVector3() * 0.5f;
+                Vector3 centerOfRotation = entry + new Point(_endCurveDirection).ToVector3() * 0.5f;
 
+                float angleToDo = Vector3.SignedAngle(new Point(_linearDirection).ToVector3(), new Point(_endCurveDirection).ToVector3(), new Vector3(0, 1, 0)); ;
+
+                Matrix4x4 mat = Matrix4x4.Rotate(Quaternion.Euler(0, angleToDo * ((time - Length + EndLength) / EndLength), 0));
+
+                Vector3 displacement = mat.MultiplyVector(entry - centerOfRotation);
+
+                Vector3 positionToDraw = centerOfRotation + displacement;
+
+                GDK.DrawFilledAABB(positionToDraw + new Vector3(0.5f, 1.0f, 0.5f), new Vector3(0.25f, 0.25f, 0.25f), Color.yellow);
             }
         }
     }
