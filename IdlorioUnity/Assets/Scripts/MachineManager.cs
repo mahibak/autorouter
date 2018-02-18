@@ -51,9 +51,11 @@ public class MachineManager
             && destination._inputSlots[destSlot]._otherMachine == null)
         {
             // TODO : Probably sharing way too much info
+            source._outputSlots[sourceSlot]._thisMachine = source;
             source._outputSlots[sourceSlot]._otherMachine = destination;
             source._outputSlots[sourceSlot]._otherConnector = destination._inputSlots[destSlot];
 
+            destination._inputSlots[destSlot]._thisMachine = destination;
             destination._inputSlots[destSlot]._otherMachine = source;
             destination._inputSlots[destSlot]._otherConnector = source._outputSlots[sourceSlot];
         }

@@ -13,6 +13,7 @@ public class MachineManagerTester : MonoBehaviour
         m2._sizeX = 2;
         m2._sizeY = 3;
         m2.InitializeTestSlots();
+        m2._rotation = MachineRot.CW270;
         Machine m3 = new Machine();
         AddMachine(m1);
         AddMachine(m2);

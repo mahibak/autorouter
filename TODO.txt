@@ -44,7 +44,7 @@
 1.9.1 Placing machines
 1.9.2 Placing conveyor belts
 1.9.3 Moving machines
-1.9.4 Moving containers
+1.9.4 Rotating machines
 1.9.5 Routing conveyor belts
 1.9.6 Machine picking list
 1.9.7 Transformation informations (how to build / what to build from)

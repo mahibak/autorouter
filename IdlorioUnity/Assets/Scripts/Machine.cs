@@ -2,11 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum MachineRot
+{
+    CW0 = 0,
+    CW90 = 1,
+    CW180 = 2,
+    CW270 = 3,
+}
+
 public class Machine
 {
     public Vector3 _position; // Position of bottom left tile. TODO : Replace with int Point instead of float Vector.
     public int _sizeX = 1;
     public int _sizeY = 1;
+    public MachineRot _rotation = MachineRot.CW0;
 
     public MachineConnector[] _inputSlots;
     public MachineConnector[] _outputSlots;
@@ -24,14 +33,14 @@ public class Machine
         for (int i = 0; i < _inputSlots.Length; ++i)
         {
             MachineConnector conn = new MachineConnector();
-            conn._localDir = Direction.Left;
+            conn._localDir = ConnectorDir.Left;
             _inputSlots[i] = conn;
         }
 
         for (int i = 0; i < _outputSlots.Length; ++i)
         {
             MachineConnector conn = new MachineConnector();
-            conn._localDir = Direction.Right;
+            conn._localDir = ConnectorDir.Right;
             conn._localX = _sizeX - 1;
             conn._localY = _sizeY - 1;
             _outputSlots[i] = conn;
@@ -40,7 +49,21 @@ public class Machine
 
     public void DrawDebug()
     {
-        GDK.DrawFilledAABB(_position + new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), new Vector3(0.5f * _sizeX, 0.5f, 0.5f * _sizeY), Color.gray);
+        int worldX;
+        int worldY;
+
+        if (_rotation == MachineRot.CW0 || _rotation == MachineRot.CW180)
+        {
+            worldX = _sizeX;
+            worldY = _sizeY;
+        }
+        else
+        {
+            worldX = _sizeY;
+            worldY = _sizeX;
+        }
+
+        GDK.DrawFilledAABB(_position + new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), Color.gray);
 
         foreach (MachineConnector m in _inputSlots)
         {
