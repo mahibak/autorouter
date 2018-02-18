@@ -6,17 +6,96 @@ public class ConveyorSegment
 {
     public Point _start = new Point(1, 1);
     public Point _end = new Point(5, 1);
+    public float _startLength = 0;
 
-    public void DrawDebug()
+    void DrawBox(float time)
     {
-        if(_start.X == _end.X)
+        if (time < StartLength)
+        {
+            if (_linearDirection == _startCurveDirection)
+            {
+                GDK.DrawFilledAABB(_start.ToVector3() + new Point(_linearDirection).ToVector3() * (time - 0.5f) + new Vector3(0.5f, 1.0f, 0.5f), new Vector3(0.25f, 0.25f, 0.25f), Color.yellow);
+            }
+            else
+            {
+
+            }
+        }
+        else if (time < Length - EndLength)
+        {
+            GDK.DrawFilledAABB(_start.ToVector3() + new Point(_linearDirection).ToVector3() * (time - StartLength + 0.5f) + new Vector3(0.5f, 1.0f, 0.5f), new Vector3(0.25f, 0.25f, 0.25f), Color.yellow);
+        }
+        else
+        {
+            if (_linearDirection == _endCurveDirection)
+            {
+                GDK.DrawFilledAABB(_start.ToVector3() + new Point(_linearDirection).ToVector3() * (time - 0.5f) + new Vector3(0.5f, 1.0f, 0.5f), new Vector3(0.25f, 0.25f, 0.25f), Color.yellow);
+            }
+            else
+            {
+
+            }
+        }
+    }
+
+    public void DrawDebug(float relativeTime)
+    {
+        if (_start.X == _end.X)
             GDK.DrawFilledAABB(new Vector3(_start.X + 0.5f, 0.1f, (System.Math.Abs(_start.Y + _end.Y)) / 2.0f + 0.5f), new Vector3(System.Math.Abs(_end.X - _start.X) + 1, 0.1f, System.Math.Abs(_end.Y - _start.Y) + 1) / 2, Color.magenta);
         else
             GDK.DrawFilledAABB(new Vector3((_start.X + _end.X) / 2.0f + 0.5f, 0.1f, _start.Y + 0.5f), new Vector3(System.Math.Abs(_end.X - _start.X) + 1, 0.1f, System.Math.Abs(_end.Y - _start.Y) + 1) / 2, Color.magenta);
+
+
+        
+        relativeTime -= _startLength;
+
+        if (relativeTime >= 0)
+        {
+            float length = Length;
+
+            for (float i = relativeTime % 2; i < Mathf.Min(relativeTime, length); i += 2)
+            {
+                DrawBox(i);
+            }
+        }
     }
 
     public IEnumerable<Point> GetOccupiedPoints()
     {
         return _start.GetPointsTo(_end);
+    }
+
+    public Direction _linearDirection;
+    public Direction _endCurveDirection;
+    public Direction _startCurveDirection;
+
+    public float StartLength
+    {
+        get
+        {
+            if (_linearDirection == _startCurveDirection)
+                return 1.0f;
+            else
+                return Mathf.PI / 4.0f;
+        }
+    }
+
+    public float EndLength
+    {
+        get
+        {
+            if (_linearDirection == _endCurveDirection)
+                return 1.0f;
+            else
+                return Mathf.PI / 4.0f;
+        }
+    }
+    
+    public float Length
+    {
+        get
+        {
+            return (_end - _start).ManhattanLength - 1 + StartLength + EndLength;
+        }
     }
 }

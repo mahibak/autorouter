@@ -45,11 +45,11 @@ static class Extensions
         yield return middle;
     }
 
-    public static IEnumerable<Point[]> ScanWindow(this IEnumerable<Point> points, int windowSize)
+    public static IEnumerable<T[]> ScanWindow<T>(this IEnumerable<T> points, int windowSize)
     {
         var enumerator = points.GetEnumerator();
 
-        Point[] ret = new Point[windowSize];
+        T[] ret = new T[windowSize];
 
         for (int i = 0; i < windowSize; i++)
         {

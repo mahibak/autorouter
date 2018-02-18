@@ -49,24 +49,57 @@ class Autorouter
     }*/
 
 
-    public static bool Autoroute(Map map, Conveyor originalNet)
+    public static bool Autoroute(Map map, Conveyor originalNet, Point conveyorStartFacing, Point conveyorEndFacing)
     {
         var ret = GetAutoroutingSolution(map, originalNet);
         
         if (ret == null)
             return false;
-        
+
         foreach (var netRouting in ret)
         {
             netRouting.Key.ConveyorSegments.Clear();
 
-            foreach(Point[] segments in netRouting.Value.GetCorners().ScanWindow(2))
+            foreach (Point[] segments in netRouting.Value.GetCorners().ScanWindow(2))
             {
                 ConveyorSegment s = new ConveyorSegment();
                 s._start = segments[0];
                 s._end = segments[1];
+                s._linearDirection = s._start.DirectionTo(s._end);
                 netRouting.Key.ConveyorSegments.Add(s);
             }
+            
+            //Trim starts
+            for(int i = 0; i < netRouting.Key.ConveyorSegments.Count; i++)
+            {
+                ConveyorSegment s = netRouting.Key.ConveyorSegments[i];
+
+                if (netRouting.Key.ConveyorSegments.First() != s)
+                    s._start += s._linearDirection;
+            }
+
+            foreach (ConveyorSegment[] segments in netRouting.Key.ConveyorSegments.ScanWindow(2))
+            {
+                segments[0]._endCurveDirection = segments[0]._end.DirectionTo(segments[1]._start);
+                segments[0]._startCurveDirection = segments[0]._linearDirection;
+                segments[1]._startCurveDirection = segments[1]._linearDirection;
+            }
+            ConveyorSegment firstSegment = netRouting.Key.ConveyorSegments.First();
+            firstSegment._startCurveDirection = conveyorStartFacing.DirectionTo(firstSegment._start);
+
+            ConveyorSegment lastSegment = netRouting.Key.ConveyorSegments.Last();
+            lastSegment._endCurveDirection = lastSegment._end.DirectionTo(conveyorEndFacing);
+
+            float length = 0;
+
+            foreach(ConveyorSegment s in netRouting.Key.ConveyorSegments)
+            {
+                s._startLength = length;
+                length += s.Length;
+            }
+
+            netRouting.Key._length = length;
+
         }
         
         return true;
@@ -77,8 +110,8 @@ class Autorouter
         AutoroutingMap map = new AutoroutingMap(originalMap);
         AutoroutingNet net = new AutoroutingNet();
 
-        net.Start = map.tiles[netToRoute.Start.X, netToRoute.Start.Y];
-        net.End = map.tiles[netToRoute.End.X, netToRoute.End.Y];
+        net.Start = map.tiles[netToRoute._start.X, netToRoute._start.Y];
+        net.End = map.tiles[netToRoute._end.X, netToRoute._end.Y];
             
         List<AutoroutingNet> netIdsInTheWay = new List<AutoroutingNet>();
 
@@ -92,7 +125,7 @@ class Autorouter
             if (c == netToRoute)
                 continue;
 
-            if(c.GetOccupiedPoints().Where(x => x == netToRoute.Start || x == netToRoute.End).Count() > 0)
+            if(c.GetOccupiedPoints().Where(x => x == netToRoute._start || x == netToRoute._end).Count() > 0)
             {
                 ret.Add(c);
             }
@@ -134,8 +167,8 @@ class Autorouter
             List<AutoroutingNet> possibleNets = new List<AutoroutingNet>();
 
             AutoroutingNet originalNet2 = new AutoroutingNet();
-            originalNet2.Start = possibleMap.tiles[originalNet.Start.X, originalNet.Start.Y];
-            originalNet2.End = possibleMap.tiles[originalNet.End.X, originalNet.End.Y];
+            originalNet2.Start = possibleMap.tiles[originalNet._start.X, originalNet._start.Y];
+            originalNet2.End = possibleMap.tiles[originalNet._end.X, originalNet._end.Y];
 
             foreach (Conveyor x in netIdsInTheWay)
                 possibleMap.RipupNet(x);
@@ -147,7 +180,7 @@ class Autorouter
 
             foreach (Conveyor n in permutation)
             {
-                List<Point> result = Autoroute(possibleMap, possibleMap.tiles[n.Start.X, n.Start.Y].Net);
+                List<Point> result = Autoroute(possibleMap, possibleMap.tiles[n._start.X, n._start.Y].Net);
 
                 if (result == null)
                     return; //Bad permutation, can't route everything

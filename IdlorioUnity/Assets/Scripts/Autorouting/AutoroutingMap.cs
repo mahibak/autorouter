@@ -42,7 +42,7 @@ public class AutoroutingMap
 
     public int RipupNet(Conveyor net)
     {
-        return RipupNet(tiles[net.Start.X, net.Start.Y].Net);
+        return RipupNet(tiles[net._start.X, net._start.Y].Net);
     }
 
     public AutoroutingMap(Map map)
@@ -79,8 +79,8 @@ public class AutoroutingMap
                     tiles[p.X, p.Y].Net = autoroutingNet;
                 }
             }
-            autoroutingNet.Start = tiles[n.Start.X, n.Start.Y];
-            autoroutingNet.End = tiles[n.End.X, n.End.Y];
+            autoroutingNet.Start = tiles[n._start.X, n._start.Y];
+            autoroutingNet.End = tiles[n._end.X, n._end.Y];
             autoroutingNet.originalConveyor = n;
             nets.Add(autoroutingNet);
         }

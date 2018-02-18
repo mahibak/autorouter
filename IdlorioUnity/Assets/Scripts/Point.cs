@@ -61,6 +61,16 @@ public struct Point
     {
         return new Point(p1.X + p2.X, p1.Y + p2.Y);
     }
+    
+    public static Point operator -(Point p, Direction d)
+    {
+        return p - new Point(d);
+    }
+
+    public static Point operator -(Point p1, Point p2)
+    {
+        return new Point(p1.X - p2.X, p1.Y - p2.Y);
+    }
 
     public static bool operator ==(Point p1, Point p2)
     {
@@ -92,5 +102,24 @@ public struct Point
         for (int x = 0; x < sizeX; x++)
             for (int y = 0; y < sizeX; y++)
                 yield return new Point(X + x, Y + y);
+    }
+
+    public int ManhattanLength
+    {
+        get
+        {
+            return System.Math.Abs(X) + System.Math.Abs(Y);
+        }
+    }
+
+    public Direction DirectionTo(Point p2)
+    {
+        if (this.X < p2.X)
+            return Direction.Right;
+        if (this.X > p2.X)
+            return Direction.Left;
+        if (this.Y < p2.Y)
+            return Direction.Up;
+        return Direction.Down;
     }
 }

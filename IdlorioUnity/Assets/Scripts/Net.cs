@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 public class Conveyor
 {
     public List<ConveyorSegment> ConveyorSegments = new List<ConveyorSegment>();
-    public Point Start;
-    public Point End;
-    public MachineConnector BuildingInput = null;
-    public MachineConnector BuildingOutput = null;
+    public Point _start;
+    public Point _end;
+    public MachineConnector _input = null;
+    public MachineConnector _output = null;
+    public float _length;
+
+    public float _itemDrawTimeSeconds = 0;
 
     public IEnumerable<Point> GetOccupiedPoints()
     {
@@ -21,8 +24,10 @@ public class Conveyor
         }
     }
 
-    public void DrawDebug()
+    public void DrawDebug(float dt)
     {
-        ConveyorSegments.Foreach(x => x.DrawDebug());
+        _itemDrawTimeSeconds += dt;
+
+        ConveyorSegments.Foreach(x => x.DrawDebug(_itemDrawTimeSeconds));
     }
 }
