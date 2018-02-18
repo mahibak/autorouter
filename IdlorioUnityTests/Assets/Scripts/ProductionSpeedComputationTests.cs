@@ -375,7 +375,6 @@ namespace Tests
             Machine m2 = CreateMachine(1, 1);
             m2._maximumItemsPerSecondProduction = 5;
             m2._storageCapacity = 1000;
-            m2._outputSlots[0]._requiredForMachineOperation = true;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
@@ -397,7 +396,6 @@ namespace Tests
 
             Machine m1 = CreateMachine(1, 1);
             m1._maximumItemsPerSecondProduction = 3;
-            m1._inputSlots[0]._requiredForMachineOperation = true;
 
             Machine m2 = CreateMachine(1, 0);
             m2._maximumItemsPerSecondProduction = 5;

@@ -9,11 +9,12 @@ public class MachineConnector
     public MachineConnector _otherConnector;
     public Point _local = new Point(0, 0);
     public Direction _localDir = Direction.Up;
-    public bool _requiredForMachineOperation = false;
 
     public float _desiredItemsPerSecond;
     public float _itemsPerSecond;
     public float _satisfaction;
+
+    public Item _item;
     
     public Vector3 GetWorldEdgeOffset()
     {

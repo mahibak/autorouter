@@ -36,23 +36,36 @@ public class MachineManagerTester : MonoBehaviour
 
     private void OnEnable ()
     {
-        Machine m1 = CreateMachine(0, 2);
+        Machine m0 = CreateMachine(0, 1);
+        m0._maximumItemsPerSecondFromStorage = System.Single.PositiveInfinity;
+        m0._position = new Point(0, 4);
+        m0._storageMode = Machine.StorageModes.Out;
+        m0._storageCapacity = System.Single.PositiveInfinity;
+        m0._itemsInStorage = System.Single.PositiveInfinity;
+        m0._itemInStorage = new Item();
+        m0._itemInStorage._baseItem = BaseItems.MixedOre;
+
+        Machine m1 = CreateMachine(1, 2);
         m1._maximumItemsPerSecondProduction = 10;
-        m1._position = new Point(0, 4);
+        m1._position = new Point(4, 4);
+        m1._addedProperty = Properties.Centrifuged;
 
         Machine m2 = CreateMachine(1, 1);
         m2._maximumItemsPerSecondProduction = 2;
-        m2._position = new Point(8, 0);
+        m2._position = new Point(12, 0);
+        m2._addedProperty = Properties.Heated;
 
         Machine m3 = CreateMachine(1, 2);
         m3._maximumItemsPerSecondProduction = 7;
-        m3._position = new Point(8, 8);
+        m3._position = new Point(12, 8);
+        m3._addedProperty = Properties.Heated;
 
         Machine m4 = CreateMachine(2, 0);
         m4._maximumItemsPerSecondProduction = 2;
-        m4._position = new Point(16, 0);
+        m4._position = new Point(20, 0);
         m4._storageCapacity = System.Single.PositiveInfinity;
         m4._storageMode = Machine.StorageModes.In;
+        m4._addedProperty = Properties.Heated;
 
         Machine m5 = CreateMachine(1, 1);
         m5._maximumItemsPerSecondProduction = 5;
@@ -60,14 +73,17 @@ public class MachineManagerTester : MonoBehaviour
         m5._storageCapacity = System.Single.PositiveInfinity;
         m5._itemsInStorage = 5;
         m5._storageMode = Machine.StorageModes.Out;
-        m5._position = new Point(16, 12);
+        m5._position = new Point(20, 12);
+        m5._addedProperty = Properties.Stretched;
 
         Machine m6 = CreateMachine(1, 0);
         m6._maximumItemsPerSecondProduction = 6;
-        m6._position = new Point(24, 12);
+        m6._position = new Point(28, 12);
         m6._storageCapacity = System.Single.PositiveInfinity;
         m6._storageMode = Machine.StorageModes.In;
+        m6._addedProperty = Properties.Cut;
 
+        MachineManager.ConnectMachines(m0, 0, m1, 0);
         MachineManager.ConnectMachines(m1, 0, m2, 0);
         MachineManager.ConnectMachines(m1, 1, m3, 0);
         MachineManager.ConnectMachines(m2, 0, m4, 0);
