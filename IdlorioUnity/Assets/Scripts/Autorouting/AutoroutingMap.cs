@@ -71,7 +71,7 @@ public class AutoroutingMap
         foreach (Conveyor n in map._conveyors)
         {
             AutoroutingNet autoroutingNet = new AutoroutingNet();
-            foreach (ConveyorSegment t in n.ConveyorSegments)
+            foreach (ConveyorSegment t in n._segments)
             {
                 foreach (Point p in t._start.GetPointsTo(t._end))
                 {

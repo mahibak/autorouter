@@ -8,6 +8,8 @@ public class ConveyorSegment
     public Point _end = new Point(5, 1);
     public float _startLength = 0;
 
+    const float BOX_SPACING = 1;
+
     void DrawBox(float time)
     {
         if (time < StartLength)
@@ -66,8 +68,6 @@ public class ConveyorSegment
             GDK.DrawFilledAABB(new Vector3(_start.X + 0.5f, 0.1f, (System.Math.Abs(_start.Y + _end.Y)) / 2.0f + 0.5f), new Vector3(System.Math.Abs(_end.X - _start.X) + 1, 0.1f, System.Math.Abs(_end.Y - _start.Y) + 1) / 2, Color.magenta);
         else
             GDK.DrawFilledAABB(new Vector3((_start.X + _end.X) / 2.0f + 0.5f, 0.1f, _start.Y + 0.5f), new Vector3(System.Math.Abs(_end.X - _start.X) + 1, 0.1f, System.Math.Abs(_end.Y - _start.Y) + 1) / 2, Color.magenta);
-
-
         
         relativeTime -= _startLength;
 
@@ -75,7 +75,7 @@ public class ConveyorSegment
         {
             float length = Length;
 
-            for (float i = relativeTime % 2; i < Mathf.Min(relativeTime, length); i += 2)
+            for (float i = relativeTime % BOX_SPACING; i < Mathf.Min(relativeTime, length); i += BOX_SPACING)
             {
                 DrawBox(i);
             }

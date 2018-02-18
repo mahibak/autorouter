@@ -89,8 +89,6 @@ public class Machine
                 if (m._otherMachine != null)
                 {
                     GDK.DrawText(string.Format("{0}/{1}", m._itemsPerSecond, m._desiredItemsPerSecond), _position.ToVector3() + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
-                    //GDK.DrawText(string.Format("Wants {0}", _desiredItemsPerSecond), _position + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), Color.red);
-                    //GDK.DrawText(string.Format("Outs {0}", _itemsPerSecond), m._otherMachine._position + Vector3.up * 0.5f + m._otherConnector.GetWorldEdgeOffset(), Color.green);
                 }
             }
         }

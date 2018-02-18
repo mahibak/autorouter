@@ -58,48 +58,7 @@ class Autorouter
 
         foreach (var netRouting in ret)
         {
-            netRouting.Key.ConveyorSegments.Clear();
-
-            foreach (Point[] segments in netRouting.Value.GetCorners().ScanWindow(2))
-            {
-                ConveyorSegment s = new ConveyorSegment();
-                s._start = segments[0];
-                s._end = segments[1];
-                s._linearDirection = s._start.DirectionTo(s._end);
-                netRouting.Key.ConveyorSegments.Add(s);
-            }
-            
-            //Trim starts
-            for(int i = 0; i < netRouting.Key.ConveyorSegments.Count; i++)
-            {
-                ConveyorSegment s = netRouting.Key.ConveyorSegments[i];
-
-                if (netRouting.Key.ConveyorSegments.First() != s)
-                    s._start += s._linearDirection;
-            }
-
-            foreach (ConveyorSegment[] segments in netRouting.Key.ConveyorSegments.ScanWindow(2))
-            {
-                segments[0]._endCurveDirection = segments[0]._end.DirectionTo(segments[1]._start);
-                segments[0]._startCurveDirection = segments[0]._linearDirection;
-                segments[1]._startCurveDirection = segments[1]._linearDirection;
-            }
-            ConveyorSegment firstSegment = netRouting.Key.ConveyorSegments.First();
-            firstSegment._startCurveDirection = conveyorStartFacing.DirectionTo(firstSegment._start);
-
-            ConveyorSegment lastSegment = netRouting.Key.ConveyorSegments.Last();
-            lastSegment._endCurveDirection = lastSegment._end.DirectionTo(conveyorEndFacing);
-
-            float length = 0;
-
-            foreach(ConveyorSegment s in netRouting.Key.ConveyorSegments)
-            {
-                s._startLength = length;
-                length += s.Length;
-            }
-
-            netRouting.Key._length = length;
-
+            netRouting.Key.CreateSegmentsForPath(netRouting.Value, conveyorStartFacing, conveyorEndFacing);
         }
         
         return true;
@@ -164,7 +123,6 @@ class Autorouter
                 return;
 
             AutoroutingMap possibleMap = new AutoroutingMap(originalMap);
-            List<AutoroutingNet> possibleNets = new List<AutoroutingNet>();
 
             AutoroutingNet originalNet2 = new AutoroutingNet();
             originalNet2.Start = possibleMap.tiles[originalNet._start.X, originalNet._start.Y];

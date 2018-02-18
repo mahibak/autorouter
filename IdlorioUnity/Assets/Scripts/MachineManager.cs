@@ -62,8 +62,7 @@ public class MachineManager
 
             destination._inputSlots[destSlot]._otherMachine = source;
             destination._inputSlots[destSlot]._otherConnector = source._outputSlots[sourceSlot];
-
-
+            
             Map map = new Map();
             map._conveyors = _instance._conveyors;
             map.Machines = _instance.m_machines;
@@ -76,6 +75,8 @@ public class MachineManager
             Conveyor c = new Conveyor();
             c._start = source._outputSlots[sourceSlot]._local + source._position + source._outputSlots[sourceSlot]._localDir;
             c._end = destination._inputSlots[destSlot]._local + destination._position + destination._inputSlots[destSlot]._localDir;
+            c._output = source._outputSlots[sourceSlot];
+            c._input = destination._inputSlots[destSlot];
 
             Autorouter.Autoroute(map, c, source._outputSlots[sourceSlot]._local + source._position, destination._inputSlots[destSlot]._local + destination._position);
             _instance._conveyors.Add(c);
