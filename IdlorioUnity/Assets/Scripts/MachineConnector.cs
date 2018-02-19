@@ -10,12 +10,33 @@ public class MachineConnector
     public MachineConnector _otherConnector;
     public Point _local = new Point(0, 0);
     public Direction _localDir = Direction.Up;
-    public bool _requiredForMachineOperation = false;
 
     public float _desiredItemsPerSecond;
     public float _itemsPerSecond;
-    public float _satisfaction;
 
+    public Item _item;
+
+    public bool IsConnected
+    {
+        get
+        {
+            return _otherConnector != null;
+        }
+    }
+
+    public float Satisfaction
+    {
+        get
+        {
+            if (_desiredItemsPerSecond == 0)
+                return 1;
+            else if (System.Single.IsPositiveInfinity(_desiredItemsPerSecond))
+                return 0;
+            else
+                return _itemsPerSecond / _desiredItemsPerSecond;
+        }
+    }
+    
     public Vector3 GetWorldEdgeOffset()
     {
         Vector3 offset = new Vector3(_local.X + 0.5f, 0, _local.Y + 0.5f);

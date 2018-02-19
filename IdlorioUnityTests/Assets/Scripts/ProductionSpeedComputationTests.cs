@@ -36,23 +36,21 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondFromStorage = Single.PositiveInfinity;
+            m1._maximumItemsPerSecond = Single.PositiveInfinity;
             m1._storageCapacity = 1000;
             m1._itemsInStorage = 1000;
             m1._storageMode = Machine.StorageModes.Out;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
             
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 5);
             Assert.AreEqual(m1._itemsPerSecondToStorage, -5);
 
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 5);
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 5);
         }
@@ -64,23 +62,21 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondFromStorage = Single.PositiveInfinity;
+            m1._maximumItemsPerSecond = Single.PositiveInfinity;
             m1._storageCapacity = 1000;
             m1._itemsInStorage = 3;
             m1._storageMode = Machine.StorageModes.Out;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m1._itemsPerSecondToStorage, -3);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 3);
         }
@@ -92,24 +88,22 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondFromStorage = Single.PositiveInfinity;
+            m1._maximumItemsPerSecond = Single.PositiveInfinity;
             m1._storageCapacity = 1000;
             m1._itemsInStorage = 1000;
             m1._storageMode = Machine.StorageModes.Out;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._itemsInStorage = 997;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m1._itemsPerSecondToStorage, -3);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 3);
         }
@@ -121,24 +115,22 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondFromStorage = Single.PositiveInfinity;
+            m1._maximumItemsPerSecond = Single.PositiveInfinity;
             m1._storageCapacity = 1000;
             m1._itemsInStorage = 1000;
-            m1._maximumItemsPerSecondFromStorage = 3;
+            m1._maximumItemsPerSecond = 3;
             m1._storageMode = Machine.StorageModes.Out;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m1._itemsPerSecondToStorage, -3);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 3);
         }
@@ -150,24 +142,22 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondFromStorage = Single.PositiveInfinity;
+            m1._maximumItemsPerSecond = Single.PositiveInfinity;
             m1._storageCapacity = 1000;
             m1._itemsInStorage = 1000;
-            m1._maximumItemsPerSecondOutput = 3;
+            m1._maximumItemsPerSecond = 3;
             m1._storageMode = Machine.StorageModes.Out;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m1._itemsPerSecondToStorage, -3);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 3);
         }
@@ -179,20 +169,18 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondProduction = 10;
+            m1._maximumItemsPerSecond = 10;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 5);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 5);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 5);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 5);
         }
@@ -204,20 +192,18 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondProduction = 3;
+            m1._maximumItemsPerSecond = 3;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 3);
         }
@@ -229,28 +215,25 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondProduction = 5;
+            m1._maximumItemsPerSecond = 5;
 
             Machine m2 = CreateMachine(1, 1);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
 
             Machine m3 = CreateMachine(1, 0);
-            m3._maximumItemsPerSecondProduction = 5;
+            m3._maximumItemsPerSecond = 5;
             m3._storageCapacity = 1000;
             m3._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
             MachineManager.ConnectMachines(m2, 0, m3, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 5);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 5);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 5);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 5);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m3._itemsPerSecondFromProduction, 5);
+            
             Assert.AreEqual(m3._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m3._itemsPerSecondToStorage, 5);
         }
@@ -262,30 +245,27 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondProduction = 5;
+            m1._maximumItemsPerSecond = 5;
 
             Machine m2 = CreateMachine(1, 1);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             Machine m3 = CreateMachine(1, 0);
-            m3._maximumItemsPerSecondProduction = 4;
+            m3._maximumItemsPerSecond = 4;
             m3._storageCapacity = 1000;
             m3._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
             MachineManager.ConnectMachines(m2, 0, m3, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 5);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 5);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 5);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 4);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 1);
-
-            Assert.AreEqual(m3._itemsPerSecondFromProduction, 4);
+            
             Assert.AreEqual(m3._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m3._itemsPerSecondToStorage, 4);
         }
@@ -297,32 +277,29 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondProduction = 5;
+            m1._maximumItemsPerSecond = 5;
 
             Machine m2 = CreateMachine(1, 1);
-            m2._maximumItemsPerSecondProduction = 3;
+            m2._maximumItemsPerSecond = 3;
             m2._storageCapacity = 1000;
             m2._itemsInStorage = 1000;
             m2._storageMode = Machine.StorageModes.Out;
-            m2._maximumItemsPerSecondFromStorage = 1000;
+            m2._maximumItemsPerSecond = 1000;
 
             Machine m3 = CreateMachine(1, 0);
-            m3._maximumItemsPerSecondProduction = 4;
+            m3._maximumItemsPerSecond = 4;
             m3._storageCapacity = 1000;
             m3._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
             MachineManager.ConnectMachines(m2, 0, m3, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 4);
             Assert.AreEqual(m2._itemsPerSecondToStorage, -1);
-
-            Assert.AreEqual(m3._itemsPerSecondFromProduction, 4);
+            
             Assert.AreEqual(m3._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m3._itemsPerSecondToStorage, 4);
         }
@@ -334,31 +311,28 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondProduction = 5;
+            m1._maximumItemsPerSecond = 5;
 
             Machine m2 = CreateMachine(1, 1);
-            m2._maximumItemsPerSecondProduction = 3;
+            m2._maximumItemsPerSecond = 3;
             m2._storageCapacity = 1000;
             m2._itemsInStorage = 1000;
-            m2._maximumItemsPerSecondFromStorage = 1000;
+            m2._maximumItemsPerSecond = 1000;
 
             Machine m3 = CreateMachine(1, 0);
-            m3._maximumItemsPerSecondProduction = 4;
+            m3._maximumItemsPerSecond = 4;
             m3._storageCapacity = 1000;
             m3._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
             MachineManager.ConnectMachines(m2, 0, m3, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 3);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m3._itemsPerSecondFromProduction, 3);
+            
             Assert.AreEqual(m3._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m3._itemsPerSecondToStorage, 3);
         }
@@ -370,21 +344,18 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(0, 1);
-            m1._maximumItemsPerSecondProduction = 3;
+            m1._maximumItemsPerSecond = 3;
 
             Machine m2 = CreateMachine(1, 1);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
-            m2._outputSlots[0]._requiredForMachineOperation = true;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 0);
         }
@@ -396,21 +367,18 @@ namespace Tests
             List<Machine> machines = new List<Machine>();
 
             Machine m1 = CreateMachine(1, 1);
-            m1._maximumItemsPerSecondProduction = 3;
-            m1._inputSlots[0]._requiredForMachineOperation = true;
+            m1._maximumItemsPerSecond = 3;
 
             Machine m2 = CreateMachine(1, 0);
-            m2._maximumItemsPerSecondProduction = 5;
+            m2._maximumItemsPerSecond = 5;
             m2._storageCapacity = 1000;
             m2._storageMode = Machine.StorageModes.In;
 
             MachineManager.ConnectMachines(m1, 0, m2, 0);
-
-            Assert.AreEqual(m1._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m1._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m1._itemsPerSecondToStorage, 0);
-
-            Assert.AreEqual(m2._itemsPerSecondFromProduction, 0);
+            
             Assert.AreEqual(m2._itemsPerSecondToOutputs, 0);
             Assert.AreEqual(m2._itemsPerSecondToStorage, 0);
         }
