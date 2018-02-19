@@ -71,12 +71,29 @@ public class Recipe
         o._baseItem = BaseItems.CopperWire;
         r._outputs.Add(o);
         m_recipies.Add(r);
+
+        //Copper ore to double heated copper ore
+        r = new Recipe();
+        i = new Ingredient();
+        i._baseItem = BaseItems.CopperOre;
+        i._properties.Add(Properties.Heated, new Range(0, Int32.MaxValue));
+        r._inputs.Add(i);
+
+        o = new Item();
+        o._baseItem = BaseItems.CopperOre;
+        o._properties.Add(Properties.Heated, 1);
+        r._outputs.Add(o);
+        m_recipies.Add(r);
+
+        o = new Item();
+        o._baseItem = BaseItems.CopperOre;
+        o._properties.Add(Properties.Heated, 1);
+        r._outputs.Add(o);
+        m_recipies.Add(r);
     }
 
     public override string ToString()
     {
-        StringBuilder sb = new StringBuilder();
-
         return String.Join(", ", _outputs) + " from " + String.Join(", ", _inputs);
     }
 }

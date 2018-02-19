@@ -13,9 +13,27 @@ public class MachineConnector
 
     public float _desiredItemsPerSecond;
     public float _itemsPerSecond;
-    public float _satisfaction;
 
     public Item _item;
+
+    public bool IsConnected
+    {
+        get
+        {
+            return _otherConnector != null;
+        }
+    }
+
+    public float Satisfaction
+    {
+        get
+        {
+            if (_desiredItemsPerSecond == 0)
+                return 1;
+            else
+                return _itemsPerSecond / _desiredItemsPerSecond;
+        }
+    }
     
     public Vector3 GetWorldEdgeOffset()
     {
