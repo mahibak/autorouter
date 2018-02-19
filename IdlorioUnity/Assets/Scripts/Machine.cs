@@ -4,20 +4,12 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public enum MachineRot
-{
-    CW0 = 0,
-    CW90 = 1,
-    CW180 = 2,
-    CW270 = 3,
-}
-
 public class Machine
 {
     public Point _position;
     public int _sizeX = 1;
     public int _sizeY = 1;
-    public MachineRot _rotation = MachineRot.CW0;
+    public Rotation _rotation = Rotation.CW0;
 
     public MachineConnector[] _inputSlots;
     public MachineConnector[] _outputSlots;
@@ -139,12 +131,28 @@ public class Machine
             return System.Single.PositiveInfinity;
     }
 
+    public IEnumerable<Point> GetOccupiedPoints()
+    {
+        switch (_rotation)
+        {
+            case Rotation.CW90:
+                return _position.GetPointsInRectangle(_sizeY, -_sizeX);
+            case Rotation.CW180:
+                return _position.GetPointsInRectangle(-_sizeX, -_sizeY);
+            case Rotation.CW270:
+                return _position.GetPointsInRectangle(-_sizeY, _sizeX);
+            case Rotation.CW0:
+            default:
+                return _position.GetPointsInRectangle(_sizeX, _sizeY);
+        }
+    }
+
     public void DrawDebug()
     {
         int worldX;
         int worldY;
 
-        if (_rotation == MachineRot.CW0 || _rotation == MachineRot.CW180)
+        if (_rotation == Rotation.CW0 || _rotation == Rotation.CW180)
         {
             worldX = _sizeX;
             worldY = _sizeY;
@@ -155,7 +163,7 @@ public class Machine
             worldY = _sizeX;
         }
 
-        if(_position.GetPointsInRectangle(_sizeX, _sizeY).Contains(InputManager.GetPointerTile()))
+        if(GetOccupiedPoints().Contains(InputManager.GetPointerTile()))
         {
             StringBuilder sb = new StringBuilder();
 

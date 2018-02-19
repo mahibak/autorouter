@@ -75,8 +75,8 @@ public class MachineManager
             map.Width = 40;
 
             Conveyor c = new Conveyor();
-            c._start = source._outputSlots[sourceSlot]._local + source._position + source._outputSlots[sourceSlot]._localDir;
-            c._end = destination._inputSlots[destSlot]._local + destination._position + destination._inputSlots[destSlot]._localDir;
+            c._start = source._outputSlots[sourceSlot].GetWorldPositionOneTileOut();
+            c._end = destination._inputSlots[destSlot].GetWorldPositionOneTileOut();
             c._output = source._outputSlots[sourceSlot];
             c._input = destination._inputSlots[destSlot];
 

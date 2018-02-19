@@ -52,6 +52,22 @@ public struct Point
         }
     }
 
+    public Point Rotate(Rotation rotation)
+    {
+        switch (rotation)
+        {
+            case Rotation.CW90:
+                return new Point(Y, -X);
+            case Rotation.CW180:
+                return new Point(-X, -Y);
+            case Rotation.CW270:
+                return new Point(-Y, X);
+            case Rotation.CW0:
+            default:
+                return new Point(X, Y);
+        }
+    }
+
     public static Point operator +(Point p, Direction d)
     {
         return p + new Point(d);
@@ -99,8 +115,11 @@ public struct Point
 
     public IEnumerable<Point> GetPointsInRectangle(int sizeX, int sizeY)
     {
-        for (int x = 0; x < sizeX; x++)
-            for (int y = 0; y < sizeX; y++)
+        int signX = System.Math.Sign(sizeX);
+        int signY = System.Math.Sign(sizeY);
+        
+        for (int x = 0; x != sizeX; x += signX)
+            for (int y = 0; y != sizeY; y += signY)
                 yield return new Point(X + x, Y + y);
     }
 

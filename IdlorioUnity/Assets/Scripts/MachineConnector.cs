@@ -36,7 +36,23 @@ public class MachineConnector
                 return _itemsPerSecond / _desiredItemsPerSecond;
         }
     }
-    
+
+    public Point GetWorldPosition()
+    {
+        if (_thisMachine == null)
+            return _local;
+        else
+            return _local.Rotate(_thisMachine._rotation) + _thisMachine._position;
+    }
+
+    public Point GetWorldPositionOneTileOut()
+    {
+        if (_thisMachine == null)
+            return _local + new Point(_localDir);
+        else
+            return (_local + new Point(_localDir)).Rotate(_thisMachine._rotation) + _thisMachine._position;
+    }
+
     public Vector3 GetWorldEdgeOffset()
     {
         Vector3 offset = new Vector3(_local.X + 0.5f, 0, _local.Y + 0.5f);
@@ -45,13 +61,13 @@ public class MachineConnector
         {
             switch (_thisMachine._rotation)
             {
-                case MachineRot.CW90:
+                case Rotation.CW90:
                     offset = new Vector3(_local.Y + 0.5f, 0, _thisMachine._sizeX - _local.X - 0.5f);
                     break;
-                case MachineRot.CW180:
+                case Rotation.CW180:
                     offset = new Vector3(_thisMachine._sizeX - _local.X - 0.5f, 0, _thisMachine._sizeY - _local.Y - 0.5f);
                     break;
-                case MachineRot.CW270:
+                case Rotation.CW270:
                     offset = new Vector3(_thisMachine._sizeY - _local.Y - 0.5f, 0, _local.X + 0.5f);
                     break;
             }
