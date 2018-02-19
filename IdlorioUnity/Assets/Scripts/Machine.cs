@@ -169,16 +169,16 @@ public class Machine
             if (_addedProperty != Properties.None)
                 sb.AppendLine("Adds " + _addedProperty);
 
-            sb.AppendLine(string.Format("Produces {0}/{1}, {2}/{3} to outputs, {4}/{5} to storage", _itemsPerSecondFromProduction, DesiredItemsPerSecond, _itemsPerSecondToOutputs, _desiredItemsPerSecondToOutputs, _itemsPerSecondToStorage, _desiredItemsPerSecondToStorage));
+            sb.AppendLine(string.Format("Produces {0} of a desired {1}, max is  {6}, {2}/{3} to outputs, {4}/{5} to storage", _itemsPerSecondFromProduction, DesiredItemsPerSecond, _itemsPerSecondToOutputs, _desiredItemsPerSecondToOutputs, _itemsPerSecondToStorage, _desiredItemsPerSecondToStorage, _maximumItemsPerSecond));
 
             for (int i = 0; i < _inputSlots.Length; i++)
             {
-                sb.AppendLine(string.Format("In {0}: {1}, {2:P2}, Has {3}/{4} of {5}", i, _inputSlots[i].IsConnected ? "Connected" : "Disconnected", _inputSlots[i].Satisfaction, _inputSlots[i]._itemsPerSecond, _inputSlots[i]._desiredItemsPerSecond, _inputSlots[i]._item));
+                sb.AppendLine(string.Format("In {0}: {1}, {2:P2} satisfied, Has {3}/{4} desired of {5}", i, _inputSlots[i].IsConnected ? "Connected" : "Disconnected", _inputSlots[i].Satisfaction, _inputSlots[i]._itemsPerSecond, _inputSlots[i]._desiredItemsPerSecond, _inputSlots[i]._item));
             }
 
             for (int i = 0; i < _outputSlots.Length; i++)
             {
-                sb.AppendLine(string.Format("Out {0}: {1}, {2:P2}, Has {3}/{4} of {5}", i, _outputSlots[i].IsConnected ? "Connected" : "Disconnected", _outputSlots[i].Satisfaction, _outputSlots[i]._itemsPerSecond, _outputSlots[i]._desiredItemsPerSecond, _outputSlots[i]._item));
+                sb.AppendLine(string.Format("Out {0}: {1}, {2:P2} satisfied, Has {3}/{4} desired of {5}", i, _outputSlots[i].IsConnected ? "Connected" : "Disconnected", _outputSlots[i].Satisfaction, _outputSlots[i]._itemsPerSecond, _outputSlots[i]._desiredItemsPerSecond, _outputSlots[i]._item));
             }
 
             GDK.DrawText(sb.ToString(), _position.ToVector3(), Color.black);

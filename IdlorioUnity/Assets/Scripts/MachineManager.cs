@@ -82,10 +82,13 @@ public class MachineManager
 
             Autorouter.Autoroute(map, c, source._outputSlots[sourceSlot]._local + source._position, destination._inputSlots[destSlot]._local + destination._position);
             _instance._conveyors.Add(c);
-            
-            ProductionSpeedComputation.UpdateMachineLinks(_instance.m_machines);
-            _instance.recalculationNeededTime = _instance.timeSeconds + _instance.m_machines.Min(x => x.GetSecondsBeforeRecalculationNeeded());
         }
+    }
+
+    public static void UpdateMachineLinks()
+    {
+        ProductionSpeedComputation.UpdateMachineLinks(MachineManager.GetInstance().m_machines);
+        _instance.recalculationNeededTime = _instance.timeSeconds + _instance.m_machines.Min(x => x.GetSecondsBeforeRecalculationNeeded());
     }
 
     void UpdateMachines(float dt)

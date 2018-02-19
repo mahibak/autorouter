@@ -77,13 +77,13 @@ public class MachineManagerTester : MonoBehaviour
 
         Machine m7 = CreateMachine(1, 0);
         m7._position = new Point(24, 0);
-        m7._maximumItemsPerSecond = System.Single.PositiveInfinity;
+        m7._maximumItemsPerSecond = 1e6f;
         m7._storageCapacity = System.Single.PositiveInfinity;
         m7._storageMode = Machine.StorageModes.In;
 
         Machine m8 = CreateMachine(1, 0);
         m8._position = new Point(32, 12);
-        m8._maximumItemsPerSecond = System.Single.PositiveInfinity;
+        m8._maximumItemsPerSecond = 1e6f;
         m8._storageCapacity = System.Single.PositiveInfinity;
         m8._storageMode = Machine.StorageModes.In;
 
@@ -96,6 +96,7 @@ public class MachineManagerTester : MonoBehaviour
         MachineManager.ConnectMachines(m5, 0, m6, 0);
         MachineManager.ConnectMachines(m4, 0, m7, 0);
         MachineManager.ConnectMachines(m6, 0, m8, 0);
+        MachineManager.UpdateMachineLinks();
     }
 
     private void AddMachine(Machine machine)

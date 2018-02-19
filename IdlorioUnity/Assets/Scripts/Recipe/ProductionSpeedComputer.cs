@@ -31,17 +31,31 @@ class ProductionSpeedComputer
 
     private static float GetSatisfactionRatio(Machine machine)
     {
-        if (machine._inputsUsedForRecipe == null)
-            return 0;
-        
-        float satisfactionRatio = 1;
-
-        foreach (MachineConnector input in machine._inputsUsedForRecipe)
+        if (machine.IsStorage)
         {
-            satisfactionRatio = Mathf.Min(satisfactionRatio, input.Satisfaction);
-        }
+            float satisfactionRatio = 1;
 
-        return satisfactionRatio;
+            foreach (MachineConnector input in machine._inputSlots)
+            {
+                satisfactionRatio = Mathf.Min(satisfactionRatio, input.Satisfaction);
+            }
+
+            return satisfactionRatio;
+        }
+        else
+        {
+            if (machine._inputsUsedForRecipe == null)
+                return 0;
+
+            float satisfactionRatio = 1;
+
+            foreach (MachineConnector input in machine._inputsUsedForRecipe)
+            {
+                satisfactionRatio = Mathf.Min(satisfactionRatio, input.Satisfaction);
+            }
+
+            return satisfactionRatio; 
+        }
     }
     
     private static float GetItemsPerSecondToStorage(Machine machine, float itemsPerSecondFromProduction)

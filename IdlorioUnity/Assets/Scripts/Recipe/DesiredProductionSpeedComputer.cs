@@ -52,5 +52,12 @@ class DesiredProductionSpeedComputer
                 input._desiredItemsPerSecond = machine.PossibleDesiredItemsPerSecond;
             }
         }
+        else if(machine.IsStorage)
+        {
+            foreach (MachineConnector input in machine._inputSlots)
+            {
+                input._desiredItemsPerSecond = machine._desiredItemsPerSecondToStorage;
+            }
+        }
     }
 }

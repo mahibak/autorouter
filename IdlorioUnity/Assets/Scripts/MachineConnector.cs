@@ -30,6 +30,8 @@ public class MachineConnector
         {
             if (_desiredItemsPerSecond == 0)
                 return 1;
+            else if (System.Single.IsPositiveInfinity(_desiredItemsPerSecond))
+                return 0;
             else
                 return _itemsPerSecond / _desiredItemsPerSecond;
         }
