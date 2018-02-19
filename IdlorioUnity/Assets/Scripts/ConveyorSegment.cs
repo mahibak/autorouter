@@ -8,7 +8,7 @@ public class ConveyorSegment
     public Point _end = new Point(5, 1);
     public float _startLength = 0;
 
-    const float BOX_SPACING = 1;
+    const float BOX_SPACING = 1f;
 
     void DrawBox(float time)
     {

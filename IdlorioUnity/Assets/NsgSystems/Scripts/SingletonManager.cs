@@ -22,6 +22,7 @@ public class SingletonManager : MonoBehaviour
         
         GDK.CreateInstance();
         MachineManager.CreateInstance();
+        InputManager.CreateInstance();
     }
 
     private void OnEnable()
