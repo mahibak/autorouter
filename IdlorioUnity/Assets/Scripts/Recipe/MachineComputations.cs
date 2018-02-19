@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ProductionSpeedComputation
+public class MachineComputations
 {
-    public static void UpdateDesiredItemsPerSecond(List<Machine> machines)
+    static void UpdateDesiredItemsPerSecond(List<Machine> machines)
     {
         List<Machine> orderedMachineList = GetOrderedMachineListBottomFirst(machines);
         
@@ -15,7 +15,7 @@ public class ProductionSpeedComputation
         }
     }
 
-    private static List<Machine> GetOrderedMachineListBottomFirst(List<Machine> machines)
+    static List<Machine> GetOrderedMachineListBottomFirst(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
 
@@ -42,7 +42,7 @@ public class ProductionSpeedComputation
         return machinesInReversedProcessingOrder;
     }
 
-    public static void UpdatePossibleProductionSpeed(List<Machine> machines)
+    static void UpdatePossibleProductionSpeed(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = GetOrderedMachineListTopDown(machines);
 
@@ -52,7 +52,7 @@ public class ProductionSpeedComputation
         }
     }
 
-    private static List<Machine> GetOrderedMachineListTopDown(List<Machine> machines)
+    static List<Machine> GetOrderedMachineListTopDown(List<Machine> machines)
     {
         List<Machine> machinesInReversedProcessingOrder = new List<Machine>();
 
@@ -79,17 +79,16 @@ public class ProductionSpeedComputation
         return machinesInReversedProcessingOrder;
     }
 
-    private static void UpdateRecipes(List<Machine> machines)
+    public static void UpdateRecipes(List<Machine> machines)
     {
         machines = GetOrderedMachineListTopDown(machines);
 
         foreach(Machine m in machines)
             RecipeAssignator.AssignRecipe(m);
     }
-
+    
     public static void UpdateMachineLinks(List<Machine> machines)
     {
-        UpdateRecipes(machines);
         UpdateDesiredItemsPerSecond(machines);
         UpdatePossibleProductionSpeed(machines);
     }

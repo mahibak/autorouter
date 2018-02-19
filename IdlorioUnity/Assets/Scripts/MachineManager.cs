@@ -64,7 +64,7 @@ public class MachineManager
             destination._inputSlots[destSlot]._thisMachine = destination;
             destination._inputSlots[destSlot]._otherMachine = source;
             destination._inputSlots[destSlot]._otherConnector = source._outputSlots[sourceSlot];
-            
+
             Map map = new Map();
             map._conveyors = _instance._conveyors;
             map.Machines = _instance.m_machines;
@@ -85,9 +85,15 @@ public class MachineManager
         }
     }
 
+    public static void UpdateRecipes()
+    {
+        MachineComputations.UpdateRecipes(MachineManager.GetInstance().m_machines);
+        UpdateMachineLinks();
+    }
+
     public static void UpdateMachineLinks()
     {
-        ProductionSpeedComputation.UpdateMachineLinks(MachineManager.GetInstance().m_machines);
+        MachineComputations.UpdateMachineLinks(MachineManager.GetInstance().m_machines);
         _instance.recalculationNeededTime = _instance.timeSeconds + _instance.m_machines.Min(x => x.GetSecondsBeforeRecalculationNeeded());
     }
 
@@ -113,7 +119,7 @@ public class MachineManager
                 UpdateMachines(possibleDt);
                 desiredDt -= possibleDt;
                 timeSeconds += possibleDt;
-                ProductionSpeedComputation.UpdateMachineLinks(_instance.m_machines);
+                MachineComputations.UpdateMachineLinks(_instance.m_machines);
                 _instance.recalculationNeededTime = _instance.timeSeconds + _instance.m_machines.Min(x => x.GetSecondsBeforeRecalculationNeeded());
             }
             else

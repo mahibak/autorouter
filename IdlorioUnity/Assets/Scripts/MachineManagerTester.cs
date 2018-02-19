@@ -96,7 +96,7 @@ public class MachineManagerTester : MonoBehaviour
         MachineManager.ConnectMachines(m5, 0, m6, 0);
         MachineManager.ConnectMachines(m4, 0, m7, 0);
         MachineManager.ConnectMachines(m6, 0, m8, 0);
-        MachineManager.UpdateMachineLinks();
+        MachineManager.UpdateRecipes();
     }
 
     private void AddMachine(Machine machine)

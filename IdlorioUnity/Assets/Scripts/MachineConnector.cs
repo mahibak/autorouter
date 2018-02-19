@@ -80,4 +80,9 @@ public class MachineConnector
     {
         return (Direction)(((int)_localDir + (_thisMachine != null ? (int)_thisMachine._rotation : 0)) % 4);
     }
+
+    public override string ToString()
+    {
+        return string.Format("{0}, {1:P2} satisfied, Has {2}/{3} desired of {4}", IsConnected ? "Connected" : "Disconnected", Satisfaction, _itemsPerSecond, _desiredItemsPerSecond, _item);
+    }
 }
