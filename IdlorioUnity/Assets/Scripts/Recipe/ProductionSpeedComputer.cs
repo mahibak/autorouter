@@ -24,7 +24,7 @@ class ProductionSpeedComputer
 
         foreach (MachineConnector output in machine.GetConnectedOutputs())
         {
-            output._itemsPerSecond = output._desiredItemsPerSecond * machine._outputSatisfaction;
+            output._itemsPerSecond = machine._itemsPerSecondToOutputs;
             output._otherConnector._itemsPerSecond = output._itemsPerSecond;
         }
     }
