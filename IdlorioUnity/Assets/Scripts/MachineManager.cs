@@ -150,4 +150,17 @@ public class MachineManager
         CreateInstance();
         _instance.m_machines.Clear();
     }
+
+    public Machine GetMachineAtPoint(Point p)
+    {
+        foreach (Machine m in m_machines)
+        {
+            if (m.OccupiesPoint(p))
+            {
+                return m;
+            }
+        }
+
+        return null;
+    }
 }

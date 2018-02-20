@@ -39,6 +39,7 @@ public class SingletonManager : MonoBehaviour
     {
         GDK.GetInstance().Update();
         MachineManager.GetInstance().Update();
+        InputManager.GetInstance().Update();
     }
 
     private void DrawObjects(Camera camera)

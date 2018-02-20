@@ -20,6 +20,7 @@ public class Machine
 
     //State
     public float _itemsInStorage = 0;
+    public bool _isSelected = false;
 
     //Computation results
     public float _desiredItemsPerSecondToOutputs = 0;
@@ -147,6 +148,11 @@ public class Machine
         }
     }
 
+    public bool OccupiesPoint(Point point)
+    {
+        return GetOccupiedPoints().Contains(point);
+    }
+
     public void DrawDebug()
     {
         int worldX;
@@ -163,7 +169,7 @@ public class Machine
             worldY = _sizeX;
         }
 
-        if(GetOccupiedPoints().Contains(InputManager.GetPointerTile()))
+        if(OccupiesPoint(InputManager.GetPointerTile()))
         {
             StringBuilder sb = new StringBuilder();
 
@@ -193,6 +199,11 @@ public class Machine
         }
 
         GDK.DrawFilledAABB(_position.ToVector3() + new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), Color.gray);
+
+        if (_isSelected)
+        {
+            GDK.DrawFilledAABB(_position.ToVector3() + new Vector3(0.5f * worldX, 0f, 0.5f * worldY), new Vector3(0.5f * worldX + 0.1f, 0.1f, 0.5f * worldY + 0.1f), GDK.FadeColor(Color.cyan, 0.25f));
+        }
         
         foreach (MachineConnector m in _inputSlots)
         {
