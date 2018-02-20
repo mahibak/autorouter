@@ -219,7 +219,7 @@ public class Machine
         {
             if (m != null)
             {
-                GDK.DrawFilledAABB(_position.ToVector3() + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.red);  
+                m.DebugDraw();
             }
         }
 
@@ -227,12 +227,7 @@ public class Machine
         {
             if (m != null)
             {
-                GDK.DrawFilledAABB(_position.ToVector3() + m.GetWorldEdgeOffset(), new Vector3(0.25f, 0.25f, 0.25f), Color.green);
-
-                if (m._otherMachine != null)
-                {
-                    GDK.DrawLine(_position.ToVector3() + Vector3.up * 0.5f + m.GetWorldEdgeOffset(), m._otherMachine._position.ToVector3() + Vector3.up * 0.5f + m._otherConnector.GetWorldEdgeOffset(), Color.black);
-                }
+                m.DebugDraw();
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ public class MachineConnector
     public float _itemsPerSecond;
 
     public Item _item;
+    public bool _input;
 
     public bool IsConnected
     {
@@ -73,7 +75,7 @@ public class MachineConnector
             }
         }
 
-        switch (GetWorldDir())
+        switch (GetWorldDirection())
         {
             case Direction.Up:
                 offset[2] += 0.5f;
@@ -92,7 +94,7 @@ public class MachineConnector
         return offset;
     }
 
-    public Direction GetWorldDir()
+    public Direction GetWorldDirection()
     {
         return (Direction)(((int)_localDir + (_thisMachine != null ? (int)_thisMachine._rotation : 0)) % 4);
     }
@@ -100,5 +102,15 @@ public class MachineConnector
     public override string ToString()
     {
         return string.Format("{0}, {1:P2} satisfied, Has {2}/{3} desired of {4}", IsConnected ? "Connected" : "Disconnected", Satisfaction, _itemsPerSecond, _desiredItemsPerSecond, _item);
+    }
+
+    public void DebugDraw()
+    {
+        GDK.DrawFilledAABB(GetWorldPosition().ToVector3() + new Vector3(0.5f, 0.5f, 0.5f) + new Point(GetWorldDirection()).ToVector3() * 0.5f, new Vector3(0.25f, 0.25f, 0.25f), _input ? Color.red : Color.green);
+
+        if(_input && IsConnected)
+        {
+            //GDK.DrawLine(GetWorldPosition().ToVector3() + new Vector3(0.5f, 0.5f, 0.5f) + Vector3.up * 0.5f + new Point(GetWorldDirection()).ToVector3() * 0.5f, _otherConnector.GetWorldPosition().ToVector3() + new Vector3(0.5f, 0.5f, 0.5f) + new Point(_otherConnector.GetWorldDirection()).ToVector3() * 0.5f, Color.black);
+        }
     }
 }

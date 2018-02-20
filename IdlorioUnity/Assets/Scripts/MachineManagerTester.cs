@@ -19,6 +19,7 @@ public class MachineManagerTester : MonoBehaviour
             m._inputSlots[i]._localDir = Direction.Left;
             m._inputSlots[i]._local.X = 0;
             m._inputSlots[i]._local.Y = i;
+            m._inputSlots[i]._input = true;
         }
 
         m._outputSlots = new MachineConnector[outs];
@@ -28,6 +29,7 @@ public class MachineManagerTester : MonoBehaviour
             m._outputSlots[i]._localDir = Direction.Right;
             m._outputSlots[i]._local.X = 0;
             m._outputSlots[i]._local.Y = i;
+            m._outputSlots[i]._input = false;
         }
         MachineManager.CreateInstance();
         MachineManager.RegisterMachine(m);
