@@ -31,7 +31,7 @@ public class Conveyor
         _segments.Foreach(x => x.DrawDebug(_itemDrawTimeSeconds));
     }
 
-    public void CreateSegmentsForPath(IEnumerable<Point> path, Point conveyorStartFacing, Point conveyorEndFacing)
+    public void CreateSegmentsForPath(IEnumerable<Point> path)
     {
         _segments.Clear();
 
@@ -61,10 +61,10 @@ public class Conveyor
             segments[1]._startCurveDirection = segments[1]._linearDirection;
         }
         ConveyorSegment firstSegment = _segments.First();
-        firstSegment._startCurveDirection = conveyorStartFacing.DirectionTo(firstSegment._start);
+        firstSegment._startCurveDirection = _output.GetWorldPosition().DirectionTo(firstSegment._start);
 
         ConveyorSegment lastSegment = _segments.Last();
-        lastSegment._endCurveDirection = lastSegment._end.DirectionTo(conveyorEndFacing);
+        lastSegment._endCurveDirection = lastSegment._end.DirectionTo(_input.GetWorldPosition());
 
         //Set start 'phase'
         float length = 0;

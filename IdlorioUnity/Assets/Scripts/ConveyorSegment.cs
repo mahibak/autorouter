@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class ConveyorSegment
@@ -64,6 +66,17 @@ public class ConveyorSegment
 
     public void DrawDebug(float relativeTime)
     {
+        if(_start.GetPointsTo(_end).Contains(InputManager.GetPointerTile()))
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(string.Format("Start at {0} from {1}", _start, _startCurveDirection));
+            sb.AppendLine(string.Format("Linear to {0}", _linearDirection));
+            sb.AppendLine(string.Format("Ends  at {0} from {1}", _end, _endCurveDirection));
+
+            GDK.DrawText(sb.ToString(), _start.ToVector3(), Color.black);
+        }
+
         if (_start.X == _end.X)
             GDK.DrawFilledAABB(new Vector3(_start.X + 0.5f, 0.1f, (System.Math.Abs(_start.Y + _end.Y)) / 2.0f + 0.5f), new Vector3(System.Math.Abs(_end.X - _start.X) + 1, 0.1f, System.Math.Abs(_end.Y - _start.Y) + 1) / 2, Color.magenta);
         else

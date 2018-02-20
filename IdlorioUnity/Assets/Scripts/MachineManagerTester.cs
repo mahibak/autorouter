@@ -9,8 +9,8 @@ public class MachineManagerTester : MonoBehaviour
     Machine CreateMachine(int ins, int outs)
     {
         Machine m = new Machine();
-        m._sizeX = 1;
-        m._sizeY = System.Math.Max(ins, outs);
+        m._size.X = 1;
+        m._size.Y = System.Math.Max(ins, outs);
         m._inputSlots = new MachineConnector[ins];
 
         for (int i = 0; i < m._inputSlots.Length; i++)
@@ -59,6 +59,7 @@ public class MachineManagerTester : MonoBehaviour
         m3._maximumItemsPerSecond = 7;
         m3._position = new Point(12, 8);
         m3._addedProperty = Properties.Heated;
+        m3._rotation = Rotation.CW180;
 
         Machine m4 = CreateMachine(2, 1);
         m4._maximumItemsPerSecond = 2;

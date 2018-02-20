@@ -21,6 +21,11 @@ public struct Point
         return new Vector3(X, 0, Y);
     }
 
+    public Vector3 ToVector3(float y)
+    {
+        return new Vector3(X, y, Y);
+    }
+
     public Point(Direction Direction)
     {
         switch (Direction)
@@ -62,6 +67,20 @@ public struct Point
                 return new Point(-X, -Y);
             case Rotation.CW270:
                 return new Point(-Y, X);
+            case Rotation.CW0:
+            default:
+                return new Point(X, Y);
+        }
+    }
+
+    public Point RotateAbsolute(Rotation rotation)
+    {
+        switch (rotation)
+        {
+            case Rotation.CW90:
+            case Rotation.CW270:
+                return new Point(Y, X);
+            case Rotation.CW180:
             case Rotation.CW0:
             default:
                 return new Point(X, Y);

@@ -49,7 +49,7 @@ class Autorouter
     }*/
 
 
-    public static bool Autoroute(Map map, Conveyor originalNet, Point conveyorStartFacing, Point conveyorEndFacing)
+    public static bool Autoroute(Map map, Conveyor originalNet)
     {
         var ret = GetAutoroutingSolution(map, originalNet);
         
@@ -58,7 +58,7 @@ class Autorouter
 
         foreach (var netRouting in ret)
         {
-            netRouting.Key.CreateSegmentsForPath(netRouting.Value, conveyorStartFacing, conveyorEndFacing);
+            netRouting.Key.CreateSegmentsForPath(netRouting.Value);
         }
         
         return true;
@@ -117,7 +117,7 @@ class Autorouter
 
         Parallel.ForEach<IEnumerable<Conveyor>>(netsToPermute.GetPermutations(), permutation =>
         {
-            if (stopwatch.ElapsedMilliseconds >= 50 && (bestCost < Int32.MaxValue || autorouteSuccess))
+            if (stopwatch.ElapsedMilliseconds >= 50 && (bestCost < Int32.MaxValue))
                 return;
             else if (stopwatch.ElapsedMilliseconds >= 500)
                 return;

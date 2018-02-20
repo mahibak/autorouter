@@ -7,8 +7,8 @@ using UnityEngine;
 public class Machine
 {
     public Point _position;
-    public int _sizeX = 1;
-    public int _sizeY = 1;
+    public Point _size;
+
     public Rotation _rotation = Rotation.CW0;
 
     public MachineConnector[] _inputSlots;
@@ -116,8 +116,8 @@ public class Machine
         {
             MachineConnector conn = new MachineConnector();
             conn._localDir = Direction.Right;
-            conn._local.X = _sizeX - 1;
-            conn._local.Y = _sizeY - 1;
+            conn._local.X = _size.X - 1;
+            conn._local.Y = _size.Y - 1;
             _outputSlots[i] = conn;
         }
     }
@@ -137,15 +137,25 @@ public class Machine
         switch (_rotation)
         {
             case Rotation.CW90:
-                return _position.GetPointsInRectangle(_sizeY, -_sizeX);
+                return _position.GetPointsInRectangle(_size.Y, -_size.X);
             case Rotation.CW180:
-                return _position.GetPointsInRectangle(-_sizeX, -_sizeY);
+                return _position.GetPointsInRectangle(-_size.X, -_size.Y);
             case Rotation.CW270:
-                return _position.GetPointsInRectangle(-_sizeY, _sizeX);
+                return _position.GetPointsInRectangle(-_size.Y, _size.X);
             case Rotation.CW0:
             default:
-                return _position.GetPointsInRectangle(_sizeX, _sizeY);
+                return _position.GetPointsInRectangle(_size.X, _size.Y);
         }
+    }
+
+    public Point GetOppositeCornerFromPosition()
+    {
+        return new Point(_size.X - 1, _size.Y - 1).Rotate(_rotation) + _position;
+    }
+
+    public Point GetWorldSize()
+    {
+        return _size.RotateAbsolute(_rotation);
     }
 
     public bool OccupiesPoint(Point point)
@@ -160,13 +170,13 @@ public class Machine
 
         if (_rotation == Rotation.CW0 || _rotation == Rotation.CW180)
         {
-            worldX = _sizeX;
-            worldY = _sizeY;
+            worldX = _size.X;
+            worldY = _size.Y;
         }
         else
         {
-            worldX = _sizeY;
-            worldY = _sizeX;
+            worldX = _size.Y;
+            worldY = _size.X;
         }
 
         if(OccupiesPoint(InputManager.GetPointerTile()))
@@ -198,11 +208,11 @@ public class Machine
             GDK.DrawText(sb.ToString(), _position.ToVector3(), Color.black);
         }
 
-        GDK.DrawFilledAABB(_position.ToVector3() + new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), new Vector3(0.5f * worldX, 0.5f, 0.5f * worldY), Color.gray);
+        GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0.5f, 0.5f), GetWorldSize().ToVector3(1.0f) / 2.0f, Color.gray);
 
         if (_isSelected)
         {
-            GDK.DrawFilledAABB(_position.ToVector3() + new Vector3(0.5f * worldX, 0f, 0.5f * worldY), new Vector3(0.5f * worldX + 0.1f, 0.1f, 0.5f * worldY + 0.1f), GDK.FadeColor(Color.cyan, 0.25f));
+            GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0.5f, 0.5f), GetWorldSize().ToVector3(1.0f) / 2.0f + new Vector3(0.1f, 0.1f, 0.1f), GDK.FadeColor(Color.cyan, 0.25f));
         }
         
         foreach (MachineConnector m in _inputSlots)

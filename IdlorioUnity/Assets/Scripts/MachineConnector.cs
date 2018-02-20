@@ -62,13 +62,13 @@ public class MachineConnector
             switch (_thisMachine._rotation)
             {
                 case Rotation.CW90:
-                    offset = new Vector3(_local.Y + 0.5f, 0, _thisMachine._sizeX - _local.X - 0.5f);
+                    offset = new Vector3(_local.Y + 0.5f, 0, _thisMachine._size.X - _local.X - 0.5f);
                     break;
                 case Rotation.CW180:
-                    offset = new Vector3(_thisMachine._sizeX - _local.X - 0.5f, 0, _thisMachine._sizeY - _local.Y - 0.5f);
+                    offset = new Vector3(_thisMachine._size.X - _local.X - 0.5f, 0, _thisMachine._size.Y - _local.Y - 0.5f);
                     break;
                 case Rotation.CW270:
-                    offset = new Vector3(_thisMachine._sizeY - _local.Y - 0.5f, 0, _local.X + 0.5f);
+                    offset = new Vector3(_thisMachine._size.Y - _local.Y - 0.5f, 0, _local.X + 0.5f);
                     break;
             }
         }

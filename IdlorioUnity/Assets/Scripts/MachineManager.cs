@@ -80,7 +80,7 @@ public class MachineManager
             c._output = source._outputSlots[sourceSlot];
             c._input = destination._inputSlots[destSlot];
 
-            Autorouter.Autoroute(map, c, source._outputSlots[sourceSlot]._local + source._position, destination._inputSlots[destSlot]._local + destination._position);
+            Autorouter.Autoroute(map, c);
             _instance._conveyors.Add(c);
         }
     }
