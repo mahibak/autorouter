@@ -8,15 +8,17 @@ public class InputStateReadyForSelection : BaseInputState
     {
         base.OnEnter();
     }
-
-    public override void OnCursorClick(Point tile)
+    
+    protected override bool OnCursorClickInternal(Point tile)
     {
         Machine machine = MachineManager.GetInstance().GetMachineAtPoint(tile);
             
         if (machine != null)
         {
             SetSubstate(new InputStateMachineSelected(machine));
+            return true;
         }
-        
+
+        return false;
     }
 }

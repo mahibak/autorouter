@@ -15,13 +15,44 @@ public class InputStateMachineSelected : BaseInputState
     {
         base.OnEnter();
 
-        _selectedMachine._isSelected = true;
+        if (_selectedMachine != null)
+        {
+            _selectedMachine._isSelected = true;
+            UiManager.GetInstance().EnableMachineSelectedPanel(_selectedMachine.GetMachineInfoString());
+        }
     }
 
     public override void OnExit()
     {
         base.OnExit();
 
-        _selectedMachine._isSelected = false;
+        if (_selectedMachine != null)
+        {
+            _selectedMachine._isSelected = false;
+            UiManager.GetInstance().DisableMachineSelectedPanel();
+        }
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if (_selectedMachine == null)
+        {
+            RequestTermination();
+        }
+    }
+
+    protected override bool OnCursorClickInternal(Point tile)
+    {
+        Machine machine = MachineManager.GetInstance().GetMachineAtPoint(tile);
+
+        if (machine == _selectedMachine)
+        {
+            RequestTermination();
+            return true;
+        }
+
+        return false;
     }
 }

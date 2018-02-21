@@ -32,6 +32,11 @@ public class InputStateManager : MonoBehaviour
         _mainInputState = null;
     }
 
+    private void Update()
+    {
+        _instance._mainInputState.Update();
+    }
+
     public static void OnCursorClick(Point tile)
     {
         _instance._mainInputState.OnCursorClick(tile);

@@ -8,7 +8,8 @@ public class BaseInputState
     protected BaseInputState GetSubstate() { return _substate; }
     protected bool HasSubstate() { return _substate != null; }
 
-    protected bool _requestingTermination = false;
+    private bool _requestingTermination = false;
+    protected void RequestTermination() { _requestingTermination = true; }
 
     public virtual void OnEnter() { }
 
@@ -35,29 +36,40 @@ public class BaseInputState
         }
     }
 
-    public virtual void OnCursorClick(Point tile)
+    public bool OnCursorClick(Point tile)
     {
-        if (_substate != null)
+        if (_substate == null || !_substate.OnCursorClick(tile))
         {
-            _substate.OnCursorClick(tile);
+            return OnCursorClickInternal(tile);
         }
+
+        return false;
     }
 
-    public virtual void OnCursorHold(Point tile)
+    public bool OnCursorHold(Point tile)
     {
-        if (_substate != null)
+        if (_substate == null || !_substate.OnCursorClick(tile))
         {
-            _substate.OnCursorHold(tile);
+            return OnCursorHoldInternal(tile);
         }
+
+        return false;
     }
 
-    public virtual void OnDrag(Point tile, Vector3 dragAmountWorld)
+    public bool OnDrag(Point tile, Vector3 dragAmountWorld)
     {
-        if (_substate != null)
+        if (_substate == null || !_substate.OnCursorClick(tile))
         {
-            _substate.OnDrag(tile, dragAmountWorld);
+            return OnDragInternal(tile, dragAmountWorld);
         }
+
+        return false;
     }
+
+    // Input virtuals return whether the input was handled by the child state. If it was, parent states don't handle it.
+    protected virtual bool OnCursorClickInternal(Point tile) { return false; }
+    protected virtual bool OnCursorHoldInternal(Point tile) { return false; }
+    protected virtual bool OnDragInternal(Point tile, Vector3 dragAmountWorld) { return false; }
 
     public void SetSubstate(BaseInputState substate)
     {

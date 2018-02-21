@@ -181,38 +181,16 @@ public class Machine
 
         if(OccupiesPoint(InputManager.GetPointerTile()))
         {
-            StringBuilder sb = new StringBuilder();
-
-            if (_recipe != null)
-                sb.AppendLine(_recipe.ToString());
-            else
-                sb.AppendLine("No Recipe");
-
-            if (IsStorage)
-                sb.AppendLine(string.Format("Storage {3} is {0}/{1}, {2} left", _itemsInStorage, _storageCapacity, StorageLeft, _storageMode));
-            if (_addedProperty != Properties.None)
-                sb.AppendLine("Adds " + _addedProperty);
-
-            sb.AppendLine(string.Format("Produces {0} of a desired {1}, max is  {6}, {2}/{3} to outputs, {4}/{5} to storage", _itemsPerSecondFromProduction, DesiredItemsPerSecond, _itemsPerSecondToOutputs, _desiredItemsPerSecondToOutputs, _itemsPerSecondToStorage, _desiredItemsPerSecondToStorage, _maximumItemsPerSecond));
-
-            for (int i = 0; i < _inputSlots.Length; i++)
-            {
-                sb.AppendLine(string.Format("In {0}: {1}", i, _inputSlots[i].ToString()));
-            }
-
-            for (int i = 0; i < _outputSlots.Length; i++)
-            {
-                sb.AppendLine(string.Format("Out {0}: {1}", i, _outputSlots[i].ToString()));
-            }
-
-            GDK.DrawText(sb.ToString(), _position.ToVector3(), Color.black);
+            GDK.DrawText(GetMachineInfoString(), _position.ToVector3(), Color.black);
         }
 
         GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0.5f, 0.5f), GetWorldSize().ToVector3(1.0f) / 2.0f, Color.gray);
 
         if (_isSelected)
         {
-            GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0.5f, 0.5f), GetWorldSize().ToVector3(1.0f) / 2.0f + new Vector3(0.1f, 0.1f, 0.1f), GDK.FadeColor(Color.cyan, 0.25f));
+            Vector3 halfExtents = GetWorldSize().ToVector3(1.0f) / 2.0f + new Vector3(0.1f, 0.1f, 0.1f);
+            halfExtents[1] = 0.1f;
+            GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0f, 0.5f), halfExtents, GDK.FadeColor(Color.cyan, 0.25f));
         }
         
         foreach (MachineConnector m in _inputSlots)
@@ -230,6 +208,35 @@ public class Machine
                 m.DebugDraw();
             }
         }
+    }
+
+    public string GetMachineInfoString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        if (_recipe != null)
+            sb.AppendLine(_recipe.ToString());
+        else
+            sb.AppendLine("No Recipe");
+
+        if (IsStorage)
+            sb.AppendLine(string.Format("Storage {3} is {0}/{1}, {2} left", _itemsInStorage, _storageCapacity, StorageLeft, _storageMode));
+        if (_addedProperty != Properties.None)
+            sb.AppendLine("Adds " + _addedProperty);
+
+        sb.AppendLine(string.Format("Produces {0} of a desired {1}, max is  {6}, {2}/{3} to outputs, {4}/{5} to storage", _itemsPerSecondFromProduction, DesiredItemsPerSecond, _itemsPerSecondToOutputs, _desiredItemsPerSecondToOutputs, _itemsPerSecondToStorage, _desiredItemsPerSecondToStorage, _maximumItemsPerSecond));
+
+        for (int i = 0; i < _inputSlots.Length; i++)
+        {
+            sb.AppendLine(string.Format("In {0}: {1}", i, _inputSlots[i].ToString()));
+        }
+
+        for (int i = 0; i < _outputSlots.Length; i++)
+        {
+            sb.AppendLine(string.Format("Out {0}: {1}", i, _outputSlots[i].ToString()));
+        }
+
+        return sb.ToString();
     }
 
     public IEnumerable<MachineConnector> GetConnectedInputs()
