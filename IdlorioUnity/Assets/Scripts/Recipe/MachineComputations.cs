@@ -87,7 +87,7 @@ public class MachineComputations
             RecipeAssignator.AssignRecipe(m);
     }
     
-    public static void UpdateMachineLinks(List<Machine> machines)
+    public static void UpdateRates(List<Machine> machines)
     {
         UpdateDesiredItemsPerSecond(machines);
         UpdatePossibleProductionSpeed(machines);

@@ -44,9 +44,6 @@ public class MachineManager
         }
     }
 
-    float timeSeconds = 0;
-    float recalculationNeededTime = 0;
-
     public static void DisconnectMachines(Conveyor c)
     {
         c._input._conveyor = null;
@@ -94,47 +91,12 @@ public class MachineManager
     public static void UpdateRecipes()
     {
         MachineComputations.UpdateRecipes(MachineManager.GetInstance().m_machines);
-        UpdateMachineLinks();
+        MachineComputations.UpdateRates(MachineManager.GetInstance().m_machines);
     }
-
-    public static void UpdateMachineLinks()
-    {
-        MachineComputations.UpdateMachineLinks(MachineManager.GetInstance().m_machines);
-        _instance.recalculationNeededTime = _instance.timeSeconds + _instance.m_machines.Min(x => x.GetSecondsBeforeRecalculationNeeded());
-    }
-
-    void UpdateMachines(float dt)
-    {
-        foreach (Machine m in m_machines)
-        {
-            m._itemsInStorage += m._itemsPerSecondToStorage * dt;
-            if (m._itemsInStorage <= 0.001)
-                m._itemsInStorage = 0;
-        }
-    }
-
+    
     public void Update()
     {
-        float desiredDt = 1 / 60.0f;
-
-        while(desiredDt > 0)
-        {
-            if(timeSeconds + desiredDt > recalculationNeededTime)
-            {
-                float possibleDt = recalculationNeededTime - timeSeconds;
-                UpdateMachines(possibleDt);
-                desiredDt -= possibleDt;
-                timeSeconds += possibleDt;
-                MachineComputations.UpdateMachineLinks(_instance.m_machines);
-                _instance.recalculationNeededTime = _instance.timeSeconds + _instance.m_machines.Min(x => x.GetSecondsBeforeRecalculationNeeded());
-            }
-            else
-            {
-                UpdateMachines(desiredDt);
-                timeSeconds += desiredDt;
-                break;
-            }
-        }
+        SimulationRunner.GetInstance().Update(m_machines);
 
         foreach (Machine m in m_machines)
         {

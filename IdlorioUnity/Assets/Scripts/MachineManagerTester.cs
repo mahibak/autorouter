@@ -101,9 +101,10 @@ public class MachineManagerTester : MonoBehaviour
         MachineManager.ConnectMachines(m5._outputs[0], m6._inputs[0]);
         MachineManager.ConnectMachines(m4._outputs[0], m7._inputs[0]);
         MachineManager.ConnectMachines(m6._outputs[0], m8._inputs[0]);
+
         MachineManager.UpdateRecipes();
     }
-
+    
     private void AddMachine(Machine machine)
     {
         machine._position = _nextPosition;
