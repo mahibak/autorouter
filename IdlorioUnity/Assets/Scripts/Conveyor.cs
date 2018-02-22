@@ -86,11 +86,18 @@ public class Conveyor
             segments[0]._startCurveDirection = segments[0]._linearDirection;
             segments[1]._startCurveDirection = segments[1]._linearDirection;
         }
+
         ConveyorSegment firstSegment = _segments.First();
         firstSegment._startCurveDirection = _output.GetWorldPosition().DirectionTo(firstSegment._start);
 
         ConveyorSegment lastSegment = _segments.Last();
         lastSegment._endCurveDirection = lastSegment._end.DirectionTo(_input.GetWorldPosition());
+
+        if((lastSegment._end - lastSegment._start).ManhattanLength == 0)
+        {
+            lastSegment._startCurveDirection = lastSegment._linearDirection;
+            lastSegment._linearDirection = lastSegment._endCurveDirection;
+        }
 
         //Set start 'phase'
         float length = 0;

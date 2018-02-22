@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MachineManager
 {
-    public List<Conveyor> _conveyors = new List<Conveyor>();
+    public List<Conveyor> m_conveyors = new List<Conveyor>();
 
     private static MachineManager _instance;
     public static void CreateInstance()
@@ -48,10 +48,48 @@ public class MachineManager
     {
         c._input._conveyor = null;
         c._output._conveyor = null;
-        _instance._conveyors.Remove(c);
+        _instance.m_conveyors.Remove(c);
     }
 
-    public static bool ConnectMachines(MachineConnector output, MachineConnector input)
+    public class PlacementCheckResult
+    {
+        public List<Machine> intersectingMachines = new List<Machine>();
+        public List<Conveyor> _intersectingConveyors = new List<Conveyor>();
+        public List<Point> _intersectingPoints = new List<Point>();
+    }
+
+    public static PlacementCheckResult GetIntersections(Machine m)
+    {
+        PlacementCheckResult result = new PlacementCheckResult();
+
+        List<Point> occupiedPoints = m.GetOccupiedPoints().ToList();
+
+        foreach (Machine m1 in GetInstance().m_machines)
+        {
+            List<Point> intersections = m1.GetOccupiedPoints().Intersect(occupiedPoints).ToList();
+
+            if (intersections.Count > 0)
+            {
+                result.intersectingMachines.Add(m1);
+                result._intersectingPoints.AddRange(intersections);
+            }
+        }
+
+        foreach (Conveyor c in GetInstance().m_conveyors)
+        {
+            List<Point> intersections = c.GetOccupiedPoints().Intersect(occupiedPoints).ToList();
+
+            if (intersections.Count > 0)
+            {
+                result._intersectingConveyors.Add(c);
+                result._intersectingPoints.AddRange(intersections);
+            }
+        }
+
+        return result;
+    }
+
+    public static Conveyor ConnectMachines(MachineConnector output, MachineConnector input)
     {
         if (output != null
             && input != null)
@@ -62,7 +100,7 @@ public class MachineManager
             input._conveyor = c;
 
             Map map = new Map();
-            map._conveyors = _instance._conveyors;
+            map._conveyors = _instance.m_conveyors;
             map.Machines = _instance.m_machines;
             map.BuildingInputs = _instance.m_machines.SelectMany(x => x._inputs).ToList();
             map.BuildingOutputs = _instance.m_machines.SelectMany(x => x._outputs).ToList();
@@ -70,21 +108,21 @@ public class MachineManager
             map.Height = 20;
             map.Width = 40;
 
-            _instance._conveyors.Add(c);
+            _instance.m_conveyors.Add(c);
 
             if (Autorouter.Autoroute(map, c))
             {
-                return true;
+                return c;
             }
             else
             {
                 DisconnectMachines(c);
-                return false;
+                return null;
             }
         }
         else
         {
-            return false;
+            return null;
         }
     }
 
@@ -103,7 +141,7 @@ public class MachineManager
             m.DrawDebug();
         }
 
-        foreach(Conveyor c in _conveyors)
+        foreach(Conveyor c in m_conveyors)
         {
             c.DrawDebug(1 / 60.0f);
         }
@@ -111,6 +149,20 @@ public class MachineManager
         // Highlight mouse cursor tile
         Point mouseTile = InputManager.GetPointerTile();
         GDK.DrawAABB(new Vector3(mouseTile.X + 0.5f, 0f, mouseTile.Y + 0.5f), new Vector3(0.45f, 0.1f, 0.45f), GDK.FadeColor(Color.yellow, 0.5f));
+
+        /*
+        Machine machineBeingPlaced = new Machine();
+        machineBeingPlaced._size = new Point(3, 2);
+        machineBeingPlaced._position = mouseTile;
+
+        machineBeingPlaced.DrawDebug();
+
+        PlacementCheckResult result = GetIntersections(machineBeingPlaced);
+
+        foreach(Point p in result._intersectingPoints)
+        {
+            GDK.DrawAABB(new Vector3(p.X + 0.5f, 2f, p.Y + 0.5f), new Vector3(0.45f, 0.1f, 0.45f), GDK.FadeColor(Color.red, 0.5f));
+        }*/
     }
 
     public static void Reset()
