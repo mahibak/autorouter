@@ -7,15 +7,15 @@ using UnityEngine.Assertions;
 
 class RecipeAssignator
 {
-    static MachineConnector[] GetInputSetupForRecipe(Machine m, Recipe r)
+    static Conveyor[] GetInputSetupForRecipe(Machine m, Recipe r)
     {
-        List<MachineConnector> connectedInputs = m.GetConnectedInputs().ToList();
-        List<MachineConnector> connectedOutputs = m.GetConnectedOutputs().ToList();
+        List<Conveyor> connectedInputs = m.GetConnectedInputs().ToList();
+        List<Conveyor> connectedOutputs = m.GetConnectedOutputs().ToList();
 
         if (connectedInputs.Count != r._inputs.Count)
             return null; //The machine doesn't have the right inputs connected
 
-        foreach (MachineConnector i in connectedInputs)
+        foreach (Conveyor i in connectedInputs)
         {
             if (i._item == null)
                 return null; //Required input doesn't have any item in it
@@ -28,7 +28,7 @@ class RecipeAssignator
             if (!m._outputSlots[i].IsConnected)
                 return null; //Not all outputs are connected
 
-        foreach (MachineConnector[] inputPermutation in connectedInputs.GetPermutations().Select(x => x.ToArray()))
+        foreach (Conveyor[] inputPermutation in connectedInputs.GetPermutations().Select(x => x.ToArray()))
         {
             bool goodRecipe = true;
 
@@ -49,7 +49,7 @@ class RecipeAssignator
         return null;
     }
     
-    static Recipe GetSupportedRecipe(Machine m, out MachineConnector[] inputsUsedForRecipe)
+    static Recipe GetSupportedRecipe(Machine m, out Conveyor[] inputsUsedForRecipe)
     {
         //Storage dosen't have recipes
         if (m.IsStorage)
@@ -70,7 +70,7 @@ class RecipeAssignator
         //Fall back to a simple recipe
         if(m._addedProperty != Properties.None)
         {
-            List<MachineConnector> connectedInputs = m.GetConnectedInputs().ToList();
+            List<Conveyor> connectedInputs = m.GetConnectedInputs().ToList();
 
             if(connectedInputs.Count == 1 && connectedInputs[0]._item != null)
             {
@@ -97,14 +97,9 @@ class RecipeAssignator
 
     public static void AssignRecipe(Machine m)
     {
-        m._recipe = GetSupportedRecipe(m, out m._inputsUsedForRecipe);
-        
-        foreach (MachineConnector c in m._outputSlots)
-        {
-            c._item = null;
-            if (c._otherConnector != null)
-                c._otherConnector._item = null;
-        }
+        m._recipe = GetSupportedRecipe(m, out m._inputConveyorsUsedForRecipe);
+
+        List<Conveyor> connectedOutputs = m.GetConnectedOutputs().ToList();
         
         if (m._recipe == null)
         {
@@ -112,18 +107,16 @@ class RecipeAssignator
             {
                 if ((m._storageMode & Machine.StorageModes.Out) != 0)
                 {
-                    foreach (MachineConnector c in m._outputSlots.Where(x => x.IsConnected))
+                    foreach (Conveyor c in connectedOutputs)
                     {
                         c._item = m._itemInStorage;
-                        c._otherConnector._item = c._item;
                     }
                 }
                 else
                 {
-                    foreach (MachineConnector c in m._outputSlots.Where(x => x.IsConnected))
+                    foreach (Conveyor c in connectedOutputs)
                     {
                         c._item = null;
-                        c._otherConnector._item = c._item;
                     }
                 }
             }
@@ -132,8 +125,7 @@ class RecipeAssignator
         {
             for (int i = 0; i < m._recipe._outputs.Count; i++)
             {
-                m._outputSlots[i]._item = m._recipe._outputs[i];
-                m._outputSlots[i]._otherConnector._item = m._outputSlots[i]._item;
+                connectedOutputs[i]._item = m._recipe._outputs[i];
             }
         }
     }

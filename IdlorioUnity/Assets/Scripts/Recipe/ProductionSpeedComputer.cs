@@ -22,10 +22,9 @@ class ProductionSpeedComputer
         else
             machine._outputSatisfaction = machine._itemsPerSecondToOutputs / machine._desiredItemsPerSecondToOutputs;
 
-        foreach (MachineConnector output in machine.GetConnectedOutputs())
+        foreach (Conveyor output in machine.GetConnectedOutputs())
         {
             output._itemsPerSecond = machine._itemsPerSecondToOutputs;
-            output._otherConnector._itemsPerSecond = output._itemsPerSecond;
         }
     }
 
@@ -33,28 +32,19 @@ class ProductionSpeedComputer
     {
         if (machine.IsStorage)
         {
-            float satisfactionRatio = 1;
+            List<Conveyor> connectedInputs = machine.GetConnectedInputs().ToList();
 
-            foreach (MachineConnector input in machine._inputSlots)
-            {
-                satisfactionRatio = Mathf.Min(satisfactionRatio, input.Satisfaction);
-            }
+            if (connectedInputs.Count == 0)
+                return 0;
 
-            return satisfactionRatio;
+            return System.Math.Min(1.0f, connectedInputs.Min(x => x.Satisfaction));
         }
         else
         {
-            if (machine._inputsUsedForRecipe == null)
+            if (machine._inputConveyorsUsedForRecipe == null)
                 return 0;
 
-            float satisfactionRatio = 1;
-
-            foreach (MachineConnector input in machine._inputsUsedForRecipe)
-            {
-                satisfactionRatio = Mathf.Min(satisfactionRatio, input.Satisfaction);
-            }
-
-            return satisfactionRatio; 
+            return System.Math.Min(1.0f, machine._inputConveyorsUsedForRecipe.Min(x => x.Satisfaction));
         }
     }
     

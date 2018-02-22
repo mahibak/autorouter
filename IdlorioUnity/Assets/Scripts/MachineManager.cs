@@ -59,11 +59,18 @@ public class MachineManager
             // TODO : Probably sharing way too much info
             source._outputSlots[sourceSlot]._thisMachine = source;
             source._outputSlots[sourceSlot]._otherMachine = destination;
-            source._outputSlots[sourceSlot]._otherConnector = destination._inputSlots[destSlot];
 
             destination._inputSlots[destSlot]._thisMachine = destination;
             destination._inputSlots[destSlot]._otherMachine = source;
-            destination._inputSlots[destSlot]._otherConnector = source._outputSlots[sourceSlot];
+
+            Conveyor c = new Conveyor();
+            c._start = source._outputSlots[sourceSlot].GetWorldPositionOneTileOut();
+            c._end = destination._inputSlots[destSlot].GetWorldPositionOneTileOut();
+            c._output = source._outputSlots[sourceSlot];
+            c._input = destination._inputSlots[destSlot];
+
+            source._outputSlots[sourceSlot]._conveyor = c;
+            destination._inputSlots[destSlot]._conveyor = c;
 
             Map map = new Map();
             map._conveyors = _instance._conveyors;
@@ -74,11 +81,6 @@ public class MachineManager
             map.Height = 20;
             map.Width = 40;
 
-            Conveyor c = new Conveyor();
-            c._start = source._outputSlots[sourceSlot].GetWorldPositionOneTileOut();
-            c._end = destination._inputSlots[destSlot].GetWorldPositionOneTileOut();
-            c._output = source._outputSlots[sourceSlot];
-            c._input = destination._inputSlots[destSlot];
 
             Autorouter.Autoroute(map, c);
             _instance._conveyors.Add(c);

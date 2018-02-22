@@ -8,34 +8,17 @@ public class MachineConnector
     // TODO : This probably doesn't need to be all public
     public Machine _thisMachine;
     public Machine _otherMachine;
-    public MachineConnector _otherConnector;
+    public Conveyor _conveyor;
     public Point _local = new Point(0, 0);
     public Direction _localDir = Direction.Up;
 
-    public float _desiredItemsPerSecond;
-    public float _itemsPerSecond;
-
-    public Item _item;
     public bool _input;
 
     public bool IsConnected
     {
         get
         {
-            return _otherConnector != null;
-        }
-    }
-
-    public float Satisfaction
-    {
-        get
-        {
-            if (_desiredItemsPerSecond == 0)
-                return 1;
-            else if (System.Single.IsPositiveInfinity(_desiredItemsPerSecond))
-                return 0;
-            else
-                return _itemsPerSecond / _desiredItemsPerSecond;
+            return _conveyor != null;
         }
     }
 
@@ -101,7 +84,10 @@ public class MachineConnector
 
     public override string ToString()
     {
-        return string.Format("{0}, {1:P2} satisfied, Has {2}/{3} desired of {4}", IsConnected ? "Connected" : "Disconnected", Satisfaction, _itemsPerSecond, _desiredItemsPerSecond, _item);
+        if(IsConnected)
+            return string.Format("Connected, {0:P2} satisfied, Has {1}/{2} desired of {3}", _conveyor.Satisfaction, _conveyor._itemsPerSecond, _conveyor._desiredItemsPerSecond, _conveyor._item);
+        else
+            return "Disconnected";
     }
 
     public void DebugDraw()

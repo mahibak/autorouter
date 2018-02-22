@@ -11,9 +11,27 @@ public class Conveyor
     public Point _end;
     public MachineConnector _input = null;
     public MachineConnector _output = null;
+    
+    public float _desiredItemsPerSecond;
+    public float _itemsPerSecond;
+    public Item _item;
+
     public float _length;
 
     public float _itemDrawTimeSeconds = 0;
+
+    public float Satisfaction
+    {
+        get
+        {
+            if (_desiredItemsPerSecond == 0)
+                return 1;
+            else if (System.Single.IsPositiveInfinity(_desiredItemsPerSecond))
+                return 0;
+            else
+                return _itemsPerSecond / _desiredItemsPerSecond;
+        }
+    }
 
     public IEnumerable<Point> GetOccupiedPoints()
     {
@@ -26,7 +44,7 @@ public class Conveyor
 
     public void DrawDebug(float dt)
     {
-        _itemDrawTimeSeconds += dt * _input._itemsPerSecond;
+        _itemDrawTimeSeconds += dt * _itemsPerSecond;
 
         _segments.Foreach(x => x.DrawDebug(_itemDrawTimeSeconds));
     }

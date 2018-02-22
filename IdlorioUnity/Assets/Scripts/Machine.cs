@@ -34,7 +34,7 @@ public class Machine
     public Properties _addedProperty = Properties.None;
     public Item _itemInStorage = null;
     public Recipe _recipe = null;
-    public MachineConnector[] _inputsUsedForRecipe = null;
+    public Conveyor[] _inputConveyorsUsedForRecipe = null;
     
     public bool IsStorage
     {
@@ -239,17 +239,17 @@ public class Machine
         return sb.ToString();
     }
 
-    public IEnumerable<MachineConnector> GetConnectedInputs()
+    public IEnumerable<Conveyor> GetConnectedInputs()
     {
         foreach (MachineConnector m in _inputSlots)
-            if (m._otherConnector != null)
-                yield return m;
+            if (m._conveyor != null)
+                yield return m._conveyor;
     }
-    
-    public IEnumerable<MachineConnector> GetConnectedOutputs()
+
+    public IEnumerable<Conveyor> GetConnectedOutputs()
     {
         foreach (MachineConnector m in _outputSlots)
-            if (m._otherConnector != null)
-                yield return m;
+            if (m._conveyor != null)
+                yield return m._conveyor;
     }
 }
