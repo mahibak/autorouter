@@ -11,7 +11,7 @@ public class Conveyor
     public Point _end;
     public MachineConnector _input = null;
     public MachineConnector _output = null;
-    
+
     public float _desiredItemsPerSecond;
     public float _itemsPerSecond;
     public Item _item;
@@ -31,6 +31,14 @@ public class Conveyor
             else
                 return _itemsPerSecond / _desiredItemsPerSecond;
         }
+    }
+
+    public Conveyor(MachineConnector output, MachineConnector input)
+    {
+        _output = output;
+        _input = input;
+        _start = _output.GetWorldPositionOneTileOut();
+        _end = _input.GetWorldPositionOneTileOut();
     }
 
     public IEnumerable<Point> GetOccupiedPoints()

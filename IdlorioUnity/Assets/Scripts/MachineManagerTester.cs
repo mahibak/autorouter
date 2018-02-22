@@ -11,25 +11,27 @@ public class MachineManagerTester : MonoBehaviour
         Machine m = new Machine();
         m._size.X = 1;
         m._size.Y = System.Math.Max(ins, outs);
-        m._inputSlots = new MachineConnector[ins];
+        m._inputs = new MachineConnector[ins];
 
-        for (int i = 0; i < m._inputSlots.Length; i++)
+        for (int i = 0; i < m._inputs.Length; i++)
         {
-            m._inputSlots[i] = new MachineConnector();
-            m._inputSlots[i]._localDir = Direction.Left;
-            m._inputSlots[i]._local.X = 0;
-            m._inputSlots[i]._local.Y = i;
-            m._inputSlots[i]._input = true;
+            m._inputs[i] = new MachineConnector();
+            m._inputs[i]._localDir = Direction.Left;
+            m._inputs[i]._local.X = 0;
+            m._inputs[i]._local.Y = i;
+            m._inputs[i]._input = true;
+            m._inputs[i]._thisMachine = m;
         }
 
-        m._outputSlots = new MachineConnector[outs];
-        for (int i = 0; i < m._outputSlots.Length; i++)
+        m._outputs = new MachineConnector[outs];
+        for (int i = 0; i < m._outputs.Length; i++)
         {
-            m._outputSlots[i] = new MachineConnector();
-            m._outputSlots[i]._localDir = Direction.Right;
-            m._outputSlots[i]._local.X = 0;
-            m._outputSlots[i]._local.Y = i;
-            m._outputSlots[i]._input = false;
+            m._outputs[i] = new MachineConnector();
+            m._outputs[i]._localDir = Direction.Right;
+            m._outputs[i]._local.X = 0;
+            m._outputs[i]._local.Y = i;
+            m._outputs[i]._input = false;
+            m._outputs[i]._thisMachine = m;
         }
         MachineManager.CreateInstance();
         MachineManager.RegisterMachine(m);
@@ -90,15 +92,15 @@ public class MachineManagerTester : MonoBehaviour
         m8._storageCapacity = System.Single.PositiveInfinity;
         m8._storageMode = Machine.StorageModes.In;
 
-        MachineManager.ConnectMachines(m0, 0, m1, 0);
-        MachineManager.ConnectMachines(m1, 0, m2, 0);
-        MachineManager.ConnectMachines(m1, 1, m3, 0);
-        MachineManager.ConnectMachines(m2, 0, m4, 0);
-        MachineManager.ConnectMachines(m3, 0, m4, 1);
-        MachineManager.ConnectMachines(m3, 1, m5, 0);
-        MachineManager.ConnectMachines(m5, 0, m6, 0);
-        MachineManager.ConnectMachines(m4, 0, m7, 0);
-        MachineManager.ConnectMachines(m6, 0, m8, 0);
+        MachineManager.ConnectMachines(m0._outputs[0], m1._inputs[0]);
+        MachineManager.ConnectMachines(m1._outputs[0], m2._inputs[0]);
+        MachineManager.ConnectMachines(m1._outputs[1], m3._inputs[0]);
+        MachineManager.ConnectMachines(m2._outputs[0], m4._inputs[0]);
+        MachineManager.ConnectMachines(m3._outputs[0], m4._inputs[1]);
+        MachineManager.ConnectMachines(m3._outputs[1], m5._inputs[0]);
+        MachineManager.ConnectMachines(m5._outputs[0], m6._inputs[0]);
+        MachineManager.ConnectMachines(m4._outputs[0], m7._inputs[0]);
+        MachineManager.ConnectMachines(m6._outputs[0], m8._inputs[0]);
         MachineManager.UpdateRecipes();
     }
 

@@ -11,8 +11,8 @@ public class Machine
 
     public Rotation _rotation = Rotation.CW0;
 
-    public MachineConnector[] _inputSlots;
-    public MachineConnector[] _outputSlots;
+    public MachineConnector[] _inputs;
+    public MachineConnector[] _outputs;
 
     //Specs
     public float _maximumItemsPerSecond = 0;
@@ -102,23 +102,23 @@ public class Machine
 
     public void InitializeTestSlots()
     {
-        _inputSlots = new MachineConnector[1];
-        _outputSlots = new MachineConnector[1];
+        _inputs = new MachineConnector[1];
+        _outputs = new MachineConnector[1];
 
-        for (int i = 0; i < _inputSlots.Length; ++i)
+        for (int i = 0; i < _inputs.Length; ++i)
         {
             MachineConnector conn = new MachineConnector();
             conn._localDir = Direction.Left;
-            _inputSlots[i] = conn;
+            _inputs[i] = conn;
         }
 
-        for (int i = 0; i < _outputSlots.Length; ++i)
+        for (int i = 0; i < _outputs.Length; ++i)
         {
             MachineConnector conn = new MachineConnector();
             conn._localDir = Direction.Right;
             conn._local.X = _size.X - 1;
             conn._local.Y = _size.Y - 1;
-            _outputSlots[i] = conn;
+            _outputs[i] = conn;
         }
     }
 
@@ -193,7 +193,7 @@ public class Machine
             GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0f, 0.5f), halfExtents, GDK.FadeColor(Color.cyan, 0.25f));
         }
         
-        foreach (MachineConnector m in _inputSlots)
+        foreach (MachineConnector m in _inputs)
         {
             if (m != null)
             {
@@ -201,7 +201,7 @@ public class Machine
             }
         }
 
-        foreach (MachineConnector m in _outputSlots)
+        foreach (MachineConnector m in _outputs)
         {
             if (m != null)
             {
@@ -226,14 +226,14 @@ public class Machine
 
         sb.AppendLine(string.Format("Produces {0} of a desired {1}, max is  {6}, {2}/{3} to outputs, {4}/{5} to storage", _itemsPerSecondFromProduction, DesiredItemsPerSecond, _itemsPerSecondToOutputs, _desiredItemsPerSecondToOutputs, _itemsPerSecondToStorage, _desiredItemsPerSecondToStorage, _maximumItemsPerSecond));
 
-        for (int i = 0; i < _inputSlots.Length; i++)
+        for (int i = 0; i < _inputs.Length; i++)
         {
-            sb.AppendLine(string.Format("In {0}: {1}", i, _inputSlots[i].ToString()));
+            sb.AppendLine(string.Format("In {0}: {1}", i, _inputs[i].ToString()));
         }
 
-        for (int i = 0; i < _outputSlots.Length; i++)
+        for (int i = 0; i < _outputs.Length; i++)
         {
-            sb.AppendLine(string.Format("Out {0}: {1}", i, _outputSlots[i].ToString()));
+            sb.AppendLine(string.Format("Out {0}: {1}", i, _outputs[i].ToString()));
         }
 
         return sb.ToString();
@@ -241,14 +241,14 @@ public class Machine
 
     public IEnumerable<Conveyor> GetConnectedInputs()
     {
-        foreach (MachineConnector m in _inputSlots)
+        foreach (MachineConnector m in _inputs)
             if (m._conveyor != null)
                 yield return m._conveyor;
     }
 
     public IEnumerable<Conveyor> GetConnectedOutputs()
     {
-        foreach (MachineConnector m in _outputSlots)
+        foreach (MachineConnector m in _outputs)
             if (m._conveyor != null)
                 yield return m._conveyor;
     }

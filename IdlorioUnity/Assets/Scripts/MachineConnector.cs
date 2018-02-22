@@ -7,7 +7,6 @@ public class MachineConnector
 {
     // TODO : This probably doesn't need to be all public
     public Machine _thisMachine;
-    public Machine _otherMachine;
     public Conveyor _conveyor;
     public Point _local = new Point(0, 0);
     public Direction _localDir = Direction.Up;

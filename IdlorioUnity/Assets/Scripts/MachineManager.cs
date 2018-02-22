@@ -47,43 +47,47 @@ public class MachineManager
     float timeSeconds = 0;
     float recalculationNeededTime = 0;
 
-    public static void ConnectMachines(Machine source, int sourceSlot, Machine destination, int destSlot)
+    public static void DisconnectMachines(Conveyor c)
     {
-        if (source != null
-            && destination != null
-            && source._outputSlots.Length > sourceSlot
-            && destination._inputSlots.Length > destSlot
-            && source._outputSlots[sourceSlot]._otherMachine == null
-            && destination._inputSlots[destSlot]._otherMachine == null)
+        c._input._conveyor = null;
+        c._output._conveyor = null;
+        _instance._conveyors.Remove(c);
+    }
+
+    public static bool ConnectMachines(MachineConnector output, MachineConnector input)
+    {
+        if (output != null
+            && input != null)
         {
-            // TODO : Probably sharing way too much info
-            source._outputSlots[sourceSlot]._thisMachine = source;
-            source._outputSlots[sourceSlot]._otherMachine = destination;
+            Conveyor c = new Conveyor(output, input);
 
-            destination._inputSlots[destSlot]._thisMachine = destination;
-            destination._inputSlots[destSlot]._otherMachine = source;
-
-            Conveyor c = new Conveyor();
-            c._start = source._outputSlots[sourceSlot].GetWorldPositionOneTileOut();
-            c._end = destination._inputSlots[destSlot].GetWorldPositionOneTileOut();
-            c._output = source._outputSlots[sourceSlot];
-            c._input = destination._inputSlots[destSlot];
-
-            source._outputSlots[sourceSlot]._conveyor = c;
-            destination._inputSlots[destSlot]._conveyor = c;
+            output._conveyor = c;
+            input._conveyor = c;
 
             Map map = new Map();
             map._conveyors = _instance._conveyors;
             map.Machines = _instance.m_machines;
-            map.BuildingInputs = _instance.m_machines.SelectMany(x => x._inputSlots).ToList();
-            map.BuildingOutputs = _instance.m_machines.SelectMany(x => x._outputSlots).ToList();
+            map.BuildingInputs = _instance.m_machines.SelectMany(x => x._inputs).ToList();
+            map.BuildingOutputs = _instance.m_machines.SelectMany(x => x._outputs).ToList();
             map.Machines = _instance.m_machines;
             map.Height = 20;
             map.Width = 40;
 
-
-            Autorouter.Autoroute(map, c);
             _instance._conveyors.Add(c);
+
+            if (Autorouter.Autoroute(map, c))
+            {
+                return true;
+            }
+            else
+            {
+                DisconnectMachines(c);
+                return false;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 

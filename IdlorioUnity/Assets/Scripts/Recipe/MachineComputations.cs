@@ -25,7 +25,7 @@ public class MachineComputations
         {
             Machine machinesBeingProcessed = machinesInReversedProcessingOrder[i];
 
-            foreach (Machine childMachine in machinesBeingProcessed._outputSlots.Select(output => output._otherMachine).Where(childMachine => childMachine != null))
+            foreach (Machine childMachine in machinesBeingProcessed._outputs.Select(output => output._conveyor._input._thisMachine).Where(childMachine => childMachine != null))
             {
                 //Our desired output per second depends on all of these child's demand, make sure that their desired output per second is computed before us
                 if (machinesInReversedProcessingOrder.IndexOf(childMachine) < i)
@@ -62,7 +62,7 @@ public class MachineComputations
         {
             Machine machineBeingProcessed = machinesInReversedProcessingOrder[i];
 
-            foreach (Machine parentMachine in machineBeingProcessed._inputSlots.Select(x => x._otherMachine).Where(parentMachine => parentMachine != null))
+            foreach (Machine parentMachine in machineBeingProcessed._inputs.Select(x => x._conveyor._output._thisMachine).Where(parentMachine => parentMachine != null))
             {
                 //Our desired output per second depends on all of the parent's possible rate, make sure that their output per second is computed before us
                 if (machinesInReversedProcessingOrder.IndexOf(parentMachine) < i)

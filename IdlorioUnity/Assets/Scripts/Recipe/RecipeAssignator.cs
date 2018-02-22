@@ -25,7 +25,7 @@ class RecipeAssignator
             return null; //The machine doesn't have the right outputs connected
 
         for (int i = 0; i < r._outputs.Count; i++)
-            if (!m._outputSlots[i].IsConnected)
+            if (!m._outputs[i].IsConnected)
                 return null; //Not all outputs are connected
 
         foreach (Conveyor[] inputPermutation in connectedInputs.GetPermutations().Select(x => x.ToArray()))

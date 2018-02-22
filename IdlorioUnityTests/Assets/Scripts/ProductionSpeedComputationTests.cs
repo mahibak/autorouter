@@ -18,12 +18,12 @@ namespace Tests
         Machine CreateMachine(int ins, int outs)
         {
             Machine m = new Machine();
-            m._inputSlots = new MachineConnector[ins];
-            for (int i = 0; i < m._inputSlots.Length; i++)
-                m._inputSlots[i] = new MachineConnector();
-            m._outputSlots = new MachineConnector[outs];
-            for (int i = 0; i < m._outputSlots.Length; i++)
-                m._outputSlots[i] = new MachineConnector();
+            m._inputs = new MachineConnector[ins];
+            for (int i = 0; i < m._inputs.Length; i++)
+                m._inputs[i] = new MachineConnector();
+            m._outputs = new MachineConnector[outs];
+            for (int i = 0; i < m._outputs.Length; i++)
+                m._outputs[i] = new MachineConnector();
             MachineManager.CreateInstance();
             MachineManager.RegisterMachine(m);
             return m;
