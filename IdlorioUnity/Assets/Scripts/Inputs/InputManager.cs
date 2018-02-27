@@ -62,6 +62,7 @@ public class InputManager
                 _mouseDownScreenPos = Input.mousePosition;
                 _isDragging = false;
                 _isHolding = false;
+                OnCursorPress();
             }
 
             _timeMouseDown += Time.deltaTime;
@@ -88,28 +89,43 @@ public class InputManager
             if (!_isHolding && !_isDragging && _timeMouseDown > hold_duration && !(EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
             {
                 _isHolding = true;
-                OnCursorHold(Input.mousePosition);
+                OnCursorHold();
             }
         }
         else
         {
-            if (_timeMouseDown > 0 && _timeMouseDown < hold_duration && !_isDragging && !(EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
+            if (_timeMouseDown > 0)
             {
-                OnCursorClick(Input.mousePosition);
+                if (_timeMouseDown < hold_duration && !_isDragging && !(EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
+                {
+                    OnCursorClick();
+                }
+
+                OnCursorRelease();
             }
 
             _timeMouseDown = 0f;
         }
     }
 
-    public void OnCursorClick(Vector3 screenPos)
+    public void OnCursorClick()
     {
         InputStateManager.OnCursorClick(GetPointerTile());
     }
 
-    public void OnCursorHold(Vector3 screenPos)
+    public void OnCursorHold()
     {
         InputStateManager.OnCursorHold(GetPointerTile());
+    }
+
+    public void OnCursorPress()
+    {
+        InputStateManager.OnCursorPress(GetPointerTile());
+    }
+
+    public void OnCursorRelease()
+    {
+        InputStateManager.OnCursorRelease(GetPointerTile());
     }
 
     public void OnDrag(Vector3 dragAmountWorld)

@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ButtonType
+{
+    Invalid,
+    Confirm,
+    Cancel,
+    Move,
+}
+
 public class InputStateManager : MonoBehaviour
 {
     private static InputStateManager _instance;
@@ -47,8 +55,33 @@ public class InputStateManager : MonoBehaviour
         _instance._mainInputState.OnCursorHold(tile);
     }
 
+    public static void OnCursorPress(Point tile)
+    {
+        _instance._mainInputState.OnCursorPress(tile);
+    }
+
+    public static void OnCursorRelease(Point tile)
+    {
+        _instance._mainInputState.OnCursorRelease(tile);
+    }
+
     public static void OnDrag(Point tile, Vector3 dragAmountWorld)
     {
         _instance._mainInputState.OnDrag(tile, dragAmountWorld);
+    }
+
+    public void OnButtonMove()
+    {
+        _mainInputState.OnButtonClick(ButtonType.Move);
+    }
+
+    public void OnButtonConfirm()
+    {
+        _mainInputState.OnButtonClick(ButtonType.Confirm);
+    }
+
+    public void OnButtonCancel()
+    {
+        _mainInputState.OnButtonClick(ButtonType.Cancel);
     }
 }

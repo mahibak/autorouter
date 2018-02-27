@@ -18,10 +18,17 @@ public class UiManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
+
+        _machineSelectedPanel.SetActive(false);
+        _selectionOptionsPanel.SetActive(false);
+        _moveOptionsPanel.SetActive(false);
     }
 
-    [SerializeField] GameObject _machineSelectedPanel = null;
-    [SerializeField] Text _machineSelectedPanelInfo = null;
+    [SerializeField] private GameObject _machineSelectedPanel = null;
+    [SerializeField] private Text _machineSelectedPanelInfo = null;
+
+    [SerializeField] private GameObject _selectionOptionsPanel = null;
+    [SerializeField] private GameObject _moveOptionsPanel = null;
 
     public void EnableMachineSelectedPanel(string machineInfo)
     {
@@ -38,6 +45,38 @@ public class UiManager : MonoBehaviour
         {
             _machineSelectedPanel.SetActive(false);
             _machineSelectedPanelInfo.text = "";
+        }
+    }
+
+    public void EnableSelectionOptionsPanel()
+    {
+        if (_selectionOptionsPanel != null)
+        {
+            _selectionOptionsPanel.SetActive(true);
+        }
+    }
+
+    public void DisableSelectionOptionsPanel()
+    {
+        if (_selectionOptionsPanel != null)
+        {
+            _selectionOptionsPanel.SetActive(false);
+        }
+    }
+
+    public void EnableMoveOptionsPanel()
+    {
+        if (_moveOptionsPanel != null)
+        {
+            _moveOptionsPanel.SetActive(true);
+        }
+    }
+
+    public void DisableMoveOptionsPanel()
+    {
+        if (_moveOptionsPanel != null)
+        {
+            _moveOptionsPanel.SetActive(false);
         }
     }
 }

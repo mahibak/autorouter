@@ -148,7 +148,7 @@ public class MachineManager
 
         // Highlight mouse cursor tile
         Point mouseTile = InputManager.GetPointerTile();
-        GDK.DrawAABB(new Vector3(mouseTile.X + 0.5f, 0f, mouseTile.Y + 0.5f), new Vector3(0.45f, 0.1f, 0.45f), GDK.FadeColor(Color.yellow, 0.5f));
+        GDK.DrawAABB(new Vector3(mouseTile.X + 0.5f, 0f, mouseTile.Y + 0.5f), new Vector3(0.45f, 0.1f, 0.45f), GDK.FadeColor(Color.yellow, 0.35f));
 
         /*
         Machine machineBeingPlaced = new Machine();
