@@ -47,6 +47,7 @@ public class InputManager
     float _timeMouseDown = 0f;
     Vector3 _mouseDownScreenPos = new Vector3();
     Vector3 _lastDragEventWorldPos = new Vector3();
+    bool _isMouseDownValid = false;
     bool _isDragging = false;
     bool _isHolding = false;
 
@@ -55,13 +56,16 @@ public class InputManager
 
     public void Update()
     {
+        bool isPointerOverGameObject = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+
         if (Input.GetMouseButton(0))
         {
-            if (_timeMouseDown == 0f)
+            if (_timeMouseDown == 0f && !isPointerOverGameObject)
             {
                 _mouseDownScreenPos = Input.mousePosition;
                 _isDragging = false;
                 _isHolding = false;
+                _isMouseDownValid = true;
                 OnCursorPress();
             }
 
@@ -73,7 +77,7 @@ public class InputManager
                 OnDrag(groundPos - _lastDragEventWorldPos);
                 _lastDragEventWorldPos = groundPos;
             }
-            else
+            else if (_isMouseDownValid)
             {
                 Vector2 mouseTravel = Input.mousePosition - _mouseDownScreenPos;
 
@@ -86,7 +90,7 @@ public class InputManager
                 }
             }
 
-            if (!_isHolding && !_isDragging && _timeMouseDown > hold_duration && !(EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
+            if (!_isHolding && !_isDragging && _timeMouseDown > hold_duration && !isPointerOverGameObject)
             {
                 _isHolding = true;
                 OnCursorHold();
@@ -96,12 +100,15 @@ public class InputManager
         {
             if (_timeMouseDown > 0)
             {
-                if (_timeMouseDown < hold_duration && !_isDragging && !(EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
+                if (_timeMouseDown < hold_duration && !_isDragging && !isPointerOverGameObject)
                 {
                     OnCursorClick();
                 }
-
+                
                 OnCursorRelease();
+                _isMouseDownValid = false;
+                _isDragging = false;
+                _isHolding = false;
             }
 
             _timeMouseDown = 0f;

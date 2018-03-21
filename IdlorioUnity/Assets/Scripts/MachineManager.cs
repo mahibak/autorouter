@@ -53,7 +53,7 @@ public class MachineManager
 
     public class PlacementCheckResult
     {
-        public List<Machine> intersectingMachines = new List<Machine>();
+        public List<Machine> _intersectingMachines = new List<Machine>();
         public List<Conveyor> _intersectingConveyors = new List<Conveyor>();
         public List<Point> _intersectingPoints = new List<Point>();
     }
@@ -70,7 +70,7 @@ public class MachineManager
 
             if (intersections.Count > 0)
             {
-                result.intersectingMachines.Add(m1);
+                result._intersectingMachines.Add(m1);
                 result._intersectingPoints.AddRange(intersections);
             }
         }

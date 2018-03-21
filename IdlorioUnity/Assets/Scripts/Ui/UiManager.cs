@@ -29,54 +29,47 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] private GameObject _selectionOptionsPanel = null;
     [SerializeField] private GameObject _moveOptionsPanel = null;
+    [SerializeField] private Button _moveConfirmButton = null;
 
-    public void EnableMachineSelectedPanel(string machineInfo)
+    public static void EnableMachineSelectedPanel(string machineInfo)
     {
-        if (_machineSelectedPanel != null)
+        if (_instance._machineSelectedPanel != null)
         {
-            _machineSelectedPanel.SetActive(true);
-            _machineSelectedPanelInfo.text = machineInfo;
+            _instance._machineSelectedPanel.SetActive(true);
+            _instance._machineSelectedPanelInfo.text = machineInfo;
         }
     }
 
-    public void DisableMachineSelectedPanel()
+    public static void DisableMachineSelectedPanel()
     {
-        if (_machineSelectedPanel != null)
+        if (_instance._machineSelectedPanel != null)
         {
-            _machineSelectedPanel.SetActive(false);
-            _machineSelectedPanelInfo.text = "";
+            _instance._machineSelectedPanel.SetActive(false);
+            _instance._machineSelectedPanelInfo.text = "";
         }
     }
 
-    public void EnableSelectionOptionsPanel()
+    public static void SetSelectionOptionsPanelEnabled(bool enable)
     {
-        if (_selectionOptionsPanel != null)
+        if (_instance._selectionOptionsPanel != null)
         {
-            _selectionOptionsPanel.SetActive(true);
+            _instance._selectionOptionsPanel.SetActive(enable);
         }
     }
 
-    public void DisableSelectionOptionsPanel()
+    public static void SetMoveOptionsPanelEnabled(bool enable)
     {
-        if (_selectionOptionsPanel != null)
+        if (_instance._moveOptionsPanel != null)
         {
-            _selectionOptionsPanel.SetActive(false);
+            _instance._moveOptionsPanel.SetActive(enable);
         }
     }
 
-    public void EnableMoveOptionsPanel()
+    public static void SetMoveConfirmButtonEnabled(bool enable)
     {
-        if (_moveOptionsPanel != null)
+        if (_instance._moveConfirmButton != null)
         {
-            _moveOptionsPanel.SetActive(true);
-        }
-    }
-
-    public void DisableMoveOptionsPanel()
-    {
-        if (_moveOptionsPanel != null)
-        {
-            _moveOptionsPanel.SetActive(false);
+            _instance._moveConfirmButton.interactable = enable;
         }
     }
 }

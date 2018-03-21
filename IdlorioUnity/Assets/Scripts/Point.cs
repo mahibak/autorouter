@@ -16,6 +16,12 @@ public struct Point
         this.Y = Y;
     }
 
+    public Point(float X, float Y)
+    {
+        this.X = (int)X;
+        this.Y = (int)Y;
+    }
+
     public Vector3 ToVector3()
     {
         return new Vector3(X, 0, Y);

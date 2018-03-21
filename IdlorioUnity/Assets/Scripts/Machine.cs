@@ -153,6 +153,11 @@ public class Machine
         return new Point(_size.X - 1, _size.Y - 1).Rotate(_rotation) + _position;
     }
 
+    public Point GetCenterTile()
+    {
+        return new Point(_size.X * 0.5f, _size.Y * 0.5f).Rotate(_rotation) + _position;
+    }
+
     public Point GetWorldSize()
     {
         return _size.RotateAbsolute(_rotation);

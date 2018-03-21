@@ -1816,6 +1816,11 @@ Prefab:
       propertyPath: _moveOptionsPanel
       value: 
       objectReference: {fileID: 8947741}
+    - target: {fileID: 114786571267300388, guid: 21b901b7e7a5b2d4cadf184f454b8554,
+        type: 2}
+      propertyPath: _moveConfirmButton
+      value: 
+      objectReference: {fileID: 556468628}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21b901b7e7a5b2d4cadf184f454b8554, type: 2}
   m_IsPrefabParent: 0
