@@ -113,6 +113,11 @@ public struct Point
         return new Point(p1.X - p2.X, p1.Y - p2.Y);
     }
 
+    public static Point operator *(Point p1, float k)
+    {
+        return new Point(p1.X * k, p1.Y * k);
+    }
+
     public static bool operator ==(Point p1, Point p2)
     {
         return p1.X == p2.X && p1.Y == p2.Y;

@@ -8,6 +8,8 @@ public enum ButtonType
     Confirm,
     Cancel,
     Move,
+    RotateCW,
+    RotateCCW,
 }
 
 public class InputStateManager : MonoBehaviour
@@ -80,8 +82,13 @@ public class InputStateManager : MonoBehaviour
         _mainInputState.OnButtonClick(ButtonType.Confirm);
     }
 
-    public void OnButtonCancel()
+    public void OnButtonRotateCW()
     {
-        _mainInputState.OnButtonClick(ButtonType.Cancel);
+        _mainInputState.OnButtonClick(ButtonType.RotateCW);
+    }
+
+    public void OnButtonRotateCCW()
+    {
+        _mainInputState.OnButtonClick(ButtonType.RotateCCW);
     }
 }

@@ -31,21 +31,19 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject _moveOptionsPanel = null;
     [SerializeField] private Button _moveConfirmButton = null;
 
-    public static void EnableMachineSelectedPanel(string machineInfo)
+    public static void SetMachineSelectedPanelEnabled(bool enable)
     {
         if (_instance._machineSelectedPanel != null)
         {
-            _instance._machineSelectedPanel.SetActive(true);
-            _instance._machineSelectedPanelInfo.text = machineInfo;
+            _instance._machineSelectedPanel.SetActive(enable);
         }
     }
 
-    public static void DisableMachineSelectedPanel()
+    public static void SetMachineSelectedInfoText(string machineInfo)
     {
-        if (_instance._machineSelectedPanel != null)
+        if (_instance._machineSelectedPanelInfo != null)
         {
-            _instance._machineSelectedPanel.SetActive(false);
-            _instance._machineSelectedPanelInfo.text = "";
+            _instance._machineSelectedPanelInfo.text = machineInfo;
         }
     }
 

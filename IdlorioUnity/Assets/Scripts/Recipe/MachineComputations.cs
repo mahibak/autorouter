@@ -62,6 +62,7 @@ public class MachineComputations
         {
             Machine machineBeingProcessed = machinesInReversedProcessingOrder[i];
 
+            // TODO : This breaks if a machine has only 1 of 2 outputs in use.
             foreach (Machine parentMachine in machineBeingProcessed._inputs.Select(x => x._conveyor._output._thisMachine).Where(parentMachine => parentMachine != null))
             {
                 //Our desired output per second depends on all of the parent's possible rate, make sure that their output per second is computed before us

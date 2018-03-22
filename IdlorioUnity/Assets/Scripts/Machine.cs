@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,7 @@ using UnityEngine;
 
 public class Machine
 {
-    public Point _position;
-    public Point _size;
-
-    public Rotation _rotation = Rotation.CW0;
+    public GridTransform _gridTransform = new GridTransform();
 
     public MachineConnector[] _inputs;
     public MachineConnector[] _outputs;
@@ -67,7 +65,37 @@ public class Machine
             return Mathf.Min(DesiredItemsPerSecond, _maximumItemsPerSecond);
         }
     }
-    
+
+    public Point GetTile()
+    {
+        return _gridTransform.GetTile();
+    }
+
+    public void SetTile(Point tile)
+    {
+        _gridTransform.SetTile(tile);
+    }
+
+    public Point GetSize()
+    {
+        return _gridTransform.GetBaseSize();
+    }
+
+    public void SetSize(Point size)
+    {
+        _gridTransform.SetBaseSize(size);
+    }
+
+    public Rotation GetRotation()
+    {
+        return _gridTransform.GetRotation();
+    }
+
+    public void SetRotation(Rotation rot)
+    {
+        _gridTransform.SetRotation(rot);
+    }
+
     public Item ApplyTransformation(Item i)
     {
         Item ret = i.GetCopy();
@@ -116,8 +144,8 @@ public class Machine
         {
             MachineConnector conn = new MachineConnector();
             conn._localDir = Direction.Right;
-            conn._local.X = _size.X - 1;
-            conn._local.Y = _size.Y - 1;
+            conn._local.X = GetSize().X - 1;
+            conn._local.Y = GetSize().Y - 1;
             _outputs[i] = conn;
         }
     }
@@ -132,70 +160,43 @@ public class Machine
             return System.Single.PositiveInfinity;
     }
 
-    public IEnumerable<Point> GetOccupiedPoints()
+    public IEnumerable<Point> GetOccupiedTiles()
     {
-        switch (_rotation)
-        {
-            case Rotation.CW90:
-                return _position.GetPointsInRectangle(_size.Y, -_size.X);
-            case Rotation.CW180:
-                return _position.GetPointsInRectangle(-_size.X, -_size.Y);
-            case Rotation.CW270:
-                return _position.GetPointsInRectangle(-_size.Y, _size.X);
-            case Rotation.CW0:
-            default:
-                return _position.GetPointsInRectangle(_size.X, _size.Y);
-        }
+        return _gridTransform.GetOccupiedTiles();
     }
 
-    public Point GetOppositeCornerFromPosition()
+    public Point GetOppositeCornerTile()
     {
-        return new Point(_size.X - 1, _size.Y - 1).Rotate(_rotation) + _position;
+        return _gridTransform.GetOppositeTile();
     }
 
     public Point GetCenterTile()
     {
-        return new Point(_size.X * 0.5f, _size.Y * 0.5f).Rotate(_rotation) + _position;
+        return _gridTransform.GetCenterTile();
     }
 
     public Point GetWorldSize()
     {
-        return _size.RotateAbsolute(_rotation);
+        return _gridTransform.GetCurrentSize();
     }
 
-    public bool OccupiesPoint(Point point)
+    public bool OccupiesTile(Point point)
     {
-        return GetOccupiedPoints().Contains(point);
+        return GetOccupiedTiles().Contains(point);
     }
 
     public void DrawDebug()
     {
-        int worldX;
-        int worldY;
-
-        if (_rotation == Rotation.CW0 || _rotation == Rotation.CW180)
+        if(OccupiesTile(InputManager.GetPointerTile()))
         {
-            worldX = _size.X;
-            worldY = _size.Y;
-        }
-        else
-        {
-            worldX = _size.Y;
-            worldY = _size.X;
+            GDK.DrawText(GetMachineInfoString(), _gridTransform.GetPos(), Color.black);
         }
 
-        if(OccupiesPoint(InputManager.GetPointerTile()))
-        {
-            GDK.DrawText(GetMachineInfoString(), _position.ToVector3(), Color.black);
-        }
-
-        GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0.5f, 0.5f), GetWorldSize().ToVector3(1.0f) / 2.0f, Color.gray);
+        _gridTransform.DrawInWorld(Color.gray);
 
         if (_isSelected)
         {
-            Vector3 halfExtents = GetWorldSize().ToVector3(1.0f) / 2.0f + new Vector3(0.1f, 0.1f, 0.1f);
-            halfExtents[1] = 0.1f;
-            GDK.DrawFilledAABB((_position + GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0f, 0.5f), halfExtents, GDK.FadeColor(Color.cyan, 0.25f));
+            _gridTransform.DrawInWorld(GDK.FadeColor(Color.cyan, 0.25f), 1f, 0.1f);
         }
         
         foreach (MachineConnector m in _inputs)
@@ -256,5 +257,34 @@ public class Machine
         foreach (MachineConnector m in _outputs)
             if (m._conveyor != null)
                 yield return m._conveyor;
+    }
+
+    public void TryRefreshConnectors()
+    {
+        List<Tuple<MachineConnector, MachineConnector>> lostConnections = new List<Tuple<MachineConnector, MachineConnector>>();
+        foreach (MachineConnector m in _outputs)
+        {
+            if (m._conveyor != null)
+            {
+                lostConnections.Add(new Tuple<MachineConnector, MachineConnector>(m._conveyor._output, m._conveyor._input));
+                MachineManager.DisconnectMachines(m._conveyor);
+            }
+        }
+
+        foreach (MachineConnector m in _inputs)
+        {
+            if (m._conveyor != null)
+            {
+                lostConnections.Add(new Tuple<MachineConnector, MachineConnector>(m._conveyor._output, m._conveyor._input));
+                MachineManager.DisconnectMachines(m._conveyor);
+            }
+        }
+        
+        foreach (Tuple<MachineConnector, MachineConnector> c in lostConnections)
+        {
+            MachineManager.ConnectMachines(c.Item1, c.Item2);
+        }
+
+        MachineManager.UpdateRecipes();
     }
 }

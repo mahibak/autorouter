@@ -84,7 +84,7 @@ class Autorouter
             if (c == netToRoute)
                 continue;
 
-            if(c.GetOccupiedPoints().Where(x => x == netToRoute._start || x == netToRoute._end).Count() > 0)
+            if(c.GetOccupiedTiles().Where(x => x == netToRoute._start || x == netToRoute._end).Count() > 0)
             {
                 ret.Add(c);
             }

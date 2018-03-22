@@ -26,7 +26,7 @@ public class MachineConnector
         if (_thisMachine == null)
             return _local;
         else
-            return _local.Rotate(_thisMachine._rotation) + _thisMachine._position;
+            return _local.Rotate(_thisMachine.GetRotation()) + _thisMachine.GetTile();
     }
 
     public Point GetWorldPositionOneTileOut()
@@ -34,7 +34,7 @@ public class MachineConnector
         if (_thisMachine == null)
             return _local + new Point(_localDir);
         else
-            return (_local + new Point(_localDir)).Rotate(_thisMachine._rotation) + _thisMachine._position;
+            return (_local + new Point(_localDir)).Rotate(_thisMachine.GetRotation()) + _thisMachine.GetTile();
     }
 
     public Vector3 GetWorldEdgeOffset()
@@ -43,16 +43,16 @@ public class MachineConnector
 
         if (_thisMachine != null)
         {
-            switch (_thisMachine._rotation)
+            switch (_thisMachine.GetRotation())
             {
                 case Rotation.CW90:
-                    offset = new Vector3(_local.Y + 0.5f, 0, _thisMachine._size.X - _local.X - 0.5f);
+                    offset = new Vector3(_local.Y + 0.5f, 0, _thisMachine.GetSize().X - _local.X - 0.5f);
                     break;
                 case Rotation.CW180:
-                    offset = new Vector3(_thisMachine._size.X - _local.X - 0.5f, 0, _thisMachine._size.Y - _local.Y - 0.5f);
+                    offset = new Vector3(_thisMachine.GetSize().X - _local.X - 0.5f, 0, _thisMachine.GetSize().Y - _local.Y - 0.5f);
                     break;
                 case Rotation.CW270:
-                    offset = new Vector3(_thisMachine._size.Y - _local.Y - 0.5f, 0, _local.X + 0.5f);
+                    offset = new Vector3(_thisMachine.GetSize().Y - _local.Y - 0.5f, 0, _local.X + 0.5f);
                     break;
             }
         }
@@ -78,7 +78,7 @@ public class MachineConnector
 
     public Direction GetWorldDirection()
     {
-        return (Direction)(((int)_localDir + (_thisMachine != null ? (int)_thisMachine._rotation : 0)) % 4);
+        return (Direction)(((int)_localDir + (_thisMachine != null ? (int)_thisMachine.GetRotation() : 0)) % 4);
     }
 
     public override string ToString()

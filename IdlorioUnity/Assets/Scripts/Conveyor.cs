@@ -41,7 +41,7 @@ public class Conveyor
         _end = _input.GetWorldPositionOneTileOut();
     }
 
-    public IEnumerable<Point> GetOccupiedPoints()
+    public IEnumerable<Point> GetOccupiedTiles()
     {
         foreach (IEnumerable<Point> p in _segments.Select(x => x.GetOccupiedPoints()))
         {

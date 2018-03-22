@@ -6,7 +6,7 @@ public class InputStateMove : BaseInputState
 {
     private Machine _selectedMachine = null;
     private Point _initialTile;
-    private Point _currentTile;
+    private GridTransform _targetTransform = new GridTransform();
     private bool _isPositionValid = true;
 
     public InputStateMove(Machine machine)
@@ -23,7 +23,8 @@ public class InputStateMove : BaseInputState
             UiManager.SetMoveOptionsPanelEnabled(true);
             UiManager.SetMoveConfirmButtonEnabled(true);
             _initialTile = _selectedMachine.GetCenterTile();
-            _currentTile = _initialTile;
+            _targetTransform = new GridTransform(_selectedMachine._gridTransform);
+            _targetTransform.SetCenterTile(_initialTile);
         }
     }
 
@@ -38,12 +39,9 @@ public class InputStateMove : BaseInputState
     {
         base.Update();
 
-        if (_currentTile != _initialTile && _selectedMachine != null)
+        if (_targetTransform.GetTile() != _initialTile && _selectedMachine != null)
         {
-            Vector3 size = _selectedMachine._size.ToVector3();
-            size[1] = 0f;
-            Color color = _isPositionValid ? Color.green : Color.red;
-            GDK.DrawAABB(_currentTile.ToVector3() + (_selectedMachine._position - _selectedMachine.GetOppositeCornerFromPosition()).ToVector3() / 2.0f + new Vector3(0.5f, 0f, 0.5f), new Vector3(size[0] * 0.5f, 1f, size[2] * 0.5f), color);
+            _targetTransform.DrawInWorld(_isPositionValid ? Color.green : Color.red);
         }
     }
 
@@ -66,17 +64,22 @@ public class InputStateMove : BaseInputState
 
     private void SetPosition(Point tile)
     {
-        _currentTile = tile;
+        _targetTransform.SetCenterTile(tile);
+        RefreshValidity();
+    }
 
-        Machine m = new Machine();
-        m._position = _currentTile + _selectedMachine._position - _selectedMachine.GetOppositeCornerFromPosition();
-        m._size = _selectedMachine._size;
-        m._rotation = _selectedMachine._rotation;
+    private void Rotate(bool clockwise)
+    {
+        _targetTransform.SetRotation((Rotation)(((int)_targetTransform.GetRotation() + (clockwise ? 1 : -1)) % 4));
+        RefreshValidity();
+    }
 
-        MachineManager.PlacementCheckResult intersections = MachineManager.GetIntersections(m);
+    private void RefreshValidity()
+    {
+        MachineManager.PlacementCheckResult intersections = MachineManager.GetIntersections(_targetTransform);
 
         if (intersections._intersectingMachines.Count == 0
-            || (intersections._intersectingMachines.Count == 1 && intersections._intersectingMachines[0] == _selectedMachine && _currentTile != _initialTile))
+            || (intersections._intersectingMachines.Count == 1 && intersections._intersectingMachines[0] == _selectedMachine))
         {
             _isPositionValid = true;
             UiManager.SetMoveConfirmButtonEnabled(true);
@@ -90,16 +93,21 @@ public class InputStateMove : BaseInputState
 
     protected override bool OnButtonClickedInternal(ButtonType button)
     {
-        if (button == ButtonType.Cancel)
+        switch (button)
         {
-            TerminateState();
-            return true;
-        }
-        if (button == ButtonType.Confirm)
-        {
-            DoMove();
-            TerminateState();
-            return true;
+            case ButtonType.Cancel:
+                TerminateState();
+                return true;
+            case ButtonType.Confirm:
+                DoMove();
+                TerminateState();
+                return true;
+            case ButtonType.RotateCW:
+                Rotate(true);
+                return true;
+            case ButtonType.RotateCCW:
+                Rotate(false);
+                return true;
         }
 
         return false;
@@ -107,6 +115,8 @@ public class InputStateMove : BaseInputState
 
     private void DoMove()
     {
-        _selectedMachine._position = _currentTile + _selectedMachine._position - _selectedMachine.GetOppositeCornerFromPosition();
+        _selectedMachine._gridTransform.SetCenterTile(_targetTransform.GetTile());
+        _selectedMachine._gridTransform.SetRotation(_targetTransform.GetRotation());
+        _selectedMachine.TryRefreshConnectors();
     }
 }

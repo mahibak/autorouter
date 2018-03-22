@@ -9,8 +9,7 @@ public class MachineManagerTester : MonoBehaviour
     Machine CreateMachine(int ins, int outs)
     {
         Machine m = new Machine();
-        m._size.X = 1;
-        m._size.Y = System.Math.Max(ins, outs);
+        m.SetSize(new Point(1, System.Math.Max(ins, outs)));
         m._inputs = new MachineConnector[ins];
 
         for (int i = 0; i < m._inputs.Length; i++)
@@ -42,7 +41,7 @@ public class MachineManagerTester : MonoBehaviour
     {
         Machine m0 = CreateMachine(0, 1);
         m0._maximumItemsPerSecond = System.Single.PositiveInfinity;
-        m0._position = new Point(0, 4);
+        m0.SetTile(new Point(0, 4));
         m0._storageMode = Machine.StorageModes.Out;
         m0._storageCapacity = System.Single.PositiveInfinity;
         m0._itemsInStorage = System.Single.PositiveInfinity;
@@ -51,43 +50,43 @@ public class MachineManagerTester : MonoBehaviour
 
         Machine m1 = CreateMachine(1, 2);
         m1._maximumItemsPerSecond = 10;
-        m1._position = new Point(4, 4);
+        m1.SetTile(new Point(4, 4));
         m1._addedProperty = Properties.Centrifuged;
 
         Machine m2 = CreateMachine(1, 1);
         m2._maximumItemsPerSecond = 2;
-        m2._position = new Point(12, 0);
+        m2.SetTile(new Point(12, 0));
         m2._addedProperty = Properties.Heated;
 
         Machine m3 = CreateMachine(1, 2);
         m3._maximumItemsPerSecond = 7;
-        m3._position = new Point(12, 8);
+        m3.SetTile(new Point(12, 8));
         m3._addedProperty = Properties.Heated;
-        m3._rotation = Rotation.CW180;
+        m3.SetRotation(Rotation.CW180);
 
         Machine m4 = CreateMachine(2, 1);
         m4._maximumItemsPerSecond = 2;
-        m4._position = new Point(20, 0);
+        m4.SetTile(new Point(20, 0));
         m4._addedProperty = Properties.Heated;
 
         Machine m5 = CreateMachine(1, 1);
         m5._maximumItemsPerSecond = 5;
-        m5._position = new Point(20, 12);
+        m5.SetTile(new Point(20, 12));
         m5._addedProperty = Properties.Stretched;
 
         Machine m6 = CreateMachine(1, 1);
         m6._maximumItemsPerSecond = 6;
-        m6._position = new Point(28, 12);
+        m6.SetTile(new Point(28, 12));
         m6._addedProperty = Properties.Cut;
 
         Machine m7 = CreateMachine(1, 0);
-        m7._position = new Point(24, 0);
+        m7.SetTile(new Point(24, 0));
         m7._maximumItemsPerSecond = 1e6f;
         m7._storageCapacity = System.Single.PositiveInfinity;
         m7._storageMode = Machine.StorageModes.In;
 
         Machine m8 = CreateMachine(1, 0);
-        m8._position = new Point(32, 12);
+        m8.SetTile(new Point(32, 12));
         m8._maximumItemsPerSecond = 1e6f;
         m8._storageCapacity = System.Single.PositiveInfinity;
         m8._storageMode = Machine.StorageModes.In;
@@ -107,7 +106,7 @@ public class MachineManagerTester : MonoBehaviour
     
     private void AddMachine(Machine machine)
     {
-        machine._position = _nextPosition;
+        machine.SetTile(_nextPosition);
         _nextPosition.X += 8;
         MachineManager.RegisterMachine(machine);
     }

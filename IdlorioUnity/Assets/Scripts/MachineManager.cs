@@ -58,15 +58,15 @@ public class MachineManager
         public List<Point> _intersectingPoints = new List<Point>();
     }
 
-    public static PlacementCheckResult GetIntersections(Machine m)
+    public static PlacementCheckResult GetIntersections(GridTransform transform)
     {
         PlacementCheckResult result = new PlacementCheckResult();
 
-        List<Point> occupiedPoints = m.GetOccupiedPoints().ToList();
+        List<Point> occupiedPoints = transform.GetOccupiedTiles().ToList();
 
         foreach (Machine m1 in GetInstance().m_machines)
         {
-            List<Point> intersections = m1.GetOccupiedPoints().Intersect(occupiedPoints).ToList();
+            List<Point> intersections = m1.GetOccupiedTiles().Intersect(occupiedPoints).ToList();
 
             if (intersections.Count > 0)
             {
@@ -77,7 +77,7 @@ public class MachineManager
 
         foreach (Conveyor c in GetInstance().m_conveyors)
         {
-            List<Point> intersections = c.GetOccupiedPoints().Intersect(occupiedPoints).ToList();
+            List<Point> intersections = c.GetOccupiedTiles().Intersect(occupiedPoints).ToList();
 
             if (intersections.Count > 0)
             {
@@ -175,7 +175,7 @@ public class MachineManager
     {
         foreach (Machine m in m_machines)
         {
-            if (m.OccupiesPoint(p))
+            if (m.OccupiesTile(p))
             {
                 return m;
             }

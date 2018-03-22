@@ -18,7 +18,8 @@ public class InputStateMachineSelected : BaseInputState
         if (_selectedMachine != null)
         {
             _selectedMachine._isSelected = true;
-            UiManager.EnableMachineSelectedPanel(_selectedMachine.GetMachineInfoString());
+            UiManager.SetMachineSelectedPanelEnabled(true);
+            UiManager.SetMachineSelectedInfoText(_selectedMachine.GetMachineInfoString());
             UiManager.SetSelectionOptionsPanelEnabled(true);
         }
     }
@@ -33,12 +34,14 @@ public class InputStateMachineSelected : BaseInputState
         }
 
         UiManager.SetSelectionOptionsPanelEnabled(false);
+        UiManager.SetMachineSelectedPanelEnabled(false);
     }
 
-    protected override void OnSubstateExit()
+    protected override void OnSubstatePostExit()
     {
-        base.OnSubstateExit();
+        base.OnSubstatePostExit();
         
+        UiManager.SetMachineSelectedPanelEnabled(true);
         UiManager.SetSelectionOptionsPanelEnabled(true);
     }
 
@@ -70,7 +73,7 @@ public class InputStateMachineSelected : BaseInputState
         if (button == ButtonType.Move)
         {
             SetSubstate(new InputStateMove(_selectedMachine));
-            UiManager.SetSelectionOptionsPanelEnabled(false);
+            UiManager.SetMachineSelectedPanelEnabled(false);
             return true;
         }
 

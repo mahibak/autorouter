@@ -62,7 +62,7 @@ public class AutoroutingMap
 
         foreach (Machine m in map.Machines)
         {
-            foreach(Point p in m.GetOccupiedPoints())
+            foreach(Point p in m.GetOccupiedTiles())
             {
                 tiles[p.X, p.Y].Cost = Single.PositiveInfinity;
             }

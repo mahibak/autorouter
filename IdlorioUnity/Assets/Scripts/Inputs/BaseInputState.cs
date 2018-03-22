@@ -21,8 +21,8 @@ public class BaseInputState
         }
     }
 
-    // Called after exiting
-    protected virtual void OnSubstateExit() { }
+    protected virtual void OnSubstatePreExit() { }
+    protected virtual void OnSubstatePostExit() { }
 
     public virtual void Update()
     {
@@ -112,9 +112,10 @@ public class BaseInputState
     {
         if (_substate != null)
         {
+            OnSubstatePreExit();
             _substate.OnExit();
             _substate = null;
-            OnSubstateExit();
+            OnSubstatePostExit();
         }
     }
 }
