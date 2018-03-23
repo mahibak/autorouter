@@ -22,20 +22,20 @@ public class FactorySizeManager : MonoBehaviour
     private Vector3 _machineEditorSize = new Vector3(20, 0, 10);
     private bool _isEditingMachine = false;
 
-    public void SetIsEditingMachine(bool isEditingMachine)
+    public static void SetIsEditingMachine(bool isEditingMachine)
     {
-        _isEditingMachine = isEditingMachine;
+        _instance._isEditingMachine = isEditingMachine;
     }
 
-    public Vector3 GetCurrentSize()
+    public static Vector3 GetCurrentSize()
     {
-        if (_isEditingMachine)
+        if (_instance._isEditingMachine)
         {
-            return _machineEditorSize;
+            return _instance._machineEditorSize;
         }
         else
         {
-            return _factorySize;
+            return _instance._factorySize;
         }
     }
 }
