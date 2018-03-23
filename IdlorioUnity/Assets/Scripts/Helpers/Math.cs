@@ -127,3 +127,77 @@ public static class Math
         return false;
     }
 }
+
+public class FloatSmoother
+{
+    private float _current = 0f;
+    private float _target = 0f;
+    private float _velocity = 0f;
+    private float _smoothTime = 1f;
+
+    public FloatSmoother() {}
+    public FloatSmoother(float smoothTime) { SetSmoothTime(smoothTime); }
+
+    public void Init(float initialValue) { Init(initialValue, initialValue); }
+    public void Init(float initialValue, float target) { _current = initialValue; _target = target; _velocity = 0; }
+    public void SetSmoothTime(float smoothTime) { _smoothTime = smoothTime; }
+    public void SetTarget(float target) { _target = target; }
+    public void Update()
+    {
+        if (Time.deltaTime > Mathf.Epsilon)
+        {
+            _current = Mathf.SmoothDampAngle(_current, _target, ref _velocity, _smoothTime);
+        }
+    }
+    public float GetValue() { return _current; }
+}
+
+public class AngleSmoother
+{
+    private float _current = 0f;
+    private float _target = 0f;
+    private float _velocity = 0f;
+    private float _smoothTime = 1f;
+
+    public AngleSmoother() { }
+    public AngleSmoother(float smoothTime) { SetSmoothTime(smoothTime); }
+
+    public void Init(float initialValue) { Init(initialValue, initialValue); }
+    public void Init(float initialValue, float target) { _current = initialValue; _target = target; _velocity = 0; }
+    public void SetSmoothTime(float smoothTime) { _smoothTime = smoothTime; }
+    public void SetTarget(float target) { _target = target; }
+    public void Update()
+    {
+        if (Time.deltaTime > Mathf.Epsilon)
+        {
+            _current = Mathf.SmoothDamp(_current, _target, ref _velocity, _smoothTime);
+        }
+    }
+    public float GetValue() { return _current; }
+}
+
+public class VectorSmoother
+{
+    private Vector3 _current = Vector3.zero;
+    private Vector3 _target = Vector3.zero;
+    private Vector3 _velocity = Vector3.zero;
+    private float _smoothTime = 1f;
+
+    public VectorSmoother() { }
+    public VectorSmoother(float smoothTime) { SetSmoothTime(smoothTime); }
+
+    public void Init(Vector3 initialValue) { Init(initialValue, initialValue); }
+    public void Init(Vector3 initialValue, Vector3 target) { _current = initialValue; _target = target; _velocity = Vector3.zero; }
+    public void SetSmoothTime(float smoothTime) { _smoothTime = smoothTime; }
+    public void SetTarget(Vector3 target) { _target = target; }
+    public void Update()
+    {
+        if (Time.deltaTime > Mathf.Epsilon)
+        {
+            _current.x = Mathf.SmoothDamp(_current.x, _target.x, ref _velocity.x, _smoothTime);
+            _current.y = Mathf.SmoothDamp(_current.y, _target.y, ref _velocity.y, _smoothTime);
+            _current.z = Mathf.SmoothDamp(_current.z, _target.z, ref _velocity.z, _smoothTime);
+        }
+    }
+    public Vector3 GetValue() { return _current; }
+}
