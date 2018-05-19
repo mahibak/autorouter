@@ -70,7 +70,7 @@ public class InputStateMove : BaseInputState
 
     private void Rotate(bool clockwise)
     {
-        _targetTransform.SetRotation((Rotation)(((int)_targetTransform.GetRotation() + (clockwise ? 1 : -1)) % 4));
+        _targetTransform.SetRotation((Rotation)(((int)_targetTransform.GetRotation() + (clockwise ? 1 : -1) + 4) % 4));
         RefreshValidity();
     }
 
